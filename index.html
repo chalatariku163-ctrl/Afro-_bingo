@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Afro Bingo</title>
+
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #bba4cf;
+    text-align: center;
+}
+
+
+/* TOP */
+
+.top {
+    background: #202b39;
+    color: white;
+    padding: 12px;
+}
+
+h1 {
+    margin: 5px;
+}
+
+input {
+    width: 150px;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+}
+
+button {
+    padding: 11px 15px;
+    margin: 4px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+
+/* MAIN */
+
+.main {
+    display: grid;
+
+    grid-template-columns:
+    270px
+    260px
+    1fr;
+
+    gap: 10px;
+
+    padding: 10px;
+
+    align-items: start;
+}
+
+
+/* LEFT CALLED BOARD */
+
+.called-board {
+    background: #bba4cf;
+    padding: 5px;
+}
+
+.letters {
+
+    display: grid;
+
+    grid-template-columns:
+    repeat(5, 1fr);
+
+    gap: 5px;
+
+    margin-bottom: 6px;
+}
+
+.letters div {
+
+    padding: 9px 0;
+
+    color: white;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    border-radius: 7px;
+}
+
+.b {
+    background: #f5a000;
+}
+
+.i {
+    background: green;
+}
+
+.n {
+    background: blue;
+}
+
+.g {
+    background: red;
+}
+
+.o {
+    background: purple;
+}
+
+
+.number-board {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+.number-row {
+
+    display: grid;
+
+    grid-template-columns:
+    repeat(5, 1fr);
+
+    gap: 5px;
+}
+
+.number-row span {
+
+    height: 55px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #c2c4df;
+
+    border: 2px solid #eeeeee;
+
+    border-radius: 10px;
+
+    color: white;
+
+    font-size: 20px;
+
+    font-weight: bold;
+}
+
+
+/* CALLED NUMBER GREEN */
+
+.number-row span.active {
+
+    background: green;
+
+    color: white;
+}
+
+
+/* CURRENT CALL */
+
+.current-area {
+
+    text-align: center;
+}
+
+.current-title {
+
+    background: purple;
+
+    color: white;
+
+    border-radius: 35px;
+
+    padding: 20px 10px;
+
+    font-size: 25px;
+
+    font-weight: bold;
+
+    margin-bottom: 20px;
+}
+
+.current-number {
+
+    display: inline-flex;
+
+    width: 90px;
+
+    height: 90px;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: blue
