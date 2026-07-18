@@ -12,7 +12,6 @@ from telegram.ext import (
 web_app = Flask(__name__)
 
 # Card 1-500
-# 10 Birr group fi 20 Birr group addaan addaan
 cards_10 = set()
 cards_20 = set()
 
@@ -85,20 +84,28 @@ async def button_handler(
 
     data = query.data
 
+    # BUY CARD
     if data == "buy_card":
+
         keyboard = [
-            [InlineKeyboardButton(
-                "💵 10 Birr Group",
-                callback_data="group_10"
-            )],
-            [InlineKeyboardButton(
-                "💵 20 Birr Group",
-                callback_data="group_20"
-            )],
-            [InlineKeyboardButton(
-                "🔙 Back",
-                callback_data="back"
-            )]
+            [
+                InlineKeyboardButton(
+                    "💵 10 Birr Group",
+                    callback_data="group_10"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "💵 20 Birr Group",
+                    callback_data="group_20"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "🔙 Back",
+                    callback_data="back"
+                )
+            ]
         ]
 
         await query.edit_message_text(
@@ -107,97 +114,189 @@ async def button_handler(
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
+    # 10 BIRR GROUP
     elif data == "group_10":
+
         await query.edit_message_text(
             "💵 10 Birr Group\n\n"
             "🎫 Kaardii 1 hanga 500 keessaa filadhu:",
             reply_markup=card_keyboard("10")
         )
 
+    # 20 BIRR GROUP
     elif data == "group_20":
+
         await query.edit_message_text(
             "💵 20 Birr Group\n\n"
             "🎫 Kaardii 1 hanga 500 keessaa filadhu:",
             reply_markup=card_keyboard("20")
         )
 
+    # CARD SELECTION
     elif data.startswith("card_"):
+
         parts = data.split("_")
+
+        if len(parts) != 3:
+            return
+
         group = parts[1]
         card_number = int(parts[2])
 
         if group == "10":
+
             if card_number in cards_10:
                 await query.answer(
                     "❌ Kaardiin kun duraan fudhatameera!",
                     show_alert=True
                 )
-            else:
-                cards_10.add(card_number)
-                await query.edit_message_text(
-                    f"🎉 Kaardii kee filatte!\n\n"
-                    f"💵 Garee: 10 Birr\n"
-                    f"🎫 Card ID: {card_number}\n\n"
-                    f"⏳ Kaffaltii booda ni mirkanaa'a."
-                )
+                return
+
+            cards_10.add(card_number)
+
+            await query.edit_message_text(
+                f"🎉 Kaardii kee filatte!\n\n"
+                f"💵 Garee: 10 Birr\n"
+                f"🎫 Card ID: {card_number}\n\n"
+                f"💰 Amma kaffaltii raawwadhu."
+            )
 
         elif group == "20":
+
             if card_number in cards_20:
                 await query.answer(
                     "❌ Kaardiin kun duraan fudhatameera!",
                     show_alert=True
                 )
-            else:
-                cards_20.add(card_number)
-                await query.edit_message_text(
-                    f"🎉 Kaardii kee filatte!\n\n"
-                    f"💵 Garee: 20 Birr\n"
-                    f"🎫 Card ID: {card_number}\n\n"
-                    f"⏳ Kaffaltii booda ni mirkanaa'a."
-                )
+                return
 
-    elif data == "back":
-        await query.edit_message_text(
-            "🎱 Welcome to Gadaa Bingo!\n\n"
-            "👇 Choose an option:",
-            reply_markup=main_menu()
-        )
+            cards_20.add(card_number)
 
+            await query.edit_message_text(
+                f"🎉 Kaardii kee filatte!\n\n"
+                f"💵 Garee: 20 Birr\n"
+                f"🎫 Card ID: {card_number}\n\n"
+                f"💰 Amma kaffaltii raawwadhu."
+            )
+
+    # DEPOSIT
     elif data == "deposit":
-        await query.answer(
-            "💰 Deposit yeroo itti aanu keessatti ni hojjenna.",
-            show_alert=True
+
+        keyboard = [
+            [
+                InlineKeyboardButton(
+                    "💵 10 Birr",
+                    callback_data="amount_10"
+                ),
+                InlineKeyboardButton(
+                    "💵 20 Birr",
+                    callback_data="amount_20"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "💵 50 Birr",
+                    callback_data="amount_50"
+                ),
+                InlineKeyboardButton(
+                    "💵 100 Birr",
+                    callback_data="amount_100"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "💵 200 Birr",
+                    callback_data="amount_200"
+                ),
+                InlineKeyboardButton(
+                    "💵 500 Birr",
+                    callback_data="amount_500"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "💵 1000 Birr",
+                    callback_data="amount_1000"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "🔙 Back",
+                    callback_data="back"
+                )
+            ]
+        ]
+
+        await query.edit_message_text(
+            "💰 Deposit\n\n"
+            "Qarshii galchuu barbaaddu filadhu:",
+            reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
+    # DEPOSIT AMOUNT
+    elif data.startswith("amount_"):
+
+        amount = data.split("_")[1]
+
+        keyboard = [
+            [
+                InlineKeyboardButton(
+                    "📱 Telebirr 1",
+                    callback_data=f"pay1_{amount}"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "📱 Telebirr 2",
+                    callback_data=f"pay2_{amount}"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "🔙 Back",
+                    callback_data="deposit"
+                )
+            ]
+        ]
+
+        await query.edit_message_text(
+            f"💰 Amount: {amount} Birr\n\n"
+            "Telebirr ittiin kaffaltu filadhu:",
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+
+    # TELEBIRR 1
+    elif data.startswith("pay1_"):
+
+        amount = data.split("_")[1]
+
+        await query.edit_message_text(
+            f"📱 Telebirr 1\n\n"
+            f"💰 Amount: {amount} Birr\n\n"
+            f"📞 0902640434\n\n"
+            f"Erga {amount} Birr kaffaltee booda, "
+            f"ragaa kaffaltii adminitti ergi."
+        )
+
+    # TELEBIRR 2
+    elif data.startswith("pay2_"):
+
+        amount = data.split("_")[1]
+
+        await query.edit_message_text(
+            f"📱 Telebirr 2\n\n"
+            f"💰 Amount: {amount} Birr\n\n"
+            f"📞 0950740256\n\n"
+            f"Erga {amount} Birr kaffaltee booda, "
+            f"ragaa kaffaltii adminitti ergi."
+        )
+
+    # BALANCE
     elif data == "balance":
+
         await query.answer(
             "💳 Balance yeroo itti aanu keessatti ni hojjenna.",
             show_alert=True
         )
 
-    elif data == "play_bingo":
-        await query.answer(
-            "🎲 Play Bingo yeroo itti aanu keessatti ni hojjenna.",
-            show_alert=True
-        )
-
-
-def main():
-    token = os.environ.get("BOT_TOKEN")
-
-    threading.Thread(
-        target=run_web,
-        daemon=True
-    ).start()
-
-    app = Application.builder().token(token).build()
-
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CallbackQueryHandler(button_handler))
-
-    print("Gadaa Bingo Bot is running...")
-    app.run_polling()
-
-
-if __name__ == "__main__":
-    main()
+    # PLAY
