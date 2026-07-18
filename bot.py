@@ -74,7 +74,7 @@ cards_10 = {}
 
 cards_20 = {}
 
-game_open = False
+game_open = True
 
 game_cards_10 = {}
 
