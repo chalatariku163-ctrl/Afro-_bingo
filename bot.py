@@ -1257,7 +1257,7 @@ async def button_handler(
             return
 
 
-        global game_open
+     
 
         game_open = True
 
