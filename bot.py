@@ -70,20 +70,16 @@ pending_deposits = {}
 
 pending_withdrawals = {}
 
-# Card number -> user_id
 cards_10 = {}
 
 cards_20 = {}
 
-# Bingo game status
 game_open = False
 
-# Current game cards
 game_cards_10 = {}
 
 game_cards_20 = {}
 
-# Winners
 winners = []
 
 
@@ -338,6 +334,8 @@ async def button_handler(
     context: ContextTypes.DEFAULT_TYPE
 ):
 
+    global game_open
+
     query = update.callback_query
 
     await query.answer()
@@ -430,11 +428,7 @@ async def button_handler(
 
                         str(number),
 
-                        callback_data=(
-
-                            f"buy10_{number}"
-
-                        )
+                        callback_data=f"buy10_{number}"
 
                     )
 
@@ -506,11 +500,7 @@ async def button_handler(
 
                         str(number),
 
-                        callback_data=(
-
-                            f"buy20_{number}"
-
-                        )
+                        callback_data=f"buy20_{number}"
 
                     )
 
@@ -832,11 +822,7 @@ async def button_handler(
 
                     "📱 Telebirr 1",
 
-                    callback_data=(
-
-                        f"pay1_{amount}"
-
-                    )
+                    callback_data=f"pay1_{amount}"
 
                 )
 
@@ -848,11 +834,7 @@ async def button_handler(
 
                     "📱 Telebirr 2",
 
-                    callback_data=(
-
-                        f"pay2_{amount}"
-
-                    )
+                    callback_data=f"pay2_{amount}"
 
                 )
 
@@ -1064,81 +1046,79 @@ async def button_handler(
 
         )
 
-# =========================
-# PLAY BINGO
-# =========================
 
-elif data == "play_bingo":
+    # =========================
+    # PLAY BINGO
+    # =========================
 
-    if not game_open:
+    elif data == "play_bingo":
 
-        await query.edit_message_text(
+        if not game_open:
 
-            "⏳ Bingo game amma cufaa dha.\n\n"
+            await query.edit_message_text(
 
-            "Admin yeroo game banu ni taphatta.",
+                "⏳ Bingo game amma cufaa dha.\n\n"
 
-            reply_markup=back_button()
+                "Admin yeroo game banu ni taphatta.",
 
-        )
+                reply_markup=back_button()
 
-        return
+            )
 
-
-    # PLAY GAME button
-
-    bingo_url = "https://afro-bingo-6.onrender.com"
+            return
 
 
-    keyboard = [
+        bingo_url = "https://afro-bingo-6.onrender.com"
 
-        [
 
-            InlineKeyboardButton(
+        keyboard = [
 
-                "🎮 PLAY BINGO NOW",
+            [
 
-                web_app=WebAppInfo(
+                InlineKeyboardButton(
 
-                    url=bingo_url
+                    "🎮 PLAY BINGO NOW",
+
+                    web_app=WebAppInfo(
+
+                        url=bingo_url
+
+                    )
 
                 )
 
-            )
+            ],
 
-        ],
+            [
 
-        [
+                InlineKeyboardButton(
 
-            InlineKeyboardButton(
+                    "🔙 Back",
 
-                "🔙 Back",
+                    callback_data="back"
 
-                callback_data="back"
+                )
 
-            )
+            ]
 
         ]
 
-    ]
 
+        await query.edit_message_text(
 
-    await query.edit_message_text(
+            "🎮 AFRO BINGO\n\n"
 
-        "🎮 AFRO BINGO\n\n"
+            "Bingo game taphachuuf "
 
-        "Bingo game taphachuuf "
+            "button armaan gadii cuqaasi.",
 
-        "button armaan gadii cuqaasi.",
+            reply_markup=InlineKeyboardMarkup(
 
-        reply_markup=InlineKeyboardMarkup(
+                keyboard
 
-            keyboard
+            )
 
         )
-
-    )
-    
 
 
     # =========================
@@ -1257,8 +1237,6 @@ elif data == "play_bingo":
 
             return
 
-
-     
 
         game_open = True
 
@@ -1672,11 +1650,7 @@ async def photo_handler(
 
                 "✅ Approve",
 
-                callback_data=(
-
-                    f"approve_{user_id}_{amount}"
-
-                )
+                callback_data=f"approve_{user_id}_{amount}"
 
             ),
 
@@ -1684,11 +1658,7 @@ async def photo_handler(
 
                 "❌ Reject",
 
-                callback_data=(
-
-                    f"reject_{user_id}"
-
-                )
+                callback_data=f"reject_{user_id}"
 
             )
 
@@ -2027,7 +1997,6 @@ async def close_game(context):
     )
 
 
-    # Winner: first registered card owner
     all_cards = []
 
 
