@@ -1,6 +1,6 @@
 import os
 import threading
-from flask import Flask
+from flask import Flask, render_template_string
 
 from telegram import (
     Update,
@@ -38,9 +38,7 @@ PRIZE_PERCENT = 70
 web_app = Flask(__name__)
 
 
-@web_app.route("/")
-def home():
-    return "Gadaa Bingo Bot is running!"
+
 
 
 def run_web():
@@ -58,7 +56,9 @@ def run_web():
     )
 
 
-# =========================
+@web_app.route("/")
+def home():
+    return render_template_string(open("index.html", encoding="utf-8").read())# =========================
 # DATA
 # =========================
 
