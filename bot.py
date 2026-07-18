@@ -12,7 +12,7 @@ ContextTypes
 
 web_app = Flask(name)
 
-Card 1-500:
+# Card 1-500:
 
 10 Birr group fi 20 Birr group addaan addaan
 
