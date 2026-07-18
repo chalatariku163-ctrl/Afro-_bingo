@@ -5,7 +5,8 @@ from flask import Flask
 from telegram import (
     Update,
     InlineKeyboardButton,
-    InlineKeyboardMarkup
+    InlineKeyboardMarkup,
+    WebAppInfo
 )
 
 from telegram.ext import (
@@ -1063,81 +1064,81 @@ async def button_handler(
 
         )
 
+# =========================
+# PLAY BINGO
+# =========================
 
-    # =========================
-    # PLAY BINGO
-    # =========================
+elif data == "play_bingo":
 
-    elif data == "play_bingo":
-
-        if not game_open:
-
-            await query.edit_message_text(
-
-                "⏳ Bingo game amma cufaa dha.\n\n"
-
-                "Admin yeroo game banu ni taphatta.",
-
-                reply_markup=back_button()
-
-            )
-
-            return
-
-
-        my_cards = []
-
-
-        for card, owner in cards_10.items():
-
-            if owner == user_id:
-
-                my_cards.append(
-
-                    f"10 Birr - {card}"
-
-                )
-
-
-        for card, owner in cards_20.items():
-
-            if owner == user_id:
-
-                my_cards.append(
-
-                    f"20 Birr - {card}"
-
-                )
-
-
-        if not my_cards:
-
-            await query.edit_message_text(
-
-                "❌ Ati card hin qabdu.",
-
-                reply_markup=back_button()
-
-            )
-
-            return
-
+    if not game_open:
 
         await query.edit_message_text(
 
-            "🎮 Play Bingo\n\n"
+            "⏳ Bingo game amma cufaa dha.\n\n"
 
-            "🎫 Cards kee:\n\n"
-
-            + "\n".join(my_cards)
-
-            + "\n\n"
-
-            "🏆 Game keessatti hirmaataa jirta!",
+            "Admin yeroo game banu ni taphatta.",
 
             reply_markup=back_button()
 
         )
+
+        return
+
+
+    # PLAY GAME button
+
+    bingo_url = "https://afro-bingo-6.onrender.com"
+
+
+    keyboard = [
+
+        [
+
+            InlineKeyboardButton(
+
+                "🎮 PLAY BINGO NOW",
+
+                web_app=WebAppInfo(
+
+                    url=bingo_url
+
+                )
+
+            )
+
+        ],
+
+        [
+
+            InlineKeyboardButton(
+
+                "🔙 Back",
+
+                callback_data="back"
+
+            )
+
+        ]
+
+    ]
+
+
+    await query.edit_message_text(
+
+        "🎮 AFRO BINGO\n\n"
+
+        "Bingo game taphachuuf "
+
+        "button armaan gadii cuqaasi.",
+
+        reply_markup=InlineKeyboardMarkup(
+
+            keyboard
+
+        )
+
+    )
+    
 
 
     # =========================
