@@ -300,3 +300,51 @@ async def button_handler(
         )
 
     # PLAY
+    # PLAY BINGO
+    elif data == "play_bingo":
+
+        await query.answer(
+            "🎲 Play Bingo yeroo itti aanu keessatti ni hojjenna.",
+            show_alert=True
+        )
+
+    # BACK
+    elif data == "back":
+
+        await query.edit_message_text(
+            "🎱 Welcome to Gadaa Bingo!\n\n"
+            "👇 Choose an option:",
+            reply_markup=main_menu()
+        )
+
+
+def main():
+
+    token = os.environ.get("BOT_TOKEN")
+
+    if not token:
+        print("ERROR: BOT_TOKEN is missing!")
+        return
+
+    threading.Thread(
+        target=run_web,
+        daemon=True
+    ).start()
+
+    app = Application.builder().token(token).build()
+
+    app.add_handler(
+        CommandHandler("start", start)
+    )
+
+    app.add_handler(
+        CallbackQueryHandler(button_handler)
+    )
+
+    print("Gadaa Bingo Bot is running...")
+
+    app.run_polling()
+
+
+if __name__ == "__main__":
+    main()
