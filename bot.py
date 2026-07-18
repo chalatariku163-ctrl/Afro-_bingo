@@ -37,6 +37,17 @@ def main_menu():
     return InlineKeyboardMarkup(keyboard)
 
 
+def back_menu():
+    return InlineKeyboardMarkup([
+        [
+            InlineKeyboardButton(
+                "🏠 Main Menu",
+                callback_data="back"
+            )
+        ]
+    ])
+
+
 def card_keyboard(group):
     keyboard = []
 
@@ -44,6 +55,7 @@ def card_keyboard(group):
         row = []
 
         for card_number in range(start, min(start + 10, 501)):
+
             if group == "10":
                 taken = card_number in cards_10
             else:
@@ -61,13 +73,20 @@ def card_keyboard(group):
         keyboard.append(row)
 
     keyboard.append([
-        InlineKeyboardButton("🔙 Back", callback_data="back")
+        InlineKeyboardButton(
+            "🔙 Back",
+            callback_data="back"
+        )
     ])
 
     return InlineKeyboardMarkup(keyboard)
 
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def start(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE
+):
+
     await update.message.reply_text(
         "🎱 Welcome to Gadaa Bingo!\n\n"
         "👇 Choose an option:",
@@ -79,10 +98,12 @@ async def button_handler(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE
 ):
+
     query = update.callback_query
     await query.answer()
 
     data = query.data
+
 
     # BUY CARD
     if data == "buy_card":
@@ -114,6 +135,7 @@ async def button_handler(
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
+
     # 10 BIRR GROUP
     elif data == "group_10":
 
@@ -123,6 +145,7 @@ async def button_handler(
             reply_markup=card_keyboard("10")
         )
 
+
     # 20 BIRR GROUP
     elif data == "group_20":
 
@@ -131,6 +154,7 @@ async def button_handler(
             "🎫 Kaardii 1 hanga 500 keessaa filadhu:",
             reply_markup=card_keyboard("20")
         )
+
 
     # CARD SELECTION
     elif data.startswith("card_"):
@@ -143,13 +167,16 @@ async def button_handler(
         group = parts[1]
         card_number = int(parts[2])
 
+
         if group == "10":
 
             if card_number in cards_10:
+
                 await query.answer(
                     "❌ Kaardiin kun duraan fudhatameera!",
                     show_alert=True
                 )
+
                 return
 
             cards_10.add(card_number)
@@ -158,16 +185,22 @@ async def button_handler(
                 f"🎉 Kaardii kee filatte!\n\n"
                 f"💵 Garee: 10 Birr\n"
                 f"🎫 Card ID: {card_number}\n\n"
-                f"💰 Amma kaffaltii raawwadhu."
+                f"💰 Amma kaffaltii raawwadhu.\n\n"
+                f"📱 Telebirr 1\n"
+                f"📞 0902640434",
+                reply_markup=back_menu()
             )
+
 
         elif group == "20":
 
             if card_number in cards_20:
+
                 await query.answer(
                     "❌ Kaardiin kun duraan fudhatameera!",
                     show_alert=True
                 )
+
                 return
 
             cards_20.add(card_number)
@@ -176,8 +209,12 @@ async def button_handler(
                 f"🎉 Kaardii kee filatte!\n\n"
                 f"💵 Garee: 20 Birr\n"
                 f"🎫 Card ID: {card_number}\n\n"
-                f"💰 Amma kaffaltii raawwadhu."
+                f"💰 Amma kaffaltii raawwadhu.\n\n"
+                f"📱 Telebirr 2\n"
+                f"📞 0950740256",
+                reply_markup=back_menu()
             )
+
 
     # DEPOSIT
     elif data == "deposit":
@@ -233,6 +270,7 @@ async def button_handler(
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
+
     # DEPOSIT AMOUNT
     elif data.startswith("amount_"):
 
@@ -265,6 +303,7 @@ async def button_handler(
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
+
     # TELEBIRR 1
     elif data.startswith("pay1_"):
 
@@ -275,8 +314,10 @@ async def button_handler(
             f"💰 Amount: {amount} Birr\n\n"
             f"📞 0902640434\n\n"
             f"Erga {amount} Birr kaffaltee booda, "
-            f"ragaa kaffaltii adminitti ergi."
+            f"ragaa kaffaltii adminitti ergi.",
+            reply_markup=back_menu()
         )
+
 
     # TELEBIRR 2
     elif data.startswith("pay2_"):
@@ -288,8 +329,10 @@ async def button_handler(
             f"💰 Amount: {amount} Birr\n\n"
             f"📞 0950740256\n\n"
             f"Erga {amount} Birr kaffaltee booda, "
-            f"ragaa kaffaltii adminitti ergi."
+            f"ragaa kaffaltii adminitti ergi.",
+            reply_markup=back_menu()
         )
+
 
     # BALANCE
     elif data == "balance":
@@ -299,7 +342,7 @@ async def button_handler(
             show_alert=True
         )
 
-    # PLAY
+
     # PLAY BINGO
     elif data == "play_bingo":
 
@@ -308,7 +351,8 @@ async def button_handler(
             show_alert=True
         )
 
-    # BACK
+
+    # BACK TO MAIN MENU
     elif data == "back":
 
         await query.edit_message_text(
@@ -323,28 +367,37 @@ def main():
     token = os.environ.get("BOT_TOKEN")
 
     if not token:
+
         print("ERROR: BOT_TOKEN is missing!")
+
         return
+
 
     threading.Thread(
         target=run_web,
         daemon=True
     ).start()
 
+
     app = Application.builder().token(token).build()
+
 
     app.add_handler(
         CommandHandler("start", start)
     )
 
+
     app.add_handler(
         CallbackQueryHandler(button_handler)
     )
 
+
     print("Gadaa Bingo Bot is running...")
+
 
     app.run_polling()
 
 
 if __name__ == "__main__":
+
     main()
