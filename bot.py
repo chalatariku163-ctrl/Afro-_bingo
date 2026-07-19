@@ -21,7 +21,7 @@ ContextTypes,
 filters
 )
 
-#==================================================
+==================================================
 
 SETTINGS
 
@@ -34,7 +34,7 @@ BINGO_URL = "https://afro-bingo-6.onrender.com"
 CARD_10_PRICE = 10
 CARD_20_PRICE = 20
 
-#==================================================
+==================================================
 
 FLASK
 
@@ -42,7 +42,7 @@ FLASK
 
 web_app = Flask(name)
 
-#==================================================
+==================================================
 
 GAME DATA
 
@@ -58,7 +58,7 @@ bingo_game = {
 
 bingo_lock = threading.Lock()
 
-#==================================================
+==================================================
 
 BOT DATA
 
@@ -77,7 +77,7 @@ winners = []
 
 game_open = False
 
-#==================================================
+==================================================
 
 FLASK HOME
 
@@ -101,7 +101,7 @@ except Exception as error:
 
     return f"index.html error: {error}", 500
 
-#==================================================
+==================================================
 
 GAME STATE
 
@@ -136,11 +136,11 @@ with bingo_lock:
 
     })
 
-#==================================================
+==================================================
 
 JOIN GAME
 
-#==================================================
+==================================================
 
 @web_app.route(
 "/api/join-game",
@@ -159,7 +159,6 @@ user_id = str(
     )
 ).strip()
 
-
 if not user_id:
 
     return jsonify({
@@ -170,7 +169,6 @@ if not user_id:
             "User ID hin jiru."
 
     }), 400
-
 
 try:
 
@@ -189,11 +187,7 @@ except ValueError:
 
     }), 400
 
-
 user_card = None
-
-
-# 10 BIRR CARD
 
 for card_number, owner in cards_10.items():
 
@@ -202,9 +196,6 @@ for card_number, owner in cards_10.items():
         user_card = card_number
 
         break
-
-
-# 20 BIRR CARD
 
 if user_card is None:
 
@@ -215,7 +206,6 @@ if user_card is None:
             user_card = card_number
 
             break
-
 
 if user_card is None:
 
@@ -228,12 +218,9 @@ if user_card is None:
 
     }), 403
 
-
 with bingo_lock:
 
-    bingo_game[
-        "players"
-    ][user_id] = {
+    bingo_game["players"][user_id] = {
 
         "joined": True,
 
@@ -244,7 +231,6 @@ with bingo_lock:
             time.time()
 
     }
-
 
 return jsonify({
 
@@ -258,7 +244,7 @@ return jsonify({
 
 })
 
-#==================================================
+==================================================
 
 ADMIN CALL NUMBER
 
@@ -274,14 +260,12 @@ data = request.get_json(
     silent=True
 ) or {}
 
-
 admin_id = str(
     data.get(
         "admin_id",
         ""
     )
 )
-
 
 if admin_id != str(ADMIN_ID):
 
@@ -293,7 +277,6 @@ if admin_id != str(ADMIN_ID):
             "Admin qofa."
 
     }), 403
-
 
 with bingo_lock:
 
@@ -308,7 +291,6 @@ with bingo_lock:
 
         }), 400
 
-
     if len(
         bingo_game["called_numbers"]
     ) >= 75:
@@ -322,33 +304,33 @@ with bingo_lock:
 
         }), 400
 
-
     available = [
 
         number
 
-        for number in range(1, 76)
+        for number in range(
+            1,
+            76
+        )
 
         if number not in
         bingo_game["called_numbers"]
 
     ]
 
-
     number = random.choice(
         available
     )
 
-
     bingo_game[
         "called_numbers"
-    ].append(number)
-
+    ].append(
+        number
+    )
 
     bingo_game[
         "current_number"
     ] = number
-
 
     called_numbers = list(
 
@@ -357,7 +339,6 @@ with bingo_lock:
         ]
 
     )
-
 
 return jsonify({
 
@@ -371,7 +352,7 @@ return jsonify({
 
 })
 
-#==================================================
+==================================================
 
 WEB SERVER
 
@@ -388,7 +369,6 @@ port = int(
 
 )
 
-
 web_app.run(
 
     host="0.0.0.0",
@@ -397,7 +377,7 @@ web_app.run(
 
 )
 
-#==================================================
+==================================================
 
 BALANCE
 
@@ -423,7 +403,6 @@ balances[user_id] = (
 
 )
 
-
 transactions.append({
 
     "user_id":
@@ -447,14 +426,12 @@ if get_balance(user_id) < amount:
 
     return False
 
-
 balances[user_id] = (
 
     get_balance(user_id)
     - amount
 
 )
-
 
 transactions.append({
 
@@ -469,10 +446,9 @@ transactions.append({
 
 })
 
-
 return True
 
-#==================================================
+==================================================
 
 MAIN MENU
 
@@ -572,7 +548,7 @@ return InlineKeyboardMarkup([
 
 ])
 
-#==================================================
+==================================================
 
 ADMIN MENU
 
@@ -611,7 +587,7 @@ return InlineKeyboardMarkup([
 
 ])
 
-#==================================================
+==================================================
 
 START
 
@@ -624,11 +600,9 @@ context: ContextTypes.DEFAULT_TYPE
 
 user_id = update.effective_user.id
 
-
 if user_id not in balances:
 
     balances[user_id] = 0
-
 
 await update.message.reply_text(
 
@@ -639,7 +613,7 @@ await update.message.reply_text(
 
 )
 
-#==================================================
+==================================================
 
 ADMIN
 
@@ -658,7 +632,6 @@ if update.effective_user.id != ADMIN_ID:
 
     return
 
-
 await update.message.reply_text(
 
     "👨‍💼 ADMIN MENU",
@@ -667,7 +640,7 @@ await update.message.reply_text(
 
 )
 
-#==================================================
+==================================================
 
 BUTTON HANDLER
 
@@ -689,9 +662,7 @@ data = query.data
 user_id = query.from_user.id
 
 
-# ==================================================
 # BUY CARD
-# ==================================================
 
 if data == "buy_card":
 
@@ -734,27 +705,37 @@ if data == "buy_card":
     )
 
 
-# ==================================================
 # CARD GROUP
-# ==================================================
 
-elif data in ["group_10", "group_20"]:
+elif data in [
+    "group_10",
+    "group_20"
+]:
 
-    price = 10 if data == "group_10" else 20
+    price = (
+
+        10
+        if data == "group_10"
+        else 20
+
+    )
 
     cards = (
+
         cards_10
         if price == 10
         else cards_20
-    )
 
+    )
 
     keyboard = []
 
     row = []
 
-
-    for number in range(1, 501):
+    for number in range(
+        1,
+        501
+    ):
 
         if number not in cards:
 
@@ -771,18 +752,15 @@ elif data in ["group_10", "group_20"]:
 
             )
 
-
         if len(row) == 5:
 
             keyboard.append(row)
 
             row = []
 
-
     if row:
 
         keyboard.append(row)
-
 
     keyboard.append([
 
@@ -793,47 +771,51 @@ elif data in ["group_10", "group_20"]:
 
     ])
 
-
     await query.edit_message_text(
 
         f"💵 {price} Birr Card\n\n"
         "🎫 Card kee filadhu:",
 
         reply_markup=
-        InlineKeyboardMarkup(keyboard)
+        InlineKeyboardMarkup(
+            keyboard
+        )
 
     )
 
 
-# ==================================================
 # BUY CARD
-# ==================================================
 
 elif (
+
     data.startswith("buy10_")
-    or data.startswith("buy20_")
+    or
+    data.startswith("buy20_")
+
 ):
 
     parts = data.split("_")
 
     price = int(
+
         parts[0].replace(
             "buy",
             ""
         )
+
     )
 
     card_number = int(
         parts[1]
     )
 
-
     cards = (
+
         cards_10
         if price == 10
         else cards_20
-    )
 
+    )
 
     if card_number in cards:
 
@@ -847,7 +829,6 @@ elif (
 
         return
 
-
     if get_balance(user_id) < price:
 
         await query.answer(
@@ -860,7 +841,6 @@ elif (
 
         return
 
-
     remove_balance(
 
         user_id,
@@ -871,9 +851,7 @@ elif (
 
     )
 
-
     cards[card_number] = user_id
-
 
     await query.edit_message_text(
 
@@ -891,9 +869,7 @@ elif (
     )
 
 
-# ==================================================
 # DEPOSIT
-# ==================================================
 
 elif data == "deposit":
 
@@ -969,16 +945,13 @@ elif data == "deposit":
     )
 
 
-# ==================================================
 # AMOUNT
-# ==================================================
 
 elif data.startswith("amount_"):
 
     amount = int(
         data.split("_")[1]
     )
-
 
     await query.edit_message_text(
 
@@ -1019,9 +992,7 @@ elif data.startswith("amount_"):
     )
 
 
-# ==================================================
 # PAYMENT
-# ==================================================
 
 elif data.startswith("pay1_"):
 
@@ -1029,11 +1000,9 @@ elif data.startswith("pay1_"):
         data.split("_")[1]
     )
 
-
     context.user_data[
         "proof_amount"
     ] = amount
-
 
     await query.edit_message_text(
 
@@ -1053,11 +1022,9 @@ elif data.startswith("pay2_"):
         data.split("_")[1]
     )
 
-
     context.user_data[
         "proof_amount"
     ] = amount
-
 
     await query.edit_message_text(
 
@@ -1071,9 +1038,7 @@ elif data.startswith("pay2_"):
     )
 
 
-# ==================================================
 # BALANCE
-# ==================================================
 
 elif data == "balance":
 
@@ -1087,9 +1052,7 @@ elif data == "balance":
     )
 
 
-# ==================================================
 # PLAY GAME
-# ==================================================
 
 elif data == "play_bingo":
 
@@ -1105,7 +1068,6 @@ elif data == "play_bingo":
         )
 
         return
-
 
     await query.edit_message_text(
 
@@ -1143,9 +1105,7 @@ elif data == "play_bingo":
     )
 
 
-# ==================================================
 # MY CARDS
-# ==================================================
 
 elif data == "my_cards":
 
@@ -1160,7 +1120,6 @@ elif data == "my_cards":
 
     ]
 
-
     my20 = [
 
         str(card)
@@ -1171,7 +1130,6 @@ elif data == "my_cards":
         if owner == user_id
 
     ]
-
 
     await query.edit_message_text(
 
@@ -1188,16 +1146,13 @@ elif data == "my_cards":
     )
 
 
-# ==================================================
 # WITHDRAWAL
-# ==================================================
 
 elif data == "withdrawal":
 
     context.user_data[
         "withdrawal_mode"
     ] = True
-
 
     await query.edit_message_text(
 
@@ -1211,9 +1166,7 @@ elif data == "withdrawal":
     )
 
 
-# ==================================================
 # HISTORY
-# ==================================================
 
 elif data == "history":
 
@@ -1226,7 +1179,6 @@ elif data == "history":
         if item["user_id"] == user_id
 
     ]
-
 
     if not user_transactions:
 
@@ -1242,9 +1194,11 @@ elif data == "history":
         for item in user_transactions[-20:]:
 
             sign = (
+
                 "+"
                 if item["amount"] > 0
                 else ""
+
             )
 
             lines.append(
@@ -1254,12 +1208,12 @@ elif data == "history":
 
             )
 
-
         text = (
+
             "📜 HISTORY\n\n"
             + "\n".join(lines)
-        )
 
+        )
 
     await query.edit_message_text(
 
@@ -1270,17 +1224,17 @@ elif data == "history":
     )
 
 
-# ==================================================
 # WINNERS
-# ==================================================
 
 elif data == "winners":
 
     if not winners:
 
         text = (
+
             "🏆 WINNERS\n\n"
             "Winner hin jiru."
+
         )
 
     else:
@@ -1299,7 +1253,6 @@ elif data == "winners":
 
             )
 
-
     await query.edit_message_text(
 
         text,
@@ -1309,9 +1262,7 @@ elif data == "winners":
     )
 
 
-# ==================================================
 # HOW TO PLAY
-# ==================================================
 
 elif data == "how_to_play":
 
@@ -1333,9 +1284,7 @@ elif data == "how_to_play":
     )
 
 
-# ==================================================
 # ADMIN OPEN
-# ==================================================
 
 elif data == "admin_open_game":
 
@@ -1351,9 +1300,7 @@ elif data == "admin_open_game":
 
         return
 
-
     game_open = True
-
 
     with bingo_lock:
 
@@ -1367,7 +1314,6 @@ elif data == "admin_open_game":
 
         bingo_game["players"] = {}
 
-
     await query.edit_message_text(
 
         "🎮 GAME BANAMEERA!\n\n"
@@ -1378,9 +1324,7 @@ elif data == "admin_open_game":
     )
 
 
-# ==================================================
 # ADMIN CLOSE
-# ==================================================
 
 elif data == "admin_close_game":
 
@@ -1388,14 +1332,11 @@ elif data == "admin_close_game":
 
         return
 
-
     game_open = False
-
 
     with bingo_lock:
 
         bingo_game["started"] = False
-
 
     await query.edit_message_text(
 
@@ -1406,9 +1347,7 @@ elif data == "admin_close_game":
     )
 
 
-# ==================================================
 # APPROVE DEPOSIT
-# ==================================================
 
 elif data.startswith("approve_"):
 
@@ -1416,13 +1355,11 @@ elif data.startswith("approve_"):
 
         return
 
-
     parts = data.split("_")
 
     deposit_user_id = int(parts[1])
 
     amount = int(parts[2])
-
 
     add_balance(
 
@@ -1434,17 +1371,15 @@ elif data.startswith("approve_"):
 
     )
 
-
     await query.edit_message_text(
 
         "✅ DEPOSIT APPROVED\n\n"
 
         f"👤 User: {deposit_user_id}\n"
 
-        f"💰 Amount: {amount} Birr",
+        f"💰 Amount: {amount} Birr"
 
     )
-
 
     await context.bot.send_message(
 
@@ -1464,9 +1399,7 @@ elif data.startswith("approve_"):
     )
 
 
-# ==================================================
 # REJECT DEPOSIT
-# ==================================================
 
 elif data.startswith("reject_"):
 
@@ -1474,13 +1407,11 @@ elif data.startswith("reject_"):
 
         return
 
-
     deposit_user_id = int(
 
         data.split("_")[1]
 
     )
-
 
     await query.edit_message_text(
 
@@ -1489,7 +1420,6 @@ elif data.startswith("reject_"):
         f"👤 User: {deposit_user_id}"
 
     )
-
 
     await context.bot.send_message(
 
@@ -1500,9 +1430,7 @@ elif data.startswith("reject_"):
     )
 
 
-# ==================================================
 # APPROVE WITHDRAWAL
-# ==================================================
 
 elif data.startswith("approve_withdraw_"):
 
@@ -1510,13 +1438,11 @@ elif data.startswith("approve_withdraw_"):
 
         return
 
-
     parts = data.split("_")
 
     withdraw_user_id = int(parts[2])
 
     amount = int(parts[3])
-
 
     if not remove_balance(
 
@@ -1538,7 +1464,6 @@ elif data.startswith("approve_withdraw_"):
 
         return
 
-
     await query.edit_message_text(
 
         "✅ WITHDRAWAL APPROVED\n\n"
@@ -1548,7 +1473,6 @@ elif data.startswith("approve_withdraw_"):
         f"💰 Amount: {amount} Birr"
 
     )
-
 
     await context.bot.send_message(
 
@@ -1565,9 +1489,7 @@ elif data.startswith("approve_withdraw_"):
     )
 
 
-# ==================================================
 # REJECT WITHDRAWAL
-# ==================================================
 
 elif data.startswith("reject_withdraw_"):
 
@@ -1575,13 +1497,11 @@ elif data.startswith("reject_withdraw_"):
 
         return
 
-
     withdraw_user_id = int(
 
         data.split("_")[2]
 
     )
-
 
     await query.edit_message_text(
 
@@ -1590,7 +1510,6 @@ elif data.startswith("reject_withdraw_"):
         f"👤 User: {withdraw_user_id}"
 
     )
-
 
     await context.bot.send_message(
 
@@ -1601,14 +1520,11 @@ elif data.startswith("reject_withdraw_"):
     )
 
 
-# ==================================================
 # BACK
-# ==================================================
 
 elif data == "back":
 
     context.user_data.clear()
-
 
     await query.edit_message_text(
 
@@ -1627,19 +1543,13 @@ PHOTO PAYMENT PROOF
 ==================================================
 
 async def photo_handler(
-
 update: Update,
-
 context: ContextTypes.DEFAULT_TYPE
-
 ):
 
 amount = context.user_data.get(
-
     "proof_amount"
-
 )
-
 
 if not amount:
 
@@ -1651,11 +1561,9 @@ if not amount:
 
     return
 
-
 user = update.effective_user
 
 user_id = user.id
-
 
 keyboard = InlineKeyboardMarkup([
 
@@ -1683,7 +1591,6 @@ keyboard = InlineKeyboardMarkup([
 
 ])
 
-
 await context.bot.send_photo(
 
     chat_id=ADMIN_ID,
@@ -1706,13 +1613,11 @@ await context.bot.send_photo(
 
 )
 
-
 await update.message.reply_text(
 
     "✅ Payment proof adminitti ergameera."
 
 )
-
 
 context.user_data.pop(
 
@@ -1729,11 +1634,8 @@ TEXT HANDLER
 ==================================================
 
 async def text_handler(
-
 update: Update,
-
 context: ContextTypes.DEFAULT_TYPE
-
 ):
 
 text = update.message.text.strip()
@@ -1744,9 +1646,7 @@ user_id = update.effective_user.id
 # WITHDRAWAL AMOUNT
 
 if context.user_data.get(
-
     "withdrawal_mode"
-
 ):
 
     try:
@@ -1763,7 +1663,6 @@ if context.user_data.get(
 
         return
 
-
     if amount <= 0:
 
         await update.message.reply_text(
@@ -1773,7 +1672,6 @@ if context.user_data.get(
         )
 
         return
-
 
     if amount > get_balance(user_id):
 
@@ -1785,27 +1683,17 @@ if context.user_data.get(
 
         return
 
-
     context.user_data[
-
         "withdraw_amount"
-
     ] = amount
 
-
     context.user_data[
-
         "withdrawal_mode"
-
     ] = False
 
-
     context.user_data[
-
         "withdraw_account_mode"
-
     ] = True
-
 
     await update.message.reply_text(
 
@@ -1821,17 +1709,12 @@ if context.user_data.get(
 # WITHDRAW ACCOUNT
 
 if context.user_data.get(
-
     "withdraw_account_mode"
-
 ):
 
     amount = context.user_data.get(
-
         "withdraw_amount"
-
     )
-
 
     pending_withdrawals[user_id] = {
 
@@ -1840,7 +1723,6 @@ if context.user_data.get(
         "account": text
 
     }
-
 
     keyboard = InlineKeyboardMarkup([
 
@@ -1868,7 +1750,6 @@ if context.user_data.get(
 
     ])
 
-
     await context.bot.send_message(
 
         chat_id=ADMIN_ID,
@@ -1889,13 +1770,11 @@ if context.user_data.get(
 
     )
 
-
     await update.message.reply_text(
 
         "✅ Withdrawal request adminitti ergameera."
 
     )
-
 
     context.user_data.pop(
 
@@ -1904,7 +1783,6 @@ if context.user_data.get(
         None
 
     )
-
 
     context.user_data.pop(
 
@@ -1923,22 +1801,16 @@ MAIN
 def main():
 
 token = os.environ.get(
-
     "BOT_TOKEN"
-
 )
-
 
 if not token:
 
     print(
-
         "ERROR: BOT_TOKEN is missing!"
-
     )
 
     return
-
 
 threading.Thread(
 
@@ -1947,7 +1819,6 @@ threading.Thread(
     daemon=True
 
 ).start()
-
 
 app = (
 
@@ -1961,63 +1832,46 @@ app = (
 
 )
 
-
 app.add_handler(
 
     CommandHandler(
-
         "start",
-
         start
-
     )
 
 )
-
 
 app.add_handler(
 
     CommandHandler(
-
         "admin",
-
         admin
-
     )
 
 )
-
 
 app.add_handler(
 
     CallbackQueryHandler(
-
         button_handler
-
     )
 
 )
-
 
 app.add_handler(
 
     MessageHandler(
-
         filters.PHOTO,
-
         photo_handler
-
     )
 
 )
-
 
 app.add_handler(
 
     MessageHandler(
 
         filters.TEXT
-
         & ~filters.COMMAND,
 
         text_handler
@@ -2026,13 +1880,11 @@ app.add_handler(
 
 )
 
-
 print(
 
     "🎱 Gadaa Bingo Bot is running..."
 
 )
-
 
 app.run_polling()
 
