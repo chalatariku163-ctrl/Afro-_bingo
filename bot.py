@@ -21,11 +21,11 @@ ContextTypes,
 filters
 )
 
-==================================================
+#==================================================
 
-SETTINGS
+#SETTINGS
 
-==================================================
+#==================================================
 
 ADMIN_ID = 6376605934
 
@@ -34,19 +34,19 @@ BINGO_URL = "https://afro-bingo-6.onrender.com"
 CARD_10_PRICE = 10
 CARD_20_PRICE = 20
 
-==================================================
+#==================================================
 
-FLASK
+#FLASK
 
-==================================================
+#==================================================
 
 web_app = Flask(name)
 
-==================================================
+#==================================================
 
-GAME DATA
+#GAME DATA
 
-==================================================
+#==================================================
 
 bingo_game = {
 "started": False,
@@ -58,11 +58,11 @@ bingo_game = {
 
 bingo_lock = threading.Lock()
 
-==================================================
+#==================================================
 
-BOT DATA
+#BOT DATA
 
-==================================================
+#==================================================
 
 balances = {}
 transactions = []
@@ -77,11 +77,11 @@ winners = []
 
 game_open = False
 
-==================================================
+#==================================================
 
-FLASK HOME
+#FLASK HOME
 
-==================================================
+#==================================================
 
 @web_app.route("/")
 def home():
@@ -101,11 +101,11 @@ except Exception as error:
 
     return f"index.html error: {error}", 500
 
-==================================================
+#==================================================
 
-GAME STATE
+#GAME STATE
 
-==================================================
+#==================================================
 
 @web_app.route(
 "/api/game-state",
@@ -136,11 +136,11 @@ with bingo_lock:
 
     })
 
-==================================================
+#==================================================
 
-JOIN GAME
+#JOIN GAME
 
-==================================================
+#==================================================
 
 @web_app.route(
 "/api/join-game",
@@ -189,6 +189,8 @@ except ValueError:
 
 user_card = None
 
+# 10 BIRR CARD
+
 for card_number, owner in cards_10.items():
 
     if owner == user_id_int:
@@ -196,6 +198,8 @@ for card_number, owner in cards_10.items():
         user_card = card_number
 
         break
+
+# 20 BIRR CARD
 
 if user_card is None:
 
@@ -220,7 +224,9 @@ if user_card is None:
 
 with bingo_lock:
 
-    bingo_game["players"][user_id] = {
+    bingo_game[
+        "players"
+    ][user_id] = {
 
         "joined": True,
 
@@ -244,11 +250,11 @@ return jsonify({
 
 })
 
-==================================================
+#==================================================
 
-ADMIN CALL NUMBER
+#ADMIN CALL NUMBER
 
-==================================================
+#==================================================
 
 @web_app.route(
 "/api/admin/call-number",
@@ -308,10 +314,7 @@ with bingo_lock:
 
         number
 
-        for number in range(
-            1,
-            76
-        )
+        for number in range(1, 76)
 
         if number not in
         bingo_game["called_numbers"]
@@ -324,9 +327,7 @@ with bingo_lock:
 
     bingo_game[
         "called_numbers"
-    ].append(
-        number
-    )
+    ].append(number)
 
     bingo_game[
         "current_number"
@@ -352,11 +353,11 @@ return jsonify({
 
 })
 
-==================================================
+#==================================================
 
-WEB SERVER
+#WEB SERVER
 
-==================================================
+#==================================================
 
 def run_web():
 
@@ -377,11 +378,11 @@ web_app.run(
 
 )
 
-==================================================
+#==================================================
 
-BALANCE
+#BALANCE
 
-==================================================
+#==================================================
 
 def get_balance(user_id):
 
@@ -448,11 +449,11 @@ transactions.append({
 
 return True
 
-==================================================
+#==================================================
 
-MAIN MENU
+#MAIN MENU
 
-==================================================
+#==================================================
 
 def main_menu():
 
@@ -548,11 +549,11 @@ return InlineKeyboardMarkup([
 
 ])
 
-==================================================
+#==================================================
 
-ADMIN MENU
+#ADMIN MENU
 
-==================================================
+#==================================================
 
 def admin_menu():
 
@@ -587,11 +588,11 @@ return InlineKeyboardMarkup([
 
 ])
 
-==================================================
+#==================================================
 
-START
+#START
 
-==================================================
+#==================================================
 
 async def start(
 update: Update,
@@ -613,11 +614,11 @@ await update.message.reply_text(
 
 )
 
-==================================================
+#==================================================
 
-ADMIN
+#ADMIN
 
-==================================================
+#==================================================
 
 async def admin(
 update: Update,
@@ -640,11 +641,11 @@ await update.message.reply_text(
 
 )
 
-==================================================
+#==================================================
 
-BUTTON HANDLER
+#BUTTON HANDLER
 
-==================================================
+#==================================================
 
 async def button_handler(
 update: Update,
@@ -662,7 +663,9 @@ data = query.data
 user_id = query.from_user.id
 
 
+# ==================================================
 # BUY CARD
+# ==================================================
 
 if data == "buy_card":
 
@@ -705,7 +708,9 @@ if data == "buy_card":
     )
 
 
+# ==================================================
 # CARD GROUP
+# ==================================================
 
 elif data in [
     "group_10",
@@ -715,7 +720,9 @@ elif data in [
     price = (
 
         10
+
         if data == "group_10"
+
         else 20
 
     )
@@ -723,7 +730,9 @@ elif data in [
     cards = (
 
         cards_10
+
         if price == 10
+
         else cards_20
 
     )
@@ -732,10 +741,7 @@ elif data in [
 
     row = []
 
-    for number in range(
-        1,
-        501
-    ):
+    for number in range(1, 501):
 
         if number not in cards:
 
@@ -777,20 +783,20 @@ elif data in [
         "🎫 Card kee filadhu:",
 
         reply_markup=
-        InlineKeyboardMarkup(
-            keyboard
-        )
+        InlineKeyboardMarkup(keyboard)
 
     )
 
 
-# BUY CARD
+# ==================================================
+# BUY CARD CONFIRM
+# ==================================================
 
 elif (
 
     data.startswith("buy10_")
-    or
-    data.startswith("buy20_")
+
+    or data.startswith("buy20_")
 
 ):
 
@@ -812,7 +818,9 @@ elif (
     cards = (
 
         cards_10
+
         if price == 10
+
         else cards_20
 
     )
@@ -869,7 +877,9 @@ elif (
     )
 
 
+# ==================================================
 # DEPOSIT
+# ==================================================
 
 elif data == "deposit":
 
@@ -945,12 +955,16 @@ elif data == "deposit":
     )
 
 
+# ==================================================
 # AMOUNT
+# ==================================================
 
 elif data.startswith("amount_"):
 
     amount = int(
+
         data.split("_")[1]
+
     )
 
     await query.edit_message_text(
@@ -992,12 +1006,16 @@ elif data.startswith("amount_"):
     )
 
 
-# PAYMENT
+# ==================================================
+# PAYMENT 1
+# ==================================================
 
 elif data.startswith("pay1_"):
 
     amount = int(
+
         data.split("_")[1]
+
     )
 
     context.user_data[
@@ -1016,10 +1034,16 @@ elif data.startswith("pay1_"):
     )
 
 
+# ==================================================
+# PAYMENT 2
+# ==================================================
+
 elif data.startswith("pay2_"):
 
     amount = int(
+
         data.split("_")[1]
+
     )
 
     context.user_data[
@@ -1038,7 +1062,9 @@ elif data.startswith("pay2_"):
     )
 
 
+# ==================================================
 # BALANCE
+# ==================================================
 
 elif data == "balance":
 
@@ -1052,7 +1078,9 @@ elif data == "balance":
     )
 
 
+# ==================================================
 # PLAY GAME
+# ==================================================
 
 elif data == "play_bingo":
 
@@ -1105,7 +1133,9 @@ elif data == "play_bingo":
     )
 
 
+# ==================================================
 # MY CARDS
+# ==================================================
 
 elif data == "my_cards":
 
@@ -1146,7 +1176,9 @@ elif data == "my_cards":
     )
 
 
+# ==================================================
 # WITHDRAWAL
+# ==================================================
 
 elif data == "withdrawal":
 
@@ -1166,7 +1198,9 @@ elif data == "withdrawal":
     )
 
 
+# ==================================================
 # HISTORY
+# ==================================================
 
 elif data == "history":
 
@@ -1183,8 +1217,10 @@ elif data == "history":
     if not user_transactions:
 
         text = (
+
             "📜 HISTORY\n\n"
             "History hin jiru."
+
         )
 
     else:
@@ -1196,7 +1232,9 @@ elif data == "history":
             sign = (
 
                 "+"
+
                 if item["amount"] > 0
+
                 else ""
 
             )
@@ -1211,6 +1249,7 @@ elif data == "history":
         text = (
 
             "📜 HISTORY\n\n"
+
             + "\n".join(lines)
 
         )
@@ -1224,7 +1263,9 @@ elif data == "history":
     )
 
 
+# ==================================================
 # WINNERS
+# ==================================================
 
 elif data == "winners":
 
@@ -1262,7 +1303,9 @@ elif data == "winners":
     )
 
 
+# ==================================================
 # HOW TO PLAY
+# ==================================================
 
 elif data == "how_to_play":
 
@@ -1284,7 +1327,9 @@ elif data == "how_to_play":
     )
 
 
-# ADMIN OPEN
+# ==================================================
+# ADMIN OPEN GAME
+# ==================================================
 
 elif data == "admin_open_game":
 
@@ -1324,7 +1369,9 @@ elif data == "admin_open_game":
     )
 
 
-# ADMIN CLOSE
+# ==================================================
+# ADMIN CLOSE GAME
+# ==================================================
 
 elif data == "admin_close_game":
 
@@ -1347,7 +1394,9 @@ elif data == "admin_close_game":
     )
 
 
+# ==================================================
 # APPROVE DEPOSIT
+# ==================================================
 
 elif data.startswith("approve_"):
 
@@ -1357,9 +1406,13 @@ elif data.startswith("approve_"):
 
     parts = data.split("_")
 
-    deposit_user_id = int(parts[1])
+    deposit_user_id = int(
+        parts[1]
+    )
 
-    amount = int(parts[2])
+    amount = int(
+        parts[2]
+    )
 
     add_balance(
 
@@ -1399,7 +1452,9 @@ elif data.startswith("approve_"):
     )
 
 
+# ==================================================
 # REJECT DEPOSIT
+# ==================================================
 
 elif data.startswith("reject_"):
 
@@ -1430,7 +1485,9 @@ elif data.startswith("reject_"):
     )
 
 
+# ==================================================
 # APPROVE WITHDRAWAL
+# ==================================================
 
 elif data.startswith("approve_withdraw_"):
 
@@ -1440,9 +1497,13 @@ elif data.startswith("approve_withdraw_"):
 
     parts = data.split("_")
 
-    withdraw_user_id = int(parts[2])
+    withdraw_user_id = int(
+        parts[2]
+    )
 
-    amount = int(parts[3])
+    amount = int(
+        parts[3]
+    )
 
     if not remove_balance(
 
@@ -1489,7 +1550,9 @@ elif data.startswith("approve_withdraw_"):
     )
 
 
+# ==================================================
 # REJECT WITHDRAWAL
+# ==================================================
 
 elif data.startswith("reject_withdraw_"):
 
@@ -1520,7 +1583,9 @@ elif data.startswith("reject_withdraw_"):
     )
 
 
+# ==================================================
 # BACK
+# ==================================================
 
 elif data == "back":
 
@@ -1536,19 +1601,24 @@ elif data == "back":
 
     )
 
-==================================================
+#==================================================
 
-PHOTO PAYMENT PROOF
+#PHOTO PAYMENT PROOF
 
-==================================================
+#==================================================
 
 async def photo_handler(
+
 update: Update,
+
 context: ContextTypes.DEFAULT_TYPE
+
 ):
 
 amount = context.user_data.get(
+
     "proof_amount"
+
 )
 
 if not amount:
@@ -1627,15 +1697,18 @@ context.user_data.pop(
 
 )
 
-==================================================
+#==================================================
 
-TEXT HANDLER
+#TEXT HANDLER
 
-==================================================
+#==================================================
 
 async def text_handler(
+
 update: Update,
+
 context: ContextTypes.DEFAULT_TYPE
+
 ):
 
 text = update.message.text.strip()
@@ -1646,7 +1719,9 @@ user_id = update.effective_user.id
 # WITHDRAWAL AMOUNT
 
 if context.user_data.get(
+
     "withdrawal_mode"
+
 ):
 
     try:
@@ -1684,15 +1759,21 @@ if context.user_data.get(
         return
 
     context.user_data[
+
         "withdraw_amount"
+
     ] = amount
 
     context.user_data[
+
         "withdrawal_mode"
+
     ] = False
 
     context.user_data[
+
         "withdraw_account_mode"
+
     ] = True
 
     await update.message.reply_text(
@@ -1709,11 +1790,15 @@ if context.user_data.get(
 # WITHDRAW ACCOUNT
 
 if context.user_data.get(
+
     "withdraw_account_mode"
+
 ):
 
     amount = context.user_data.get(
+
         "withdraw_amount"
+
     )
 
     pending_withdrawals[user_id] = {
@@ -1792,22 +1877,26 @@ if context.user_data.get(
 
     )
 
-==================================================
+#==================================================
 
 MAIN
 
-==================================================
+#==================================================
 
 def main():
 
 token = os.environ.get(
+
     "BOT_TOKEN"
+
 )
 
 if not token:
 
     print(
+
         "ERROR: BOT_TOKEN is missing!"
+
     )
 
     return
@@ -1835,8 +1924,11 @@ app = (
 app.add_handler(
 
     CommandHandler(
+
         "start",
+
         start
+
     )
 
 )
@@ -1844,8 +1936,11 @@ app.add_handler(
 app.add_handler(
 
     CommandHandler(
+
         "admin",
+
         admin
+
     )
 
 )
@@ -1853,7 +1948,9 @@ app.add_handler(
 app.add_handler(
 
     CallbackQueryHandler(
+
         button_handler
+
     )
 
 )
@@ -1861,8 +1958,11 @@ app.add_handler(
 app.add_handler(
 
     MessageHandler(
+
         filters.PHOTO,
+
         photo_handler
+
     )
 
 )
@@ -1872,6 +1972,7 @@ app.add_handler(
     MessageHandler(
 
         filters.TEXT
+
         & ~filters.COMMAND,
 
         text_handler
@@ -1887,12 +1988,12 @@ print(
 )
 
 app.run_polling()
+ 
+ #==================================================
 
-==================================================
+#START
 
-START
-
-==================================================
+#==================================================
 
 if name == "main":
 
