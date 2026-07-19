@@ -1,6 +1,9 @@
 import os
 import threading
-from flask import Flask, render_template_string
+import random
+import time
+
+from flask import Flask, render_template_string, request, jsonify
 
 from telegram import (
     Update,
@@ -30,103 +33,212 @@ CARD_20_PRICE = 20
 
 PRIZE_PERCENT = 70
 
+BINGO_URL = "https://afro-bingo-6.onrender.com"
+
 
 # =========================
-# FLASK WEB SERVER
+# FLASK
 # =========================
 
 web_app = Flask(__name__)
 
 
+# =========================
+# BINGO GAME DATA
+# =========================
+
+bingo_game = {
+    "started": False,
+    "called_numbers": [],
+    "current_number": None,
+    "players": {},
+    "winner": None
+}
+
+bingo_lock = threading.Lock()
 
 
-
-def run_web():
-
-    port = int(
-        os.environ.get(
-            "PORT",
-            10000
-        )
-    )
-
-    web_app.run(
-        host="0.0.0.0",
-        port=port
-    )
-
-
-@web_app.route("/")
-def home():
-    return render_template_string(open("index.html", encoding="utf-8").read())# =========================
+# =========================
 # DATA
 # =========================
 
 balances = {}
-
 transactions = []
 
 pending_deposits = {}
-
 pending_withdrawals = {}
 
 cards_10 = {}
-
 cards_20 = {}
 
 game_open = True
-
-game_cards_10 = {}
-
-game_cards_20 = {}
 
 winners = []
 
 
 # =========================
-# BALANCE FUNCTIONS
+# FLASK ROUTES
+# =========================
+
+@web_app.route("/")
+def home():
+
+    with open("index.html", encoding="utf-8") as file:
+
+        return render_template_string(file.read())
+
+
+@web_app.route("/api/game-state")
+def game_state():
+
+    with bingo_lock:
+
+        return jsonify({
+
+            "started": bingo_game["started"],
+
+            "called_numbers":
+                bingo_game["called_numbers"],
+
+            "current_number":
+                bingo_game["current_number"],
+
+            "winner":
+                bingo_game["winner"],
+
+            "players":
+                len(bingo_game["players"])
+
+        })
+
+
+@web_app.route("/api/join-game", methods=["POST"])
+def join_game():
+
+    data = request.get_json(silent=True) or {}
+
+    user_id = str(
+        data.get("user_id", "")
+    )
+
+    if not user_id:
+
+        return jsonify({
+
+            "success": False,
+
+            "message":
+                "User ID hin jiru."
+
+        }), 400
+
+
+    with bingo_lock:
+
+        bingo_game["players"][user_id] = {
+
+            "joined": True,
+
+            "joined_at":
+                time.time()
+
+        }
+
+
+    return jsonify({
+
+        "success": True,
+
+        "message":
+            "Game keessa seente."
+
+    })
+
+
+# =========================
+# WEB SERVER
+# =========================
+
+def run_web():
+
+    port = int(
+
+        os.environ.get(
+
+            "PORT",
+
+            10000
+
+        )
+
+    )
+
+
+    web_app.run(
+
+        host="0.0.0.0",
+
+        port=port
+
+    )
+
+
+# =========================
+# BALANCE
 # =========================
 
 def get_balance(user_id):
 
     return balances.get(
+
         user_id,
+
         0
+
     )
 
 
 def add_balance(
+
     user_id,
+
     amount,
+
     transaction_type="DEPOSIT"
+
 ):
 
     balances[user_id] = (
 
         get_balance(user_id)
+
         + amount
 
     )
 
-    transactions.append(
 
-        {
+    transactions.append({
 
-            "user_id": user_id,
+        "user_id":
+            user_id,
 
-            "type": transaction_type,
+        "type":
+            transaction_type,
 
-            "amount": amount
+        "amount":
+            amount
 
-        }
-
-    )
+    })
 
 
 def remove_balance(
+
     user_id,
+
     amount,
+
     transaction_type="CARD BUY"
+
 ):
 
     if get_balance(user_id) < amount:
@@ -137,23 +249,25 @@ def remove_balance(
     balances[user_id] = (
 
         get_balance(user_id)
+
         - amount
 
     )
 
-    transactions.append(
 
-        {
+    transactions.append({
 
-            "user_id": user_id,
+        "user_id":
+            user_id,
 
-            "type": transaction_type,
+        "type":
+            transaction_type,
 
-            "amount": -amount
+        "amount":
+            -amount
 
-        }
+    })
 
-    )
 
     return True
 
@@ -272,30 +386,27 @@ def main_menu():
 
     ]
 
+
     return InlineKeyboardMarkup(keyboard)
 
 
 def back_button():
 
-    return InlineKeyboardMarkup(
+    return InlineKeyboardMarkup([
 
         [
 
-            [
+            InlineKeyboardButton(
 
-                InlineKeyboardButton(
+                "🏠 Main Menu",
 
-                    "🏠 Main Menu",
+                callback_data="back"
 
-                    callback_data="back"
-
-                )
-
-            ]
+            )
 
         ]
 
-    )
+    ])
 
 
 # =========================
@@ -303,11 +414,15 @@ def back_button():
 # =========================
 
 async def start(
+
     update: Update,
+
     context: ContextTypes.DEFAULT_TYPE
+
 ):
 
     user_id = update.effective_user.id
+
 
     if user_id not in balances:
 
@@ -326,28 +441,79 @@ async def start(
 
 
 # =========================
+# ADMIN MENU
+# =========================
+
+def admin_menu():
+
+    keyboard = [
+
+        [
+
+            InlineKeyboardButton(
+
+                "🎮 Open Game",
+
+                callback_data="admin_open_game"
+
+            ),
+
+            InlineKeyboardButton(
+
+                "🔒 Close Game",
+
+                callback_data="admin_close_game"
+
+            )
+
+        ],
+
+        [
+
+            InlineKeyboardButton(
+
+                "🏠 Main Menu",
+
+                callback_data="back"
+
+            )
+
+        ]
+
+    ]
+
+
+    return InlineKeyboardMarkup(keyboard)
+
+
+# =========================
 # BUTTON HANDLER
 # =========================
 
 async def button_handler(
+
     update: Update,
+
     context: ContextTypes.DEFAULT_TYPE
+
 ):
 
     global game_open
 
+
     query = update.callback_query
 
     await query.answer()
+
 
     data = query.data
 
     user_id = query.from_user.id
 
 
-    # =========================
+    # =====================
     # BUY CARD
-    # =========================
+    # =====================
 
     if data == "buy_card":
 
@@ -398,18 +564,16 @@ async def button_handler(
 
             "Garee card filadhu:",
 
-            reply_markup=InlineKeyboardMarkup(
+            reply_markup=
 
-                keyboard
-
-            )
+            InlineKeyboardMarkup(keyboard)
 
         )
 
 
-    # =========================
+    # =====================
     # GROUP 10
-    # =========================
+    # =====================
 
     elif data == "group_10":
 
@@ -428,7 +592,9 @@ async def button_handler(
 
                         str(number),
 
-                        callback_data=f"buy10_{number}"
+                        callback_data=
+
+                        f"buy10_{number}"
 
                     )
 
@@ -447,21 +613,17 @@ async def button_handler(
             keyboard.append(row)
 
 
-        keyboard.append(
+        keyboard.append([
 
-            [
+            InlineKeyboardButton(
 
-                InlineKeyboardButton(
+                "🔙 Back",
 
-                    "🔙 Back",
+                callback_data="buy_card"
 
-                    callback_data="buy_card"
+            )
 
-                )
-
-            ]
-
-        )
+        ])
 
 
         await query.edit_message_text(
@@ -470,18 +632,16 @@ async def button_handler(
 
             "🎫 Card kee filadhu:",
 
-            reply_markup=InlineKeyboardMarkup(
+            reply_markup=
 
-                keyboard
-
-            )
+            InlineKeyboardMarkup(keyboard)
 
         )
 
 
-    # =========================
+    # =====================
     # GROUP 20
-    # =========================
+    # =====================
 
     elif data == "group_20":
 
@@ -500,7 +660,9 @@ async def button_handler(
 
                         str(number),
 
-                        callback_data=f"buy20_{number}"
+                        callback_data=
+
+                        f"buy20_{number}"
 
                     )
 
@@ -519,21 +681,17 @@ async def button_handler(
             keyboard.append(row)
 
 
-        keyboard.append(
+        keyboard.append([
 
-            [
+            InlineKeyboardButton(
 
-                InlineKeyboardButton(
+                "🔙 Back",
 
-                    "🔙 Back",
+                callback_data="buy_card"
 
-                    callback_data="buy_card"
+            )
 
-                )
-
-            ]
-
-        )
+        ])
 
 
         await query.edit_message_text(
@@ -542,18 +700,16 @@ async def button_handler(
 
             "🎫 Card kee filadhu:",
 
-            reply_markup=InlineKeyboardMarkup(
+            reply_markup=
 
-                keyboard
-
-            )
+            InlineKeyboardMarkup(keyboard)
 
         )
 
 
-    # =========================
-    # BUY 10 CARD
-    # =========================
+    # =====================
+    # BUY 10
+    # =====================
 
     elif data.startswith("buy10_"):
 
@@ -621,9 +777,9 @@ async def button_handler(
         )
 
 
-    # =========================
-    # BUY 20 CARD
-    # =========================
+    # =====================
+    # BUY 20
+    # =====================
 
     elif data.startswith("buy20_"):
 
@@ -691,11 +847,41 @@ async def button_handler(
         )
 
 
-    # =========================
-    # DEPOSIT
-    # =========================
+    # =====================
+    # BALANCE
+    # =====================
 
-    elif data == "deposit":
+    elif data == "balance":
+
+        await query.edit_message_text(
+
+            f"💳 Balance Kee\n\n"
+
+            f"💰 {get_balance(user_id)} Birr",
+
+            reply_markup=back_button()
+
+        )
+
+
+    # =====================
+    # PLAY BINGO
+    # =====================
+
+    elif data == "play_bingo":
+
+        if not game_open:
+
+            await query.edit_message_text(
+
+                "⏳ Bingo game amma cufaa dha.",
+
+                reply_markup=back_button()
+
+            )
+
+            return
+
 
         keyboard = [
 
@@ -703,69 +889,13 @@ async def button_handler(
 
                 InlineKeyboardButton(
 
-                    "💵 10 Birr",
+                    "🎮 PLAY BINGO NOW",
 
-                    callback_data="amount_10"
+                    web_app=WebAppInfo(
 
-                ),
+                        url=BINGO_URL
 
-                InlineKeyboardButton(
-
-                    "💵 20 Birr",
-
-                    callback_data="amount_20"
-
-                )
-
-            ],
-
-            [
-
-                InlineKeyboardButton(
-
-                    "💵 50 Birr",
-
-                    callback_data="amount_50"
-
-                ),
-
-                InlineKeyboardButton(
-
-                    "💵 100 Birr",
-
-                    callback_data="amount_100"
-
-                )
-
-            ],
-
-            [
-
-                InlineKeyboardButton(
-
-                    "💵 200 Birr",
-
-                    callback_data="amount_200"
-
-                ),
-
-                InlineKeyboardButton(
-
-                    "💵 500 Birr",
-
-                    callback_data="amount_500"
-
-                )
-
-            ],
-
-            [
-
-                InlineKeyboardButton(
-
-                    "💵 1000 Birr",
-
-                    callback_data="amount_1000"
+                    )
 
                 )
 
@@ -788,174 +918,22 @@ async def button_handler(
 
         await query.edit_message_text(
 
-            "💰 Deposit\n\n"
+            "🎮 AFRO BINGO\n\n"
 
-            "Qarshii galchuu barbaaddu filadhu:",
+            "Bingo game taphachuuf "
 
-            reply_markup=InlineKeyboardMarkup(
+            "button armaan gadii cuqaasi.",
 
-                keyboard
+            reply_markup=
 
-            )
-
-        )
-
-
-    # =========================
-    # AMOUNT
-    # =========================
-
-    elif data.startswith("amount_"):
-
-        amount = int(
-
-            data.split("_")[1]
+            InlineKeyboardMarkup(keyboard)
 
         )
 
 
-        keyboard = [
-
-            [
-
-                InlineKeyboardButton(
-
-                    "📱 Telebirr 1",
-
-                    callback_data=f"pay1_{amount}"
-
-                )
-
-            ],
-
-            [
-
-                InlineKeyboardButton(
-
-                    "📱 Telebirr 2",
-
-                    callback_data=f"pay2_{amount}"
-
-                )
-
-            ],
-
-            [
-
-                InlineKeyboardButton(
-
-                    "🔙 Back",
-
-                    callback_data="deposit"
-
-                )
-
-            ]
-
-        ]
-
-
-        await query.edit_message_text(
-
-            f"💰 Amount: {amount} Birr\n\n"
-
-            "Telebirr filadhu:",
-
-            reply_markup=InlineKeyboardMarkup(
-
-                keyboard
-
-            )
-
-        )
-
-
-    # =========================
-    # TELEBIRR 1
-    # =========================
-
-    elif data.startswith("pay1_"):
-
-        amount = int(
-
-            data.split("_")[1]
-
-        )
-
-
-        context.user_data["proof_amount"] = amount
-
-
-        await query.edit_message_text(
-
-            f"📱 Telebirr 1\n\n"
-
-            f"💰 Amount: {amount} Birr\n\n"
-
-            f"📞 0902640434\n\n"
-
-            f"Erga {amount} Birr kaffaltee booda,\n"
-
-            f"📸 Payment proof ergi.",
-
-            reply_markup=back_button()
-
-        )
-
-
-    # =========================
-    # TELEBIRR 2
-    # =========================
-
-    elif data.startswith("pay2_"):
-
-        amount = int(
-
-            data.split("_")[1]
-
-        )
-
-
-        context.user_data["proof_amount"] = amount
-
-
-        await query.edit_message_text(
-
-            f"📱 Telebirr 2\n\n"
-
-            f"💰 Amount: {amount} Birr\n\n"
-
-            f"📞 0950740256\n\n"
-
-            f"Erga {amount} Birr kaffaltee booda,\n"
-
-            f"📸 Payment proof ergi.",
-
-            reply_markup=back_button()
-
-        )
-
-
-    # =========================
-    # BALANCE
-    # =========================
-
-    elif data == "balance":
-
-        await query.edit_message_text(
-
-            f"💳 Balance Kee\n\n"
-
-            f"💰 {get_balance(user_id)} Birr",
-
-            reply_markup=back_button()
-
-        )
-
-
-    # =========================
+    # =====================
     # MY CARDS
-    # =========================
+    # =====================
 
     elif data == "my_cards":
 
@@ -1002,165 +980,9 @@ async def button_handler(
         )
 
 
-    # =========================
-    # HISTORY
-    # =========================
-
-    elif data == "history":
-
-        my_history = [
-
-            item
-
-            for item in transactions
-
-            if item["user_id"] == user_id
-
-        ]
-
-
-        if not my_history:
-
-            text = "📜 History kee duwwaa dha."
-
-        else:
-
-            text = "📜 Transaction History\n\n"
-
-            for item in my_history[-20:]:
-
-                text += (
-
-                    f"• {item['type']}: "
-
-                    f"{item['amount']} Birr\n"
-
-                )
-
-
-        await query.edit_message_text(
-
-            text,
-
-            reply_markup=back_button()
-
-        )
-
-
-    # =========================
-    # PLAY BINGO
-    # =========================
-
-    elif data == "play_bingo":
-
-        if not game_open:
-
-            await query.edit_message_text(
-
-                "⏳ Bingo game amma cufaa dha.\n\n"
-
-                "Admin yeroo game banu ni taphatta.",
-
-                reply_markup=back_button()
-
-            )
-
-            return
-
-
-        bingo_url = "https://afro-bingo-6.onrender.com"
-
-
-        keyboard = [
-
-            [
-
-                InlineKeyboardButton(
-
-                    "🎮 PLAY BINGO NOW",
-
-                    web_app=WebAppInfo(
-
-                        url=bingo_url
-
-                    )
-
-                )
-
-            ],
-
-            [
-
-                InlineKeyboardButton(
-
-                    "🔙 Back",
-
-                    callback_data="back"
-
-                )
-
-            ]
-
-        ]
-
-
-        await query.edit_message_text(
-
-            "🎮 AFRO BINGO\n\n"
-
-            "Bingo game taphachuuf "
-
-            "button armaan gadii cuqaasi.",
-
-            reply_markup=InlineKeyboardMarkup(
-
-                keyboard
-
-            )
-
-        )
-
-
-    # =========================
-    # WITHDRAWAL
-    # =========================
-
-    elif data == "withdrawal":
-
-        if get_balance(user_id) <= 0:
-
-            await query.edit_message_text(
-
-                "❌ Balance kee 0 Birr dha.",
-
-                reply_markup=back_button()
-
-            )
-
-            return
-
-
-        context.user_data["withdrawal_mode"] = True
-
-
-        await query.edit_message_text(
-
-            "💸 Withdrawal\n\n"
-
-            "Mee amount ati baasuu barbaaddu "
-
-            "barreessi.\n\n"
-
-            "Fakkeenya: 100",
-
-            reply_markup=back_button()
-
-        )
-
-
-    # =========================
+    # =====================
     # WINNERS
-    # =========================
+    # =====================
 
     elif data == "winners":
 
@@ -1176,9 +998,13 @@ async def button_handler(
 
                 text += (
 
-                    f"👤 User ID: {winner['user_id']}\n"
+                    f"👤 User ID: "
 
-                    f"💰 Prize: {winner['prize']} Birr\n\n"
+                    f"{winner['user_id']}\n"
+
+                    f"💰 Prize: "
+
+                    f"{winner['prize']} Birr\n\n"
 
                 )
 
@@ -1192,400 +1018,9 @@ async def button_handler(
         )
 
 
-    # =========================
-    # HOW TO PLAY
-    # =========================
-
-    elif data == "how_to_play":
-
-        await query.edit_message_text(
-
-            "ℹ️ How to Play\n\n"
-
-            "1️⃣ Deposit godhi\n"
-
-            "2️⃣ Admin approve eega\n"
-
-            "3️⃣ Card bitadhu\n"
-
-            "4️⃣ Play Game cuqaasi\n"
-
-            "5️⃣ Bingo yeroo cufamu winner ni murtaa'a\n\n"
-
-            "🏆 Prize = 70% total card sales",
-
-            reply_markup=back_button()
-
-        )
-
-
-    # =========================
-    # ADMIN OPEN GAME
-    # =========================
-
-    elif data == "admin_open_game":
-
-        if user_id != ADMIN_ID:
-
-            await query.answer(
-
-                "❌ Admin qofaaf!",
-
-                show_alert=True
-
-            )
-
-            return
-
-
-        game_open = True
-
-
-        await query.edit_message_text(
-
-            "🎮 Bingo Game banameera.",
-
-            reply_markup=admin_menu()
-
-        )
-
-
-    # =========================
-    # ADMIN CLOSE GAME
-    # =========================
-
-    elif data == "admin_close_game":
-
-        if user_id != ADMIN_ID:
-
-            await query.answer(
-
-                "❌ Admin qofaaf!",
-
-                show_alert=True
-
-            )
-
-            return
-
-
-        game_open = False
-
-
-        await close_game(
-
-            context
-
-        )
-
-
-        await query.edit_message_text(
-
-            "🔒 Bingo Game cufameera.\n\n"
-
-            "🏆 Winner process xumurameera.",
-
-            reply_markup=admin_menu()
-
-        )
-
-
-    # =========================
-    # ADMIN MENU
-    # =========================
-
-    elif data == "admin_menu":
-
-        if user_id != ADMIN_ID:
-
-            await query.answer(
-
-                "❌ Admin qofaaf!",
-
-                show_alert=True
-
-            )
-
-            return
-
-
-        await query.edit_message_text(
-
-            "👨‍💼 Admin Menu",
-
-            reply_markup=admin_menu()
-
-        )
-
-
-    # =========================
-    # APPROVE DEPOSIT
-    # =========================
-
-    elif data.startswith("approve_"):
-
-        if user_id != ADMIN_ID:
-
-            await query.answer(
-
-                "❌ Admin qofaaf!",
-
-                show_alert=True
-
-            )
-
-            return
-
-
-        parts = data.split("_")
-
-        deposit_user_id = int(parts[1])
-
-        amount = int(parts[2])
-
-
-        add_balance(
-
-            deposit_user_id,
-
-            amount,
-
-            "DEPOSIT APPROVED"
-
-        )
-
-
-        await context.bot.send_message(
-
-            chat_id=deposit_user_id,
-
-            text=(
-
-                "✅ Payment kee mirkanaa'eera!\n\n"
-
-                f"💰 {amount} Birr balance kee irratti "
-
-                "dabalameera.\n\n"
-
-                f"💳 Balance kee: "
-
-                f"{get_balance(deposit_user_id)} Birr"
-
-            )
-
-        )
-
-
-        await query.edit_message_caption(
-
-            caption=(
-
-                "✅ APPROVED\n\n"
-
-                f"💰 Amount: {amount} Birr\n"
-
-                f"🆔 User ID: {deposit_user_id}"
-
-            )
-
-        )
-
-
-    # =========================
-    # REJECT DEPOSIT
-    # =========================
-
-    elif data.startswith("reject_"):
-
-        if user_id != ADMIN_ID:
-
-            await query.answer(
-
-                "❌ Admin qofaaf!",
-
-                show_alert=True
-
-            )
-
-            return
-
-
-        deposit_user_id = int(
-
-            data.split("_")[1]
-
-        )
-
-
-        await context.bot.send_message(
-
-            chat_id=deposit_user_id,
-
-            text=(
-
-                "❌ Payment proof kee "
-
-                "hin mirkanoofne.\n\n"
-
-                "Maaloo irra deebi'ii ilaali."
-
-            )
-
-        )
-
-
-        await query.edit_message_caption(
-
-            caption=(
-
-                "❌ REJECTED\n\n"
-
-                f"🆔 User ID: {deposit_user_id}"
-
-            )
-
-        )
-
-
-    # =========================
-    # APPROVE WITHDRAWAL
-    # =========================
-
-    elif data.startswith("approve_withdraw_"):
-
-        if user_id != ADMIN_ID:
-
-            await query.answer(
-
-                "❌ Admin qofaaf!",
-
-                show_alert=True
-
-            )
-
-            return
-
-
-        parts = data.split("_")
-
-        withdraw_user_id = int(parts[2])
-
-        amount = int(parts[3])
-
-
-        if amount > get_balance(withdraw_user_id):
-
-            await query.answer(
-
-                "❌ Balance user sanaa gahaa miti.",
-
-                show_alert=True
-
-            )
-
-            return
-
-
-        remove_balance(
-
-            withdraw_user_id,
-
-            amount,
-
-            "WITHDRAWAL"
-
-        )
-
-
-        await context.bot.send_message(
-
-            chat_id=withdraw_user_id,
-
-            text=(
-
-                "✅ Withdrawal kee mirkanaa'eera!\n\n"
-
-                f"💸 Amount: {amount} Birr\n\n"
-
-                "📞 Admin irraa kaffaltii eegi."
-
-            )
-
-        )
-
-
-        await query.edit_message_caption(
-
-            caption=(
-
-                "✅ WITHDRAWAL APPROVED\n\n"
-
-                f"💰 Amount: {amount} Birr\n"
-
-                f"🆔 User ID: {withdraw_user_id}"
-
-            )
-
-        )
-
-
-    # =========================
-    # REJECT WITHDRAWAL
-    # =========================
-
-    elif data.startswith("reject_withdraw_"):
-
-        if user_id != ADMIN_ID:
-
-            await query.answer(
-
-                "❌ Admin qofaaf!",
-
-                show_alert=True
-
-            )
-
-            return
-
-
-        withdraw_user_id = int(
-
-            data.split("_")[2]
-
-        )
-
-
-        await context.bot.send_message(
-
-            chat_id=withdraw_user_id,
-
-            text=(
-
-                "❌ Withdrawal kee "
-
-                "hin mirkanoofne."
-
-            )
-
-        )
-
-
-        await query.edit_message_caption(
-
-            caption=(
-
-                "❌ WITHDRAWAL REJECTED\n\n"
-
-                f"🆔 User ID: {withdraw_user_id}"
-
-            )
-
-        )
-
-
-    # =========================
+    # =====================
     # BACK
-    # =========================
+    # =====================
 
     elif data == "back":
 
@@ -1597,6 +1032,334 @@ async def button_handler(
 
             reply_markup=main_menu()
 
+)
+            # =====================
+    # DEPOSIT
+    # =====================
+
+    elif data == "deposit":
+
+        keyboard = [
+
+            [
+                InlineKeyboardButton(
+                    "💵 10 Birr",
+                    callback_data="amount_10"
+                ),
+                InlineKeyboardButton(
+                    "💵 20 Birr",
+                    callback_data="amount_20"
+                )
+            ],
+
+            [
+                InlineKeyboardButton(
+                    "💵 50 Birr",
+                    callback_data="amount_50"
+                ),
+                InlineKeyboardButton(
+                    "💵 100 Birr",
+                    callback_data="amount_100"
+                )
+            ],
+
+            [
+                InlineKeyboardButton(
+                    "💵 200 Birr",
+                    callback_data="amount_200"
+                ),
+                InlineKeyboardButton(
+                    "💵 500 Birr",
+                    callback_data="amount_500"
+                )
+            ],
+
+            [
+                InlineKeyboardButton(
+                    "💵 1000 Birr",
+                    callback_data="amount_1000"
+                )
+            ],
+
+            [
+                InlineKeyboardButton(
+                    "🔙 Back",
+                    callback_data="back"
+                )
+            ]
+
+        ]
+
+        await query.edit_message_text(
+
+            "💰 Deposit\n\n"
+            "Qarshii galchuu barbaaddu filadhu:",
+
+            reply_markup=InlineKeyboardMarkup(keyboard)
+
+        )
+
+
+    # =====================
+    # AMOUNT
+    # =====================
+
+    elif data.startswith("amount_"):
+
+        amount = int(
+            data.split("_")[1]
+        )
+
+        keyboard = [
+
+            [
+                InlineKeyboardButton(
+                    "📱 Telebirr 1",
+                    callback_data=f"pay1_{amount}"
+                )
+            ],
+
+            [
+                InlineKeyboardButton(
+                    "📱 Telebirr 2",
+                    callback_data=f"pay2_{amount}"
+                )
+            ],
+
+            [
+                InlineKeyboardButton(
+                    "🔙 Back",
+                    callback_data="deposit"
+                )
+            ]
+
+        ]
+
+        await query.edit_message_text(
+
+            f"💰 Amount: {amount} Birr\n\n"
+            "Telebirr filadhu:",
+
+            reply_markup=InlineKeyboardMarkup(keyboard)
+
+        )
+
+
+    # =====================
+    # TELEBIRR 1
+    # =====================
+
+    elif data.startswith("pay1_"):
+
+        amount = int(
+            data.split("_")[1]
+        )
+
+        context.user_data["proof_amount"] = amount
+
+        await query.edit_message_text(
+
+            f"📱 Telebirr 1\n\n"
+            f"💰 Amount: {amount} Birr\n\n"
+            f"📞 0902640434\n\n"
+            f"Erga {amount} Birr kaffaltee booda,\n"
+            f"📸 Payment proof ergi.",
+
+            reply_markup=back_button()
+
+        )
+
+
+    # =====================
+    # TELEBIRR 2
+    # =====================
+
+    elif data.startswith("pay2_"):
+
+        amount = int(
+            data.split("_")[1]
+        )
+
+        context.user_data["proof_amount"] = amount
+
+        await query.edit_message_text(
+
+            f"📱 Telebirr 2\n\n"
+            f"💰 Amount: {amount} Birr\n\n"
+            f"📞 0950740256\n\n"
+            f"Erga {amount} Birr kaffaltee booda,\n"
+            f"📸 Payment proof ergi.",
+
+            reply_markup=back_button()
+
+        )
+
+
+    # =====================
+    # HISTORY
+    # =====================
+
+    elif data == "history":
+
+        my_history = [
+
+            item
+
+            for item in transactions
+
+            if item["user_id"] == user_id
+
+        ]
+
+        if not my_history:
+
+            text = "📜 History kee duwwaa dha."
+
+        else:
+
+            text = "📜 Transaction History\n\n"
+
+            for item in my_history[-20:]:
+
+                text += (
+
+                    f"• {item['type']}: "
+                    f"{item['amount']} Birr\n"
+
+                )
+
+        await query.edit_message_text(
+
+            text,
+
+            reply_markup=back_button()
+
+        )
+
+
+    # =====================
+    # WITHDRAWAL
+    # =====================
+
+    elif data == "withdrawal":
+
+        if get_balance(user_id) <= 0:
+
+            await query.edit_message_text(
+
+                "❌ Balance kee 0 Birr dha.",
+
+                reply_markup=back_button()
+
+            )
+
+            return
+
+        context.user_data["withdrawal_mode"] = True
+
+        await query.edit_message_text(
+
+            "💸 Withdrawal\n\n"
+
+            "Amount ati baasuu barbaaddu barreessi.\n\n"
+
+            "Fakkeenya: 100",
+
+            reply_markup=back_button()
+
+        )
+
+
+    # =====================
+    # ADMIN OPEN GAME
+    # =====================
+
+    elif data == "admin_open_game":
+
+        if user_id != ADMIN_ID:
+
+            await query.answer(
+
+                "❌ Admin qofaaf!",
+                show_alert=True
+
+            )
+
+            return
+
+        game_open = True
+
+        with bingo_lock:
+
+            bingo_game["started"] = True
+            bingo_game["called_numbers"] = []
+            bingo_game["current_number"] = None
+            bingo_game["winner"] = None
+
+        await query.edit_message_text(
+
+            "🎮 Bingo Game banameera.",
+
+            reply_markup=admin_menu()
+
+        )
+
+
+    # =====================
+    # ADMIN CLOSE GAME
+    # =====================
+
+    elif data == "admin_close_game":
+
+        if user_id != ADMIN_ID:
+
+            await query.answer(
+
+                "❌ Admin qofaaf!",
+                show_alert=True
+
+            )
+
+            return
+
+        game_open = False
+
+        with bingo_lock:
+
+            bingo_game["started"] = False
+
+        await query.edit_message_text(
+
+            "🔒 Bingo Game cufameera.",
+
+            reply_markup=admin_menu()
+
+        )
+
+
+    # =====================
+    # ADMIN MENU
+    # =====================
+
+    elif data == "admin_menu":
+
+        if user_id != ADMIN_ID:
+
+            await query.answer(
+
+                "❌ Admin qofaaf!",
+                show_alert=True
+
+            )
+
+            return
+
+        await query.edit_message_text(
+
+            "👨‍💼 Admin Menu",
+
+            reply_markup=admin_menu()
+
         )
 
 
@@ -1605,18 +1368,18 @@ async def button_handler(
 # =========================
 
 async def photo_handler(
-    update: Update,
-    context: ContextTypes.DEFAULT_TYPE
-):
 
-    user = update.effective_user
+    update: Update,
+
+    context: ContextTypes.DEFAULT_TYPE
+
+):
 
     amount = context.user_data.get(
 
         "proof_amount"
 
     )
-
 
     if not amount:
 
@@ -1628,6 +1391,7 @@ async def photo_handler(
 
         return
 
+    user = update.effective_user
 
     user_id = user.id
 
@@ -1641,7 +1405,6 @@ async def photo_handler(
 
     )
 
-
     keyboard = [
 
         [
@@ -1650,7 +1413,9 @@ async def photo_handler(
 
                 "✅ Approve",
 
-                callback_data=f"approve_{user_id}_{amount}"
+                callback_data=
+
+                f"approve_{user_id}_{amount}"
 
             ),
 
@@ -1658,14 +1423,15 @@ async def photo_handler(
 
                 "❌ Reject",
 
-                callback_data=f"reject_{user_id}"
+                callback_data=
+
+                f"reject_{user_id}"
 
             )
 
         ]
 
     ]
-
 
     await context.bot.send_photo(
 
@@ -1689,23 +1455,16 @@ async def photo_handler(
 
         ),
 
-        reply_markup=InlineKeyboardMarkup(
-
-            keyboard
-
-        )
+        reply_markup=InlineKeyboardMarkup(keyboard)
 
     )
-
 
     await update.message.reply_text(
 
         "✅ Payment proof kee adminitti ergameera.\n\n"
-
-        "⏳ Admin mirkaneessuu eega."
+        "⏳ Admin mirkaneessuu eegi."
 
     )
-
 
     context.user_data.pop(
 
@@ -1721,18 +1480,17 @@ async def photo_handler(
 # =========================
 
 async def text_handler(
+
     update: Update,
+
     context: ContextTypes.DEFAULT_TYPE
+
 ):
 
     user_id = update.effective_user.id
 
     text = update.message.text.strip()
 
-
-    # =========================
-    # WITHDRAWAL AMOUNT
-    # =========================
 
     if context.user_data.get(
 
@@ -1754,7 +1512,6 @@ async def text_handler(
 
             return
 
-
         if amount <= 0:
 
             await update.message.reply_text(
@@ -1764,7 +1521,6 @@ async def text_handler(
             )
 
             return
-
 
         if amount > get_balance(user_id):
 
@@ -1776,30 +1532,23 @@ async def text_handler(
 
             return
 
-
         context.user_data["withdraw_amount"] = amount
 
         context.user_data["withdrawal_mode"] = False
 
         context.user_data["withdraw_account_mode"] = True
 
-
         await update.message.reply_text(
 
             f"💸 Withdrawal: {amount} Birr\n\n"
 
             "📱 Lakkoofsa Telebirr ykn account "
-
             "kaffaltii itti fudhattu ergi."
 
         )
 
         return
 
-
-    # =========================
-    # WITHDRAWAL ACCOUNT
-    # =========================
 
     if context.user_data.get(
 
@@ -1813,7 +1562,6 @@ async def text_handler(
 
         )
 
-
         pending_withdrawals[user_id] = {
 
             "amount": amount,
@@ -1821,7 +1569,6 @@ async def text_handler(
             "account": text
 
         }
-
 
         keyboard = [
 
@@ -1831,13 +1578,9 @@ async def text_handler(
 
                     "✅ Approve",
 
-                    callback_data=(
+                    callback_data=
 
-                        f"approve_withdraw_"
-
-                        f"{user_id}_{amount}"
-
-                    )
+                    f"approve_withdraw_{user_id}_{amount}"
 
                 ),
 
@@ -1845,20 +1588,15 @@ async def text_handler(
 
                     "❌ Reject",
 
-                    callback_data=(
+                    callback_data=
 
-                        f"reject_withdraw_"
-
-                        f"{user_id}"
-
-                    )
+                    f"reject_withdraw_{user_id}"
 
                 )
 
             ]
 
         ]
-
 
         await context.bot.send_message(
 
@@ -1876,25 +1614,17 @@ async def text_handler(
 
             ),
 
-            reply_markup=InlineKeyboardMarkup(
-
-                keyboard
-
-            )
+            reply_markup=InlineKeyboardMarkup(keyboard)
 
         )
-
 
         await update.message.reply_text(
 
             "✅ Withdrawal request kee adminitti "
-
             "ergameera.\n\n"
-
             "⏳ Admin mirkaneessuu eegi."
 
         )
-
 
         context.user_data.pop(
 
@@ -1916,184 +1646,15 @@ async def text_handler(
 
 
 # =========================
-# ADMIN MENU
-# =========================
-
-def admin_menu():
-
-    keyboard = [
-
-        [
-
-            InlineKeyboardButton(
-
-                "🎮 Open Game",
-
-                callback_data="admin_open_game"
-
-            ),
-
-            InlineKeyboardButton(
-
-                "🔒 Close Game",
-
-                callback_data="admin_close_game"
-
-            )
-
-        ],
-
-        [
-
-            InlineKeyboardButton(
-
-                "🏠 Main Menu",
-
-                callback_data="back"
-
-            )
-
-        ]
-
-    ]
-
-    return InlineKeyboardMarkup(keyboard)
-
-
-# =========================
-# CLOSE GAME
-# =========================
-
-async def close_game(context):
-
-    total_sales = 0
-
-    card_count = 0
-
-
-    for card in cards_10:
-
-        total_sales += 10
-
-        card_count += 1
-
-
-    for card in cards_20:
-
-        total_sales += 20
-
-        card_count += 1
-
-
-    if card_count == 0:
-
-        return
-
-
-    prize = int(
-
-        total_sales * PRIZE_PERCENT / 100
-
-    )
-
-
-    all_cards = []
-
-
-    for card, owner in cards_10.items():
-
-        all_cards.append(
-
-            (
-
-                card,
-
-                owner,
-
-                10
-
-            )
-
-        )
-
-
-    for card, owner in cards_20.items():
-
-        all_cards.append(
-
-            (
-
-                card,
-
-                owner,
-
-                20
-
-            )
-
-        )
-
-
-    if not all_cards:
-
-        return
-
-
-    winner_card, winner_id, price = all_cards[0]
-
-
-    add_balance(
-
-        winner_id,
-
-        prize,
-
-        "BINGO PRIZE"
-
-    )
-
-
-    winners.append(
-
-        {
-
-            "user_id": winner_id,
-
-            "prize": prize
-
-        }
-
-    )
-
-
-    await context.bot.send_message(
-
-        chat_id=winner_id,
-
-        text=(
-
-            "🎉 CONGRATULATIONS!\n\n"
-
-            "🏆 Ati winner taateetta!\n"
-
-            f"💰 Prize: {prize} Birr\n\n"
-
-            f"💳 Balance kee: "
-
-            f"{get_balance(winner_id)} Birr"
-
-        )
-
-    )
-
-
-# =========================
 # ADMIN COMMAND
 # =========================
 
 async def admin(
+
     update: Update,
+
     context: ContextTypes.DEFAULT_TYPE
+
 ):
 
     if update.effective_user.id != ADMIN_ID:
@@ -2105,7 +1666,6 @@ async def admin(
         )
 
         return
-
 
     await update.message.reply_text(
 
@@ -2128,7 +1688,6 @@ def main():
 
     )
 
-
     if not token:
 
         print(
@@ -2139,7 +1698,6 @@ def main():
 
         return
 
-
     threading.Thread(
 
         target=run_web,
@@ -2147,7 +1705,6 @@ def main():
         daemon=True
 
     ).start()
-
 
     app = (
 
@@ -2161,7 +1718,6 @@ def main():
 
     )
 
-
     app.add_handler(
 
         CommandHandler(
@@ -2173,7 +1729,6 @@ def main():
         )
 
     )
-
 
     app.add_handler(
 
@@ -2187,7 +1742,6 @@ def main():
 
     )
 
-
     app.add_handler(
 
         CallbackQueryHandler(
@@ -2197,7 +1751,6 @@ def main():
         )
 
     )
-
 
     app.add_handler(
 
@@ -2210,7 +1763,6 @@ def main():
         )
 
     )
-
 
     app.add_handler(
 
@@ -2226,13 +1778,11 @@ def main():
 
     )
 
-
     print(
 
         "Gadaa Bingo Bot is running..."
 
     )
-
 
     app.run_polling()
 
