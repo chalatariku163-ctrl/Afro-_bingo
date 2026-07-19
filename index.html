@@ -10,6 +10,9 @@ content="width=device-width, initial-scale=1.0">
 
 <title>Gadaa Bingo</title>
 
+<!-- Telegram WebApp API -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
 <style>
 
 * {
@@ -469,8 +472,6 @@ button:disabled {
 
     <h1>🎯 GADAA BINGO</h1>
 
-    <!-- Admin qofaaf mul'ata -->
-
     <button
         id="callBtn"
         onclick="callNumber()">
@@ -489,9 +490,7 @@ button:disabled {
 <div class="main">
 
 
-    <!-- =====================
-         LEFT: CALLED NUMBERS
-    ====================== -->
+    <!-- LEFT -->
 
     <div class="called-board">
 
@@ -519,9 +518,7 @@ button:disabled {
     </div>
 
 
-    <!-- =====================
-         CENTER: CURRENT CALL
-    ====================== -->
+    <!-- CENTER -->
 
     <div class="current-area">
 
@@ -551,9 +548,7 @@ button:disabled {
     </div>
 
 
-    <!-- =====================
-         RIGHT: USER CARD
-    ====================== -->
+    <!-- RIGHT -->
 
     <div class="card-area">
 
@@ -602,16 +597,19 @@ button:disabled {
 <script>
 
 
-/* =========================
+/* ==================================================
    TELEGRAM WEB APP
-========================= */
+================================================== */
 
 let tg = null;
 
 
 if (
+
     window.Telegram &&
+
     window.Telegram.WebApp
+
 ) {
 
     tg =
@@ -624,9 +622,9 @@ if (
 }
 
 
-/* =========================
+/* ==================================================
    GAME VARIABLES
-========================= */
+================================================== */
 
 let calledNumbers = [];
 
@@ -641,9 +639,9 @@ let cardNumbers = [];
 let pollingTimer = null;
 
 
-/* =========================
-   GET USER ID
-========================= */
+/* ==================================================
+   GET TELEGRAM USER ID
+================================================== */
 
 function getUserId() {
 
@@ -666,14 +664,14 @@ function getUserId() {
     }
 
 
-    return "browser_test_user";
+    return null;
 
 }
 
 
-/* =========================
+/* ==================================================
    ADMIN CHECK
-========================= */
+================================================== */
 
 function isAdmin() {
 
@@ -687,9 +685,9 @@ function isAdmin() {
 }
 
 
-/* =========================
+/* ==================================================
    JOIN GAME
-========================= */
+================================================== */
 
 async function joinGame() {
 
@@ -697,9 +695,25 @@ async function joinGame() {
         getUserId();
 
 
+    if (!playerId) {
+
+        document.getElementById(
+
+            "status"
+
+        ).innerText =
+
+            "Telegram keessatti banuu qabda.";
+
+        return false;
+
+    }
+
+
     try {
 
         const response =
+
             await fetch(
 
                 "/api/join-game",
@@ -728,10 +742,11 @@ async function joinGame() {
 
 
         const data =
+
             await response.json();
 
 
-        if (!data.success) {
+        if (!response.ok || !data.success) {
 
             document.getElementById(
 
@@ -740,7 +755,8 @@ async function joinGame() {
             ).innerText =
 
                 data.message ||
-                "Card hin jiru.";
+
+                "Game seenuun hin danda'amne.";
 
             return false;
 
@@ -758,6 +774,7 @@ async function joinGame() {
         ).innerText =
 
             "🎫 Card Number: "
+
             + playerCardNumber;
 
 
@@ -777,11 +794,20 @@ async function joinGame() {
 
         console.log(
 
-            "Join error:",
+            "JOIN ERROR:",
 
             error
 
         );
+
+
+        document.getElementById(
+
+            "status"
+
+        ).innerText =
+
+            "Server waliin wal qunnamuun hin danda'amne.";
 
         return false;
 
@@ -790,9 +816,9 @@ async function joinGame() {
 }
 
 
-/* =========================
+/* ==================================================
    LOAD GAME STATE
-========================= */
+================================================== */
 
 async function loadGameState() {
 
@@ -802,7 +828,13 @@ async function loadGameState() {
 
             await fetch(
 
-                "/api/game-state"
+                "/api/game-state",
+
+                {
+
+                    cache: "no-store"
+
+                }
 
             );
 
@@ -814,8 +846,7 @@ async function loadGameState() {
 
         calledNumbers =
 
-            data.called_numbers
-            || [];
+            data.called_numbers || [];
 
 
         gameStarted =
@@ -888,7 +919,7 @@ async function loadGameState() {
 
         console.log(
 
-            "State error:",
+            "STATE ERROR:",
 
             error
 
@@ -899,9 +930,9 @@ async function loadGameState() {
 }
 
 
-/* =========================
+/* ==================================================
    CREATE NUMBER BOARD
-========================= */
+================================================== */
 
 function createNumberBoard() {
 
@@ -947,6 +978,7 @@ function createNumberBoard() {
             let number = start;
 
             number < start + 5 &&
+
             number <= 75;
 
             number++
@@ -993,9 +1025,9 @@ function createNumberBoard() {
 }
 
 
-/* =========================
+/* ==================================================
    UPDATE CALLED BOARD
-========================= */
+================================================== */
 
 function updateCalledBoard() {
 
@@ -1057,9 +1089,9 @@ function updateCalledBoard() {
 }
 
 
-/* =========================
+/* ==================================================
    BINGO LETTER
-========================= */
+================================================== */
 
 function getLetter(number) {
 
@@ -1088,278 +1120,9 @@ function getLetter(number) {
 }
 
 
-/* =========================
-   CREATE USER CARD
-========================= */
-
-function createCard() {
-
-    const card =
-
-        document.getElementById(
-
-            "bingoCard"
-
-        );
-
-
-    card.innerHTML = "";
-
-
-    cardNumbers = [];
-
-
-    const headers = [
-
-        "B",
-
-        "I",
-
-        "N",
-
-        "G",
-
-        "O"
-
-    ];
-
-
-    headers.forEach(
-
-        letter => {
-
-
-            const cell =
-
-                document.createElement(
-
-                    "div"
-
-                );
-
-
-            cell.className =
-
-                "card-cell card-header";
-
-
-            cell.innerText =
-
-                letter;
-
-
-            card.appendChild(
-
-                cell
-
-            );
-
-        }
-
-    );
-
-
-    const columns = [];
-
-
-    columns.push(
-
-        generateNumbers(
-
-            1,
-
-            15,
-
-            5
-
-        )
-
-    );
-
-
-    columns.push(
-
-        generateNumbers(
-
-            16,
-
-            30,
-
-            5
-
-        )
-
-    );
-
-
-    columns.push(
-
-        generateNumbers(
-
-            31,
-
-            45,
-
-            5
-
-        )
-
-    );
-
-
-    columns.push(
-
-        generateNumbers(
-
-            46,
-
-            60,
-
-            5
-
-        )
-
-    );
-
-
-    columns.push(
-
-        generateNumbers(
-
-            61,
-
-            75,
-
-            5
-
-        )
-
-    );
-
-
-    for (
-
-        let row = 0;
-
-        row < 5;
-
-        row++
-
-    ) {
-
-
-        for (
-
-            let col = 0;
-
-            col < 5;
-
-            col++
-
-        ) {
-
-
-            const cell =
-
-                document.createElement(
-
-                    "div"
-
-                );
-
-
-            cell.className =
-
-                "card-cell";
-
-
-            if (
-
-                row === 2 &&
-
-                col === 2
-
-            ) {
-
-
-                cell.innerText =
-
-                    "FREE";
-
-
-                cell.classList.add(
-
-                    "marked"
-
-                );
-
-
-                cell.classList.add(
-
-                    "free"
-
-                );
-
-
-                cardNumbers.push(
-
-                    "FREE"
-
-                );
-
-
-            } else {
-
-
-                const number =
-
-                    columns[col][row];
-
-
-                cell.innerText =
-
-                    number;
-
-
-                cardNumbers.push(
-
-                    number
-
-                );
-
-
-                card.appendChild(
-
-                    cell
-
-                );
-
-            }
-
-        }
-
-    }
-
-
-    /*
-       Sirna card number
-       user bite irratti hundaa'a.
-
-       Card ID 1-500 akka
-       card adda addaa ta'utti
-       yeroo ammaa frontend keessatti
-       card number irraa seed godhama.
-    */
-
-
-    generateCardFromCardNumber();
-
-}
-
-
-/* =========================
-   CARD NUMBER BASED CARD
-========================= */
+/* ==================================================
+   CREATE CARD FROM CARD NUMBER
+================================================== */
 
 function generateCardFromCardNumber() {
 
@@ -1473,9 +1236,17 @@ function generateCardFromCardNumber() {
 
         return Math.floor(
 
-            min + rnd * (
+            min +
 
-                max - min + 1
+            rnd *
+
+            (
+
+                max -
+
+                min +
+
+                1
 
             )
 
@@ -1707,9 +1478,9 @@ function generateCardFromCardNumber() {
 }
 
 
-/* =========================
+/* ==================================================
    UPDATE CARD MARKS
-========================= */
+================================================== */
 
 function updateCardMarks() {
 
@@ -1767,4 +1538,372 @@ function updateCardMarks() {
         ) {
 
 
-            cells[i
+            cells[i].classList.add(
+
+                "marked"
+
+            );
+
+        } else {
+
+
+            cells[i].classList.remove(
+
+                "marked"
+
+            );
+
+        }
+
+    }
+
+}
+
+
+/* ==================================================
+   CALL NUMBER - ADMIN ONLY
+================================================== */
+
+async function callNumber() {
+
+    if (!isAdmin()) {
+
+        document.getElementById(
+
+            "message"
+
+        ).innerText =
+
+            "❌ Admin qofa.";
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+
+            await fetch(
+
+                "/api/admin/call-number",
+
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                        "application/json"
+
+                    },
+
+                    body: JSON.stringify({
+
+                        admin_id:
+                        playerId
+
+                    })
+
+                }
+
+            );
+
+
+        const data =
+
+            await response.json();
+
+
+        if (!data.success) {
+
+            document.getElementById(
+
+                "message"
+
+            ).innerText =
+
+                data.message ||
+
+                "Lakkoofsa waamuu hin dandeenye.";
+
+            return;
+
+        }
+
+
+        calledNumbers =
+
+            data.called_numbers;
+
+
+        document.getElementById(
+
+            "currentNumber"
+
+        ).innerText =
+
+            getLetter(
+
+                data.number
+
+            )
+
+            + "-"
+
+            + data.number;
+
+
+        updateCalledBoard();
+
+
+        updateCardMarks();
+
+
+    } catch (error) {
+
+        console.log(
+
+            "CALL ERROR:",
+
+            error
+
+        );
+
+    }
+
+}
+
+
+/* ==================================================
+   BINGO CHECK
+================================================== */
+
+function checkBingo() {
+
+    if (
+
+        !gameStarted
+
+    ) {
+
+        document.getElementById(
+
+            "message"
+
+        ).innerText =
+
+            "⏳ Game hin jalqabne.";
+
+        return;
+
+    }
+
+
+    if (
+
+        cardNumbers.length !== 25
+
+    ) {
+
+        document.getElementById(
+
+            "message"
+
+        ).innerText =
+
+            "🎫 Card ammallee hin guutamne.";
+
+        return;
+
+    }
+
+
+    const marked = [];
+
+
+    for (
+
+        let i = 0;
+
+        i < cardNumbers.length;
+
+        i++
+
+    ) {
+
+
+        if (
+
+            cardNumbers[i] === "FREE"
+
+        ) {
+
+            marked.push(true);
+
+        } else {
+
+            marked.push(
+
+                calledNumbers.includes(
+
+                    Number(
+
+                        cardNumbers[i]
+
+                    )
+
+                )
+
+            );
+
+        }
+
+    }
+
+
+    let bingo = false;
+
+
+    // HORIZONTAL
+
+    for (
+
+        let row = 0;
+
+        row < 5;
+
+        row++
+
+    ) {
+
+
+        let complete = true;
+
+
+        for (
+
+            let col = 0;
+
+            col < 5;
+
+            col++
+
+        ) {
+
+
+            if (
+
+                !marked[
+
+                    row * 5 + col
+
+                ]
+
+            ) {
+
+                complete = false;
+
+            }
+
+        }
+
+
+        if (complete) {
+
+            bingo = true;
+
+        }
+
+    }
+
+
+    // VERTICAL
+
+    for (
+
+        let col = 0;
+
+        col < 5;
+
+        col++
+
+    ) {
+
+
+        let complete = true;
+
+
+        for (
+
+            let row = 0;
+
+            row < 5;
+
+            row++
+
+        ) {
+
+
+            if (
+
+                !marked[
+
+                    row * 5 + col
+
+                ]
+
+            ) {
+
+                complete = false;
+
+            }
+
+        }
+
+
+        if (complete) {
+
+            bingo = true;
+
+        }
+
+    }
+
+
+    // DIAGONAL 1
+
+    let diagonalOne = true;
+
+
+    for (
+
+        let i = 0;
+
+        i < 5;
+
+        i++
+
+    ) {
+
+
+        if (
+
+            !marked[
+
+                i * 5 + i
+
+            ]
+
+        ) {
+
+            diagonalOne = false;
+
+        }
+
+    }
+
+
+    if (diagonalOne
