@@ -1156,67 +1156,65 @@ async def button_handler(
 
     elif data == "play_bingo":
 
-        if not game_open:
-
-            await query.edit_message_text(
-
-                "⏳ Bingo game amma cufaa dha.",
-
-                reply_markup=back_button()
-
-            )
-
-            return
-
-
-        keyboard = [
-
-            [
-
-                InlineKeyboardButton(
-
-                    "🎮 PLAY BINGO NOW",
-
-                    web_app=WebAppInfo(
-
-                        url=BINGO_URL
-
-                    )
-
-                )
-
-            ],
-
-            [
-
-                InlineKeyboardButton(
-
-                    "🔙 Back",
-
-                    callback_data="back"
-
-                )
-
-            ]
-
-        ]
-
+    if user_id != ADMIN_ID and not game_open:
 
         await query.edit_message_text(
 
-            "🎮 AFRO BINGO\n\n"
+            "⏳ Bingo game amma cufaa dha.\n\n"
+            "👨‍💼 Admin game akka banu eegi.",
 
-            "Bingo game taphachuuf "
-
-            "button armaan gadii cuqaasi.",
-
-            reply_markup=
-
-            InlineKeyboardMarkup(
-                keyboard
-            )
+            reply_markup=back_button()
 
         )
+
+        return
+
+
+    keyboard = [
+
+        [
+
+            InlineKeyboardButton(
+
+                "🎮 PLAY BINGO NOW",
+
+                web_app=WebAppInfo(
+
+                    url=BINGO_URL
+
+                )
+
+            )
+
+        ],
+
+        [
+
+            InlineKeyboardButton(
+
+                "🔙 Back",
+
+                callback_data="back"
+
+            )
+
+        ]
+
+    ]
+
+
+    await query.edit_message_text(
+
+        "🎮 AFRO BINGO\n\n"
+
+        "Bingo game taphachuuf "
+        "button armaan gadii cuqaasi.",
+
+        reply_markup=
+
+        InlineKeyboardMarkup(keyboard)
+
+    )
 
 
     # ==================================================
