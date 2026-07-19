@@ -1132,7 +1132,8 @@ async def button_handler(
 
         )
 
-  # ==================================================
+
+    # ==================================================
     # BALANCE
     # ==================================================
 
@@ -1155,7 +1156,7 @@ async def button_handler(
 
     elif data == "play_bingo":
 
-    if user_id != ADMIN_ID and not game_open:
+        if user_id != ADMIN_ID and not game_open:
 
         await query.edit_message_text(
 
