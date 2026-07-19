@@ -1,8 +1,12 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Afro Bingo</title><style>
+
+<title>Gadaa Bingo</title>
+
+<style>
 * {
     box-sizing: border-box;
 }
@@ -39,6 +43,11 @@ button:hover {
     opacity: 0.85;
 }
 
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 #startBtn {
     background: #00a651;
     color: white;
@@ -61,8 +70,6 @@ button:hover {
     padding: 10px;
     align-items: start;
 }
-
-/* CALLED BOARD */
 
 .called-board {
     padding: 5px;
@@ -118,8 +125,6 @@ button:hover {
     background: green;
 }
 
-/* CURRENT CALL */
-
 .current-area {
     text-align: center;
 }
@@ -152,8 +157,6 @@ button:hover {
     font-weight: bold;
     margin: 15px;
 }
-
-/* BINGO CARD */
 
 .card-area {
     background: white;
@@ -217,6 +220,7 @@ button:hover {
 }
 
 @media (max-width: 900px) {
+
     .main {
         grid-template-columns: 1fr;
     }
@@ -234,401 +238,1110 @@ button:hover {
         font-size: 15px;
     }
 }
-</style></head><body><div class="top">
-    <h1>🎯 AFRO BINGO</h1><button id="startBtn" onclick="startGame()">
-    ▶ PLAY GAME
-</button>
+</style>
+</head>
 
-<button id="callBtn" onclick="callNumber()" disabled>
-    📢 CALL NUMBER
-</button>
+<body>
 
-<button id="resetBtn" onclick="resetGame()">
-    🔄 NEW GAME
-</button>
+<div class="top">
 
-</div><div class="main"><!-- CALLED NUMBERS -->
-<div class="called-board">
+    <h1>🎯 GADAA BINGO</h1>
 
-    <div class="letters">
-        <div class="b">B</div>
-        <div class="i">I</div>
-        <div class="n">N</div>
-        <div class="g">G</div>
-        <div class="o">O</div>
-    </div>
-
-    <div class="number-board" id="numberBoard"></div>
-
-</div>
-
-<!-- CURRENT NUMBER -->
-<div class="current-area">
-
-    <div class="current-title">
-        CURRENT CALL
-    </div>
-
-    <div class="current-number" id="currentNumber">
-        -
-    </div>
-
-    <div id="status">
-        Press PLAY GAME to start
-    </div>
-
-</div>
-
-<!-- BINGO CARD -->
-<div class="card-area">
-
-    <h2>🎫 YOUR BINGO CARD</h2>
-
-    <div class="bingo-card" id="bingoCard"></div>
-
-    <button id="bingoBtn" onclick="checkBingo()">
-        🏆 BINGO
+    <button id="startBtn" onclick="startGame()">
+        ▶ PLAY GAME
     </button>
 
-    <div id="message"></div>
+    <button id="callBtn" onclick="callNumber()" disabled>
+        📢 CALL NUMBER
+    </button>
+
+    <button id="resetBtn" onclick="resetGame()">
+        🔄 NEW GAME
+    </button>
 
 </div>
 
-</div><script>
+
+<div class="main">
+
+    <!-- CALLED NUMBERS -->
+
+    <div class="called-board">
+
+        <div class="letters">
+
+            <div class="b">B</div>
+            <div class="i">I</div>
+            <div class="n">N</div>
+            <div class="g">G</div>
+            <div class="o">O</div>
+
+        </div>
+
+        <div
+            class="number-board"
+            id="numberBoard">
+        </div>
+
+    </div>
+
+
+    <!-- CURRENT NUMBER -->
+
+    <div class="current-area">
+
+        <div class="current-title">
+            CURRENT CALL
+        </div>
+
+        <div
+            class="current-number"
+            id="currentNumber">
+            -
+        </div>
+
+        <div id="status">
+            Game loading...
+        </div>
+
+    </div>
+
+
+    <!-- BINGO CARD -->
+
+    <div class="card-area">
+
+        <h2>
+            🎫 YOUR BINGO CARD
+        </h2>
+
+        <div
+            class="bingo-card"
+            id="bingoCard">
+        </div>
+
+        <button
+            id="bingoBtn"
+            onclick="checkBingo()">
+
+            🏆 BINGO
+
+        </button>
+
+        <div id="message"></div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   TELEGRAM WEB APP
+========================= */
+
+let tg = null;
+
+if (window.Telegram && window.Telegram.WebApp) {
+
+    tg = window.Telegram.WebApp;
+
+    tg.ready();
+
+    tg.expand();
+
+}
+
+
+/* =========================
+   GAME DATA
+========================= */
 
 let calledNumbers = [];
+
 let cardNumbers = [];
+
 let gameStarted = false;
 
-/* CREATE CALLED NUMBER BOARD */
+let playerJoined = false;
+
+let playerId = null;
+
+
+/* =========================
+   GET TELEGRAM USER ID
+========================= */
+
+function getUserId() {
+
+    if (
+        tg &&
+        tg.initDataUnsafe &&
+        tg.initDataUnsafe.user
+    ) {
+
+        return String(
+            tg.initDataUnsafe.user.id
+        );
+
+    }
+
+    /*
+       Browser test yoo Telegram alaa
+    */
+
+    return "browser_test_user";
+
+}
+
+
+/* =========================
+   JOIN GAME
+========================= */
+
+async function joinGame() {
+
+    playerId = getUserId();
+
+    try {
+
+        const response = await fetch(
+            "/api/join-game",
+            {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/json"
+
+                },
+
+                body: JSON.stringify({
+
+                    user_id: playerId
+
+                })
+
+            }
+
+        );
+
+        const data =
+            await response.json();
+
+        if (data.success) {
+
+            playerJoined = true;
+
+            document.getElementById(
+                "status"
+            ).innerText =
+                "Game keessa seente.";
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Join error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================
+   GAME STATE
+========================= */
+
+async function loadGameState() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/game-state"
+            );
+
+        const data =
+            await response.json();
+
+
+        calledNumbers =
+            data.called_numbers || [];
+
+
+        gameStarted =
+            data.started;
+
+
+        if (
+            data.current_number
+        ) {
+
+            document.getElementById(
+                "currentNumber"
+            ).innerText =
+
+                getLetter(
+                    data.current_number
+                )
+                + "-"
+                + data.current_number;
+
+        }
+
+
+        updateCalledBoard();
+
+
+        if (data.winner) {
+
+            document.getElementById(
+                "message"
+            ).innerText =
+                "🏆 Winner jira!";
+
+        }
+
+
+    } catch (error) {
+
+        console.log(
+            "State error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================
+   NUMBER BOARD
+========================= */
 
 function createNumberBoard() {
 
-    const board = document.getElementById("numberBoard");
+    const board =
+        document.getElementById(
+            "numberBoard"
+        );
 
     board.innerHTML = "";
 
-    for (let start = 1; start <= 75; start += 5) {
 
-        const row = document.createElement("div");
+    for (
+        let start = 1;
+        start <= 75;
+        start += 5
+    ) {
 
-        row.className = "number-row";
+        const row =
+            document.createElement(
+                "div"
+            );
 
-        for (let number = start; number < start + 5 && number <= 75; number++) {
+        row.className =
+            "number-row";
 
-            const span = document.createElement("span");
 
-            span.id = "number-" + number;
+        for (
+            let number = start;
+            number < start + 5 &&
+            number <= 75;
+            number++
+        ) {
 
-            span.innerText = number;
+            const span =
+                document.createElement(
+                    "span"
+                );
 
-            row.appendChild(span);
+            span.id =
+                "number-" + number;
+
+            span.innerText =
+                number;
+
+            row.appendChild(
+                span
+            );
+
         }
 
-        board.appendChild(row);
+
+        board.appendChild(
+            row
+        );
+
     }
+
 }
 
-/* RANDOM NUMBER */
 
-function randomNumber(min, max) {
+/* =========================
+   UPDATE CALLED BOARD
+========================= */
 
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+function updateCalledBoard() {
+
+    for (
+        let number = 1;
+        number <= 75;
+        number++
+    ) {
+
+        const box =
+            document.getElementById(
+                "number-" + number
+            );
+
+        if (!box) continue;
+
+
+        if (
+            calledNumbers.includes(
+                number
+            )
+        ) {
+
+            box.classList.add(
+                "active"
+            );
+
+        } else {
+
+            box.classList.remove(
+                "active"
+            );
+
+        }
+
+    }
+
 }
 
-/* CREATE BINGO CARD */
+
+/* =========================
+   RANDOM NUMBER
+========================= */
+
+function randomNumber(
+    min,
+    max
+) {
+
+    return Math.floor(
+
+        Math.random()
+        *
+        (max - min + 1)
+
+    ) + min;
+
+}
+
+
+/* =========================
+   CREATE CARD
+========================= */
 
 function createCard() {
 
-    const card = document.getElementById("bingoCard");
+    const card =
+        document.getElementById(
+            "bingoCard"
+        );
 
     card.innerHTML = "";
 
-    const headers = ["B", "I", "N", "G", "O"];
 
-    headers.forEach(letter => {
+    const headers = [
 
-        const cell = document.createElement("div");
+        "B",
+        "I",
+        "N",
+        "G",
+        "O"
 
-        cell.className = "card-cell card-header";
+    ];
 
-        cell.innerText = letter;
 
-        card.appendChild(cell);
-    });
+    headers.forEach(
+
+        letter => {
+
+            const cell =
+                document.createElement(
+                    "div"
+                );
+
+            cell.className =
+                "card-cell card-header";
+
+            cell.innerText =
+                letter;
+
+            card.appendChild(
+                cell
+            );
+
+        }
+
+    );
+
 
     let columns = [];
 
-    columns.push(generateNumbers(1, 15, 5));
-    columns.push(generateNumbers(16, 30, 5));
-    columns.push(generateNumbers(31, 45, 5));
-    columns.push(generateNumbers(46, 60, 5));
-    columns.push(generateNumbers(61, 75, 5));
+
+    columns.push(
+        generateNumbers(
+            1,
+            15,
+            5
+        )
+    );
+
+
+    columns.push(
+        generateNumbers(
+            16,
+            30,
+            5
+        )
+    );
+
+
+    columns.push(
+        generateNumbers(
+            31,
+            45,
+            5
+        )
+    );
+
+
+    columns.push(
+        generateNumbers(
+            46,
+            60,
+            5
+        )
+    );
+
+
+    columns.push(
+        generateNumbers(
+            61,
+            75,
+            5
+        )
+    );
+
 
     cardNumbers = [];
 
-    for (let row = 0; row < 5; row++) {
 
-        for (let col = 0; col < 5; col++) {
+    for (
+        let row = 0;
+        row < 5;
+        row++
+    ) {
 
-            const cell = document.createElement("div");
+        for (
+            let col = 0;
+            col < 5;
+            col++
+        ) {
 
-            cell.className = "card-cell";
+            const cell =
+                document.createElement(
+                    "div"
+                );
 
-            if (row === 2 && col === 2) {
+            cell.className =
+                "card-cell";
 
-                cell.innerText = "FREE";
 
-                cell.classList.add("marked");
-                cell.classList.add("free");
+            if (
+                row === 2 &&
+                col === 2
+            ) {
 
-                cardNumbers.push("FREE");
+                cell.innerText =
+                    "FREE";
+
+                cell.classList.add(
+                    "marked"
+                );
+
+                cell.classList.add(
+                    "free"
+                );
+
+                cardNumbers.push(
+                    "FREE"
+                );
+
 
             } else {
 
-                const number = columns[col][row];
+                const number =
+                    columns[col][row];
 
-                cell.innerText = number;
 
-                cardNumbers.push(number);
+                cell.innerText =
+                    number;
 
-                cell.onclick = function() {
 
-                    if (!gameStarted) {
+                cardNumbers.push(
+                    number
+                );
 
-                        alert("First press PLAY GAME!");
 
-                        return;
-                    }
+                cell.onclick =
+                    function() {
 
-                    if (calledNumbers.includes(number)) {
+                        if (
+                            !gameStarted
+                        ) {
 
-                        cell.classList.toggle("marked");
+                            alert(
+                                "Game hin jalqabne!"
+                            );
 
-                    } else {
+                            return;
 
-                        alert("This number has not been called yet!");
+                        }
 
-                    }
-                };
+
+                        if (
+                            calledNumbers
+                            .includes(
+                                number
+                            )
+                        ) {
+
+                            cell.classList.toggle(
+                                "marked"
+                            );
+
+                        } else {
+
+                            alert(
+                                "Lakkoofsi kun "
+                                + "hin waamamin!"
+                            );
+
+                        }
+
+                    };
+
             }
 
-            card.appendChild(cell);
+
+            card.appendChild(
+                cell
+            );
+
         }
+
     }
+
 }
 
-/* GENERATE UNIQUE NUMBERS */
 
-function generateNumbers(min, max, count) {
+/* =========================
+   GENERATE NUMBERS
+========================= */
+
+function generateNumbers(
+    min,
+    max,
+    count
+) {
 
     let numbers = [];
 
-    while (numbers.length < count) {
 
-        let number = randomNumber(min, max);
+    while (
+        numbers.length < count
+    ) {
 
-        if (!numbers.includes(number)) {
+        let number =
+            randomNumber(
+                min,
+                max
+            );
 
-            numbers.push(number);
+
+        if (
+            !numbers.includes(
+                number
+            )
+        ) {
+
+            numbers.push(
+                number
+            );
+
         }
+
     }
 
+
     return numbers;
+
 }
 
-/* START GAME */
 
-function startGame() {
+/* =========================
+   START GAME
+========================= */
+
+async function startGame() {
+
+    await joinGame();
+
+    await loadGameState();
+
 
     gameStarted = true;
 
     calledNumbers = [];
 
-    document.getElementById("callBtn").disabled = false;
 
-    document.getElementById("startBtn").disabled = true;
+    document.getElementById(
+        "callBtn"
+    ).disabled = false;
 
-    document.getElementById("status").innerText =
+
+    document.getElementById(
+        "startBtn"
+    ).disabled = true;
+
+
+    document.getElementById(
+        "status"
+    ).innerText =
         "Game started. Call a number!";
 
-    document.getElementById("message").innerText = "";
+
+    document.getElementById(
+        "message"
+    ).innerText = "";
+
 
     createNumberBoard();
 
     createCard();
 
-    document.getElementById("currentNumber").innerText = "-";
+
+    document.getElementById(
+        "currentNumber"
+    ).innerText = "-";
+
 }
 
-/* CALL NUMBER */
 
-function callNumber() {
+/* =========================
+   CALL NUMBER
+========================= */
 
-    if (!gameStarted) {
+async function callNumber() {
 
-        return;
-    }
-
-    if (calledNumbers.length >= 75) {
-
-        alert("All numbers have been called!");
+    if (
+        !gameStarted
+    ) {
 
         return;
+
     }
+
+
+    if (
+        calledNumbers.length >= 75
+    ) {
+
+        alert(
+            "All numbers called!"
+        );
+
+        return;
+
+    }
+
 
     let number;
 
+
     do {
 
-        number = randomNumber(1, 75);
+        number =
+            randomNumber(
+                1,
+                75
+            );
 
-    } while (calledNumbers.includes(number));
+    } while (
 
-    calledNumbers.push(number);
+        calledNumbers.includes(
+            number
+        )
+
+    );
+
+
+    calledNumbers.push(
+        number
+    );
+
 
     const numberBox =
-        document.getElementById("number-" + number);
+        document.getElementById(
+            "number-" + number
+        );
 
-    numberBox.classList.add("active");
 
-    const letter = getLetter(number);
+    if (numberBox) {
 
-    document.getElementById("currentNumber").innerText =
-        letter + "-" + number;
+        numberBox.classList.add(
+            "active"
+        );
 
-    document.getElementById("status").innerText =
-        "Called: " + calledNumbers.length + " numbers";
+    }
 
-    // Automatically mark matching card number
+
+    document.getElementById(
+        "currentNumber"
+    ).innerText =
+
+        getLetter(
+            number
+        )
+        + "-"
+        + number;
+
+
+    document.getElementById(
+        "status"
+    ).innerText =
+
+        "Called: "
+        + calledNumbers.length
+        + " numbers";
+
+
+    /*
+       Automatically mark card number
+    */
 
     const cells =
-        document.querySelectorAll(".card-cell");
+        document.querySelectorAll(
+            ".card-cell"
+        );
 
-    cells.forEach(cell => {
 
-        if (cell.innerText == number) {
+    cells.forEach(
 
-            cell.classList.add("marked");
+        cell => {
+
+            if (
+                cell.innerText ==
+                number
+            ) {
+
+                cell.classList.add(
+                    "marked"
+                );
+
+            }
+
         }
-    });
+
+    );
+
 }
 
-/* BINGO LETTER */
 
-function getLetter(number) {
+/* =========================
+   BINGO LETTER
+========================= */
 
-    if (number <= 15) return "B";
+function getLetter(
+    number
+) {
 
-    if (number <= 30) return "I";
+    if (
+        number <= 15
+    ) return "B";
 
-    if (number <= 45) return "N";
 
-    if (number <= 60) return "G";
+    if (
+        number <= 30
+    ) return "I";
+
+
+    if (
+        number <= 45
+    ) return "N";
+
+
+    if (
+        number <= 60
+    ) return "G";
+
 
     return "O";
+
 }
 
-/* CHECK BINGO */
+
+/* =========================
+   CHECK BINGO
+========================= */
 
 function checkBingo() {
 
-    if (!gameStarted) {
+    if (
+        !gameStarted
+    ) {
 
-        alert("First press PLAY GAME!");
+        alert(
+            "Dura PLAY GAME cuqaasi!"
+        );
 
         return;
+
     }
 
+
     const cells =
-        document.querySelectorAll(".bingo-card .card-cell");
+        document.querySelectorAll(
+            ".bingo-card .card-cell"
+        );
+
 
     let marked = [];
 
-    for (let i = 0; i < 25; i++) {
+
+    for (
+        let i = 0;
+        i < 25;
+        i++
+    ) {
 
         marked.push(
-            cells[i + 5].classList.contains("marked")
+
+            cells[i + 5]
+            .classList
+            .contains(
+                "marked"
+            )
+
         );
+
     }
+
 
     let win = false;
 
-    // ROWS
 
-    for (let row = 0; row < 5; row++) {
+    /*
+       ROWS
+    */
 
-        let complete = true;
+    for (
+        let row = 0;
+        row < 5;
+        row++
+    ) {
 
-        for (let col = 0; col < 5; col++) {
+        let complete =
+            true;
 
-            if (!marked[row * 5 + col]) {
 
-                complete = false;
+        for (
+            let col = 0;
+            col < 5;
+            col++
+        ) {
+
+            if (
+                !marked[
+                    row * 5 + col
+                ]
+            ) {
+
+                complete =
+                    false;
+
             }
+
         }
 
-        if (complete) win = true;
+
+        if (
+            complete
+        ) {
+
+            win = true;
+
+        }
+
     }
 
-    // COLUMNS
 
-    for (let col = 0; col < 5; col++) {
+    /*
+       COLUMNS
+    */
 
-        let complete = true;
+    for (
+        let col = 0;
+        col < 5;
+        col++
+    ) {
 
-        for (let row = 0; row < 5; row++) {
+        let complete =
+            true;
 
-            if (!marked[row * 5 + col]) {
 
-                complete = false;
+        for (
+            let row = 0;
+            row < 5;
+            row++
+        ) {
+
+            if (
+                !marked[
+                    row * 5 + col
+                ]
+            ) {
+
+                complete =
+                    false;
+
             }
+
         }
 
-        if (complete) win = true;
-    }
 
-    // DIAGONAL 1
+        if (
+            complete
+        ) {
 
-    let diagonal1 = true;
+            win = true;
 
-    for (let i = 0; i < 5; i++) {
-
-        if (!marked[i * 5 + i]) {
-
-            diagonal1 = false;
         }
+
     }
 
-    if (diagonal1) win = true;
 
-    // DIAGONAL 2
+    /*
+       DIAGONAL 1
+    */
 
-    let diagonal2 = true;
+    let diagonal1 =
+        true;
 
-    for (let i = 0; i < 5; i++) {
 
-        if (!marked[i * 5 + (4 - i)]) {
+    for (
+        let i = 0;
+        i < 5;
+        i++
+    ) {
 
-            diagonal2 = false;
+        if (
+            !marked[
+                i * 5 + i
+            ]
+        ) {
+
+            diagonal1 =
+                false;
+
         }
+
     }
 
-    if (diagonal2) win = true;
 
-    if (win) {
+    if (
+        diagonal1
+    ) {
 
-        document.getElementById("message").innerText =
+        win = true;
+
+    }
+
+
+    /*
+       DIAGONAL 2
+    */
+
+    let diagonal2 =
+        true;
+
+
+    for (
+        let i = 0;
+        i < 5;
+        i++
+    ) {
+
+        if (
+            !marked[
+                i * 5 + (4 - i)
+            ]
+        ) {
+
+            diagonal2 =
+                false;
+
+        }
+
+    }
+
+
+    if (
+        diagonal2
+    ) {
+
+        win = true;
+
+    }
+
+
+    if (
+        win
+    ) {
+
+        document.getElementById(
+            "message"
+        ).innerText =
             "🎉 BINGO! YOU WIN! 🎉";
+
 
     } else {
 
-        document.getElementById("message").innerText =
-            "❌ Not Bingo yet. Keep playing!";
+        document.getElementById(
+            "message"
+        ).innerText =
+            "❌ Not Bingo yet.";
+
     }
+
 }
 
-/* RESET GAME */
+
+/* =========================
+   RESET
+========================= */
 
 function resetGame() {
 
@@ -638,25 +1351,52 @@ function resetGame() {
 
     gameStarted = false;
 
-    document.getElementById("callBtn").disabled = true;
 
-    document.getElementById("startBtn").disabled = false;
+    document.getElementById(
+        "callBtn"
+    ).disabled = true;
 
-    document.getElementById("currentNumber").innerText = "-";
 
-    document.getElementById("status").innerText =
+    document.getElementById(
+        "startBtn"
+    ).disabled = false;
+
+
+    document.getElementById(
+        "currentNumber"
+    ).innerText = "-";
+
+
+    document.getElementById(
+        "status"
+    ).innerText =
         "Press PLAY GAME to start";
 
-    document.getElementById("message").innerText = "";
+
+    document.getElementById(
+        "message"
+    ).innerText = "";
+
 
     createNumberBoard();
 
-    document.getElementById("bingoCard").innerHTML = "";
+
+    document.getElementById(
+        "bingoCard"
+    ).innerHTML = "";
+
 }
 
-/* LOAD BOARD */
+
+/* =========================
+   INITIAL LOAD
+========================= */
 
 createNumberBoard();
 
-</script></body>
+loadGameState();
+
+</script>
+
+</body>
 </html>
