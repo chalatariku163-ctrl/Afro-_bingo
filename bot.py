@@ -1150,7 +1150,7 @@ async def button_handler(
         )
 
 
-    # ==================================================
+     # ==================================================
     # PLAY BINGO
     # ==================================================
 
@@ -1158,61 +1158,65 @@ async def button_handler(
 
         if user_id != ADMIN_ID and not game_open:
 
-        await query.edit_message_text(
+            await query.edit_message_text(
 
-            "⏳ Bingo game amma cufaa dha.\n\n"
-            "👨‍💼 Admin game akka banu eegi.",
+                "⏳ Bingo game amma cufaa dha.\n\n"
+                "👨‍💼 Admin game akka banu eegi.",
 
-            reply_markup=back_button()
+                reply_markup=back_button()
 
-        )
+            )
 
-        return
+            return
 
 
-    keyboard = [
+        keyboard = [
 
-        [
+            [
 
-            InlineKeyboardButton(
+                InlineKeyboardButton(
 
-                "🎮 PLAY BINGO NOW",
+                    "🎮 PLAY BINGO NOW",
 
-                web_app=WebAppInfo(
+                    web_app=WebAppInfo(
 
-                    url=BINGO_URL
+                        url=BINGO_URL
+
+                    )
 
                 )
 
-            )
+            ],
 
-        ],
+            [
 
-        [
+                InlineKeyboardButton(
 
-            InlineKeyboardButton(
+                    "🔙 Back",
 
-                "🔙 Back",
+                    callback_data="back"
 
-                callback_data="back"
+                )
 
-            )
+            ]
 
         ]
 
-    ]
 
+        await query.edit_message_text(
 
-    await query.edit_message_text(
+            "🎮 GADAA BINGO\n\n"
 
-        "🎮 AFRO BINGO\n\n"
+            "Bingo game taphachuuf "
+            "button armaan gadii cuqaasi.",
 
-        "Bingo game taphachuuf "
-        "button armaan gadii cuqaasi.",
+            reply_markup=InlineKeyboardMarkup(
 
-        reply_markup=
+                keyboard
 
-        InlineKeyboardMarkup(keyboard)
+            )
+
+        )
 
     )
 
