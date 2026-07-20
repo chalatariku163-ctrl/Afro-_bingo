@@ -190,3 +190,22 @@ def check_bingo(card, called_numbers):
 
 
     # H
+    # HORIZONTAL
+    for row in range(5):
+        if all(marked[row]):
+            return True
+
+    # VERTICAL
+    for col in range(5):
+        if all(marked[row][col] for row in range(5)):
+            return True
+
+    # DIAGONAL 1
+    if all(marked[i][i] for i in range(5)):
+        return True
+
+    # DIAGONAL 2
+    if all(marked[i][4 - i] for i in range(5)):
+        return True
+
+    return False
