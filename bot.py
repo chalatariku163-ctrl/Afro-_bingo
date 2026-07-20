@@ -3,7 +3,12 @@ import random
 import threading
 import time
 
-from flask import Flask, jsonify, request
+from flask import (
+    Flask,
+    jsonify,
+    request,
+    render_template
+)
 
 from telegram import (
     Update,
@@ -1666,22 +1671,11 @@ async def callback_handler(
 # ==================================================
 
 @web_app.route("/")
-
 def home():
 
-    return jsonify({
-
-        "status": "online",
-
-        "service": "Gadaa Bingo",
-
-        "game_open": game_open,
-
-        "card_buying_open": card_buying_open,
-
-        "bingo_started": bingo_game["started"],
-
-    })
+    return render_template(
+        "index.html"
+    )
 
 
 # ==================================================
