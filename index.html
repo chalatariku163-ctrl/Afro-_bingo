@@ -1,7 +1,7 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport"
-content="width=device-width, initial-scale=1.0">
-
-<title>Gadaa Bingo</title><script src="https://telegram.org/js/telegram-web-app.js"></script><style>
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Gadaa Bingo</title><script src="https://telegram.org/js/telegram-web-app.js"></script><style>
 
 * {
     box-sizing: border-box;
@@ -23,10 +23,11 @@ body {
 
 .top h1 {
     margin: 5px;
+    font-size: 28px;
 }
 
 button {
-    padding: 11px 15px;
+    padding: 12px 16px;
     margin: 4px;
     border: none;
     border-radius: 8px;
@@ -43,6 +44,7 @@ button:disabled {
 #callBtn {
     background: #f5a000;
     color: white;
+    display: none;
 }
 
 .main {
@@ -106,6 +108,7 @@ button:disabled {
 
 .number-row span.active {
     background: green;
+    border-color: white;
 }
 
 .current-area {
@@ -237,7 +240,9 @@ button:disabled {
 
 </button>
 
-</div><div class="main"><div class="called-board">
+</div><div class="main"><!-- CALLED NUMBERS -->
+
+<div class="called-board">
 
     <div class="letters">
 
@@ -256,6 +261,9 @@ button:disabled {
     </div>
 
 </div>
+
+
+<!-- CURRENT NUMBER -->
 
 <div class="current-area">
 
@@ -281,6 +289,9 @@ button:disabled {
     </div>
 
 </div>
+
+
+<!-- BINGO CARD -->
 
 <div class="card-area">
 
@@ -357,6 +368,8 @@ let cardNumbers = [];
 
 let pollingTimer = null;
 
+const ADMIN_ID = "6376605934";
+
 
 /* ==================================================
    GET TELEGRAM USER ID
@@ -387,7 +400,7 @@ function getUserId() {
 
 function isAdmin() {
 
-    return playerId === "6376605934";
+    return playerId === ADMIN_ID;
 
 }
 
@@ -482,9 +495,13 @@ async function joinGame() {
                     },
 
                     body: JSON.stringify({
+
                         user_id: playerId
+
                     })
+
                 }
+
             );
 
         const data =
@@ -523,7 +540,9 @@ async function joinGame() {
 
         return true;
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
         console.log(
             "JOIN ERROR:",
@@ -565,7 +584,9 @@ async function loadGameState() {
             data.called_numbers || [];
 
         gameStarted =
-            data.started;
+            Boolean(
+                data.started
+            );
 
         updateCalledBoard();
 
@@ -578,11 +599,23 @@ async function loadGameState() {
             document.getElementById(
                 "currentNumber"
             ).innerText =
+
                 getLetter(
                     data.current_number
-                ) +
-                "-" +
+                )
+
+                + "-" +
+
                 data.current_number;
+
+        }
+
+        else {
+
+            document.getElementById(
+                "currentNumber"
+            ).innerText =
+                "-";
 
         }
 
@@ -595,12 +628,14 @@ async function loadGameState() {
             ).innerText =
                 "🎮 Game banameera.";
 
-        } else {
+        }
+
+        else {
 
             document.getElementById(
                 "status"
             ).innerText =
-                "Game amma cufaa dha.";
+                "⏳ Game amma cufaa dha.";
 
         }
 
@@ -615,7 +650,9 @@ async function loadGameState() {
 
         }
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
         console.log(
             "STATE ERROR:",
@@ -650,18 +687,24 @@ function updateCalledBoard() {
             );
 
         if (!box) {
+
             continue;
+
         }
 
         if (
-            calledNumbers.includes(number)
+            calledNumbers.includes(
+                number
+            )
         ) {
 
             box.classList.add(
                 "active"
             );
 
-        } else {
+        }
+
+        else {
 
             box.classList.remove(
                 "active"
@@ -675,22 +718,42 @@ function updateCalledBoard() {
 
 
 /* ==================================================
-   BINGO LETTER
+   GET BINGO LETTER
 ================================================== */
 
 function getLetter(number) {
 
-    if (number <= 15)
+    if (
+        number <= 15
+    ) {
+
         return "B";
 
-    if (number <= 30)
+    }
+
+    if (
+        number <= 30
+    ) {
+
         return "I";
 
-    if (number <= 45)
+    }
+
+    if (
+        number <= 45
+    ) {
+
         return "N";
 
-    if (number <= 60)
+    }
+
+    if (
+        number <= 60
+    ) {
+
         return "G";
+
+    }
 
     return "O";
 
@@ -698,7 +761,92 @@ function getLetter(number) {
 
 
 /* ==================================================
-   CREATE CARD
+   SEEDED RANDOM
+================================================== */
+
+function seededRandom(
+    seedObject,
+    min,
+    max
+) {
+
+    seedObject.value =
+
+        (
+
+            seedObject.value * 9301
+            + 49297
+
+        ) % 233280;
+
+    const randomValue =
+
+        seedObject.value / 233280;
+
+    return Math.floor(
+
+        min +
+
+        randomValue *
+
+        (
+
+            max - min + 1
+
+        )
+
+    );
+
+}
+
+
+/* ==================================================
+   GENERATE COLUMN
+================================================== */
+
+function generateSeededColumn(
+
+    seedObject,
+    min,
+    max,
+    count
+
+) {
+
+    const numbers = [];
+
+    while (
+        numbers.length < count
+    ) {
+
+        const number =
+            seededRandom(
+                seedObject,
+                min,
+                max
+            );
+
+        if (
+            !numbers.includes(
+                number
+            )
+        ) {
+
+            numbers.push(
+                number
+            );
+
+        }
+
+    }
+
+    return numbers;
+
+}
+
+
+/* ==================================================
+   CREATE BINGO CARD
 ================================================== */
 
 function generateCardFromCardNumber() {
@@ -721,14 +869,18 @@ function generateCardFromCardNumber() {
     cardNumbers = [];
 
     const headers = [
+
         "B",
         "I",
         "N",
         "G",
         "O"
+
     ];
 
+
     headers.forEach(
+
         letter => {
 
             const cell =
@@ -742,107 +894,57 @@ function generateCardFromCardNumber() {
             cell.innerText =
                 letter;
 
-            card.appendChild(cell);
+            card.appendChild(
+                cell
+            );
 
         }
+
     );
 
 
-    let seed =
-        Number(
-            playerCardNumber
-        );
+    const seedObject = {
 
-
-    function seededRandom(
-        min,
-        max
-    ) {
-
-        seed =
-            (
-                seed * 9301 +
-                49297
-            ) % 233280;
-
-        const rnd =
-            seed / 233280;
-
-        return Math.floor(
-            min +
-            rnd *
-            (
-                max -
-                min +
-                1
+        value:
+            Number(
+                playerCardNumber
             )
-        );
 
-    }
-
-
-    function generateSeeded(
-        min,
-        max,
-        count
-    ) {
-
-        const numbers = [];
-
-        while (
-            numbers.length < count
-        ) {
-
-            const number =
-                seededRandom(
-                    min,
-                    max
-                );
-
-            if (
-                !numbers.includes(
-                    number
-                )
-            ) {
-
-                numbers.push(number);
-
-            }
-
-        }
-
-        return numbers;
-
-    }
+    };
 
 
     const columns = [
 
-        generateSeeded(
+        generateSeededColumn(
+            seedObject,
             1,
             15,
             5
         ),
 
-        generateSeeded(
+        generateSeededColumn(
+            seedObject,
             16,
             30,
             5
         ),
 
-        generateSeeded(
+        generateSeededColumn(
+            seedObject,
             31,
             45,
             5
         ),
 
-        generateSeeded(
+        generateSeededColumn(
+            seedObject,
             46,
             60,
             5
         ),
 
-        generateSeeded(
+        generateSeededColumn(
+            seedObject,
             61,
             75,
             5
@@ -871,6 +973,7 @@ function generateCardFromCardNumber() {
             cell.className =
                 "card-cell";
 
+
             if (
                 row === 2 &&
                 col === 2
@@ -891,7 +994,9 @@ function generateCardFromCardNumber() {
                     "FREE"
                 );
 
-            } else {
+            }
+
+            else {
 
                 const number =
                     columns[col][row];
@@ -905,7 +1010,9 @@ function generateCardFromCardNumber() {
 
             }
 
-            card.appendChild(cell);
+            card.appendChild(
+                cell
+            );
 
         }
 
@@ -928,7 +1035,7 @@ function updateCardMarks() {
         );
 
     if (
-        !cells.length
+        cells.length < 30
     ) {
 
         return;
@@ -944,6 +1051,9 @@ function updateCardMarks() {
         const value =
             cardNumbers[i];
 
+        const cell =
+            cells[i + 5];
+
         if (
             value === "FREE"
         ) {
@@ -958,13 +1068,15 @@ function updateCardMarks() {
             )
         ) {
 
-            cells[i].classList.add(
+            cell.classList.add(
                 "marked"
             );
 
-        } else {
+        }
 
-            cells[i].classList.remove(
+        else {
+
+            cell.classList.remove(
                 "marked"
             );
 
@@ -1000,18 +1112,25 @@ async function callNumber() {
             await fetch(
                 "/api/admin/call-number",
                 {
+
                     method: "POST",
 
                     headers: {
+
                         "Content-Type":
                         "application/json"
+
                     },
 
                     body: JSON.stringify({
-                        admin_id: playerId
+
+                        admin_id:
+                            playerId
+
                     })
 
                 }
+
             );
 
         const data =
@@ -1037,22 +1156,43 @@ async function callNumber() {
         document.getElementById(
             "currentNumber"
         ).innerText =
+
             getLetter(
                 data.number
-            ) +
-            "-" +
+            )
+
+            + "-" +
+
             data.number;
 
         updateCalledBoard();
 
         updateCardMarks();
 
-    } catch (error) {
+        document.getElementById(
+            "message"
+        ).innerText =
+            "📢 " +
+            getLetter(
+                data.number
+            ) +
+            "-" +
+            data.number +
+            " waamameera.";
+
+    }
+
+    catch (error) {
 
         console.log(
             "CALL ERROR:",
             error
         );
+
+        document.getElementById(
+            "message"
+        ).innerText =
+            "Server error.";
 
     }
 
@@ -1060,7 +1200,7 @@ async function callNumber() {
 
 
 /* ==================================================
-   BINGO CHECK
+   CHECK BINGO
 ================================================== */
 
 function checkBingo() {
@@ -1085,13 +1225,15 @@ function checkBingo() {
         document.getElementById(
             "message"
         ).innerText =
-            "🎫 Card ammallee hin guutamne.";
+            "🎫 Card hin guutamne.";
 
         return;
 
     }
 
+
     const marked = [];
+
 
     for (
         let i = 0;
@@ -1103,16 +1245,24 @@ function checkBingo() {
             cardNumbers[i] === "FREE"
         ) {
 
-            marked.push(true);
+            marked.push(
+                true
+            );
 
-        } else {
+        }
+
+        else {
 
             marked.push(
+
                 calledNumbers.includes(
+
                     Number(
                         cardNumbers[i]
                     )
+
                 )
+
             );
 
         }
@@ -1146,6 +1296,8 @@ function checkBingo() {
             ) {
 
                 complete = false;
+
+                break;
 
             }
 
@@ -1186,6 +1338,8 @@ function checkBingo() {
 
                 complete = false;
 
+                break;
+
             }
 
         }
@@ -1219,6 +1373,8 @@ function checkBingo() {
 
             diagonalOne = false;
 
+            break;
+
         }
 
     }
@@ -1249,6 +1405,8 @@ function checkBingo() {
         ) {
 
             diagonalTwo = false;
+
+            break;
 
         }
 
@@ -1282,7 +1440,9 @@ function checkBingo() {
 
         }
 
-    } else {
+    }
+
+    else {
 
         document.getElementById(
             "message"
@@ -1303,12 +1463,29 @@ async function startGame() {
     document.getElementById(
         "status"
     ).innerText =
-        "Card loading...";
+        "🎫 Card loading...";
 
     createNumberBoard();
 
+    playerId =
+        getUserId();
+
+
+    if (
+        isAdmin()
+    ) {
+
+        document.getElementById(
+            "callBtn"
+        ).style.display =
+            "inline-block";
+
+    }
+
+
     const joined =
         await joinGame();
+
 
     if (
         !joined
@@ -1318,25 +1495,9 @@ async function startGame() {
 
     }
 
+
     await loadGameState();
 
-    if (
-        isAdmin()
-    ) {
-
-        document.getElementById(
-            "callBtn"
-        ).style.display =
-            "block";
-
-    } else {
-
-        document.getElementById(
-            "callBtn"
-        ).style.display =
-            "none";
-
-    }
 
     if (
         pollingTimer
@@ -1348,10 +1509,15 @@ async function startGame() {
 
     }
 
+
     pollingTimer =
+
         setInterval(
+
             loadGameState,
+
             2000
+
         );
 
 }
@@ -1362,8 +1528,12 @@ async function startGame() {
 ================================================== */
 
 window.addEventListener(
+
     "load",
+
     startGame
+
 );
 
-</script></body></html>
+</script></body>
+    </html>
