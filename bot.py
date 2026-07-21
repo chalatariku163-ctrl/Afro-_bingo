@@ -2806,16 +2806,18 @@ async def error_handler(
 
 
 # =========================================================
-# MAIN
+# TELEGRAM BOT
 # =========================================================
 
-def main():
+def run_bot():
 
     if not BOT_TOKEN:
 
-        raise ValueError(
-            "BOT_TOKEN is missing."
+        print(
+            "❌ BOT_TOKEN is missing."
         )
+
+        return
 
 
     load_data()
@@ -2823,15 +2825,6 @@ def main():
     normalize_card_data()
 
     save_data()
-
-
-    threading.Thread(
-
-        target=run_flask,
-
-        daemon=True
-
-    ).start()
 
 
     app = (
@@ -2919,7 +2912,7 @@ def main():
 
     print(
 
-        "🎯 GADAA BINGO BOT RUNNING..."
+        "🎯 GADAA BINGO TELEGRAM BOT RUNNING..."
 
     )
 
@@ -2932,9 +2925,15 @@ def main():
 
 
 # =========================================================
-# START BOT
+# START TELEGRAM BOT
 # =========================================================
 
-if __name__ == "__main__":
+if BOT_TOKEN:
 
-    main()
+    threading.Thread(
+
+        target=run_bot,
+
+        daemon=True
+
+    ).start()
