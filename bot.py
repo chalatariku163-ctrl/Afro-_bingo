@@ -2925,15 +2925,8 @@ def run_bot():
 
 
 # =========================================================
-# START TELEGRAM BOT
+# START BOT
 # =========================================================
 
-if BOT_TOKEN:
-
-    threading.Thread(
-
-        target=run_bot,
-
-        daemon=True
-
-    ).start()
+if __name__ == "__main__":
+    main()
