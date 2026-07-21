@@ -2921,21 +2921,11 @@ def main():
 
     app.add_error_handler(
 
-        error_handler
+        error_handler(
 
-    )
-
-
-    print(
-
-        "🎯 GADAA BINGO BOT RUNNING..."
-
-    )
-
-
-    app.run_polling(
-    drop_pending_updates=True
-)
+        )if __name__ == "__main__":
+    print("🎯 GADAA BINGO BOT RUNNING...")
+    application.run_polling()
 
 
 # =========================================================
