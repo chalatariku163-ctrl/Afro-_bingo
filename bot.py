@@ -2902,35 +2902,26 @@ def main():
     )
 
 
-    app.add_handler(
+        app.add_error_handler(
+        error_handler
+    )
 
-        MessageHandler(
+    print(
+        "🎯 GADAA BINGO BOT RUNNING..."
+    )
 
-            filters.TEXT
-
-            &
-
-            ~filters.COMMAND,
-
-            text_handler
-
-        )
-
+    app.run_polling(
+        drop_pending_updates=True
     )
 
 
-    app.add_error_handler(
-
-        error_handler)
-if __name__ == "__main__":
-    print("🎯 GADAA BINGO BOT RUNNING...")
-    application.run_polling()
-
-
 # =========================================================
-# START
+# START BOT
 # =========================================================
 
-if __name__ == "__main__":
+if BOT_TOKEN:
 
-    main()
+    threading.Thread(
+        target=run_bot,
+        daemon=True
+    ).start()
