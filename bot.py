@@ -2923,7 +2923,7 @@ def main():
 
         error_handler)
 
-        if __name__ == "__main__":
+ if __name__ == "__main__":
     print("🎯 GADAA BINGO BOT RUNNING...")
     application.run_polling()
 
