@@ -2800,11 +2800,8 @@ async def error_handler(
 ):
 
     print(
-
         "ERROR:",
-
         context.error
-
     )
 
 
@@ -2817,9 +2814,7 @@ def main():
     if not BOT_TOKEN:
 
         raise ValueError(
-
             "BOT_TOKEN is missing."
-
         )
 
 
@@ -2902,16 +2897,37 @@ def main():
     )
 
 
-        app.add_error_handler(
-        error_handler
+    app.add_handler(
+
+        MessageHandler(
+
+            filters.TEXT & ~filters.COMMAND,
+
+            text_handler
+
+        )
+
     )
+
+
+    app.add_error_handler(
+
+        error_handler
+
+    )
+
 
     print(
+
         "🎯 GADAA BINGO BOT RUNNING..."
+
     )
 
+
     app.run_polling(
+
         drop_pending_updates=True
+
     )
 
 
@@ -2919,9 +2935,6 @@ def main():
 # START BOT
 # =========================================================
 
-if BOT_TOKEN:
+if __name__ == "__main__":
 
-    threading.Thread(
-        target=run_bot,
-        daemon=True
-    ).start()
+    main()
