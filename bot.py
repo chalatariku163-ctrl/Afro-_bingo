@@ -1,4 +1,3 @@
-
 import os
 import random
 import threading
@@ -63,16 +62,12 @@ bingo_game = {
     "started": False,
     "card_buying": False,
     "card_buying_end_time": 0,
-
     "called_numbers": [],
     "current_number": None,
-
     "players": {},
-
     "winner": None,
     "winner_user_id": None,
     "winner_card_number": None,
-
     "prize": 0,
     "total_sales": 0,
 }
@@ -86,20 +81,13 @@ bingo_lock = threading.Lock()
 # =========================================================
 
 users = {}
-
 balances = {}
-
 transactions = []
-
 cards_10 = {}
-
 cards_20 = {}
-
 pending_deposits = {}
-
 pending_withdrawals = {}
-
-winners = []
+winners = {}
 
 
 # =========================================================
@@ -109,19 +97,12 @@ winners = []
 def save_data():
 
     data = {
-
         "users": users,
-
         "balances": balances,
-
         "transactions": transactions,
-
         "cards_10": cards_10,
-
         "cards_20": cards_20,
-
         "winners": winners,
-
     }
 
     try:
@@ -172,26 +153,20 @@ def load_data():
 
 
         users = {
-
             int(k): v
-
             for k, v in data.get(
                 "users",
                 {}
             ).items()
-
         }
 
 
         balances = {
-
             int(k): v
-
             for k, v in data.get(
                 "balances",
                 {}
             ).items()
-
         }
 
 
@@ -202,26 +177,20 @@ def load_data():
 
 
         cards_10 = {
-
             int(k): v
-
             for k, v in data.get(
                 "cards_10",
                 {}
             ).items()
-
         }
 
 
         cards_20 = {
-
             int(k): v
-
             for k, v in data.get(
                 "cards_20",
                 {}
             ).items()
-
         }
 
 
@@ -248,16 +217,12 @@ def load_data():
 # USER FUNCTIONS
 # =========================================================
 
-def is_registered(
-    user_id
-):
+def is_registered(user_id):
 
     return user_id in users
 
 
-def get_balance(
-    user_id
-):
+def get_balance(user_id):
 
     return balances.get(
         user_id,
@@ -336,29 +301,13 @@ def add_transaction(
 
 
 # =========================================================
-# CARD DATA HELPERS
+# CARD DATA
 # =========================================================
 
 def normalize_card_data():
 
-    """
-    Data.json keessatti card duraanii yoo akkana ta'e:
-
-        25: 123456
-
-    gara:
-
-        25: {
-            "owner": 123456,
-            "used_games": []
-        }
-
-    jijjiira.
-    """
-
     global cards_10
     global cards_20
-
 
     for cards in [
         cards_10,
@@ -635,15 +584,12 @@ def get_user_cards(
     cards = []
 
 
-    for card_number, card in cards_10.items():
+    for card_number in cards_10:
 
-        owner = get_card_owner(
+        if get_card_owner(
             "10",
             card_number
-        )
-
-
-        if owner == user_id:
+        ) == user_id:
 
             cards.append({
 
@@ -656,15 +602,12 @@ def get_user_cards(
             })
 
 
-    for card_number, card in cards_20.items():
+    for card_number in cards_20:
 
-        owner = get_card_owner(
+        if get_card_owner(
             "20",
             card_number
-        )
-
-
-        if owner == user_id:
+        ) == user_id:
 
             cards.append({
 
@@ -692,20 +635,15 @@ def get_user_game_cards(
         user_id
     ):
 
-        card_type = card[
-            "card_type"
-        ]
-
-        card_number = card[
-            "card_number"
-        ]
-
-
         if card_was_paid_for_game(
 
-            card_type,
+            card[
+                "card_type"
+            ],
 
-            card_number,
+            card[
+                "card_number"
+            ],
 
             game_id
 
@@ -717,27 +655,6 @@ def get_user_game_cards(
 
 
     return result
-
-
-def get_user_card(
-    user_id
-):
-
-    cards = get_user_cards(
-        user_id
-    )
-
-
-    if not cards:
-
-        return None
-
-
-    return cards[
-        -1
-    ][
-        "card_number"
-    ]
 
 
 # =========================================================
@@ -780,9 +697,7 @@ def generate_card(
             + rnd * (
 
                 maximum
-
                 - minimum
-
                 + 1
 
             )
@@ -865,13 +780,7 @@ def generate_card(
             5
         ):
 
-            if (
-
-                row == 2
-
-                and col == 2
-
-            ):
+            if row == 2 and col == 2:
 
                 row_data.append(
                     "FREE"
@@ -881,11 +790,7 @@ def generate_card(
 
                 row_data.append(
 
-                    columns[
-                        col
-                    ][
-                        row
-                    ]
+                    columns[col][row]
 
                 )
 
@@ -899,7 +804,7 @@ def generate_card(
 
 
 # =========================================================
-# BINGO VALIDATION
+# BINGO CHECK
 # =========================================================
 
 def check_bingo(
@@ -927,8 +832,7 @@ def check_bingo(
 
                 marked_row.append(
 
-                    value in
-                    called_numbers
+                    value in called_numbers
 
                 )
 
@@ -938,9 +842,7 @@ def check_bingo(
         )
 
 
-    for row in range(
-        5
-    ):
+    for row in range(5):
 
         if all(
             marked[row]
@@ -949,17 +851,13 @@ def check_bingo(
             return True
 
 
-    for col in range(
-        5
-    ):
+    for col in range(5):
 
         if all(
 
             marked[row][col]
 
-            for row in range(
-                5
-            )
+            for row in range(5)
 
         ):
 
@@ -967,26 +865,16 @@ def check_bingo(
 
 
     if all(
-
         marked[i][i]
-
-        for i in range(
-            5
-        )
-
+        for i in range(5)
     ):
 
         return True
 
 
     if all(
-
         marked[i][4 - i]
-
-        for i in range(
-            5
-        )
-
+        for i in range(5)
     ):
 
         return True
@@ -1008,21 +896,13 @@ def main_menu(
         [
 
             InlineKeyboardButton(
-
                 "🎮 Play Game",
-
-                callback_data=
-                "play_game"
-
+                callback_data="play_game"
             ),
 
             InlineKeyboardButton(
-
                 "🎫 Buy Card",
-
-                callback_data=
-                "buy_card"
-
+                callback_data="buy_card"
             ),
 
         ],
@@ -1030,21 +910,13 @@ def main_menu(
         [
 
             InlineKeyboardButton(
-
                 "💰 Deposit",
-
-                callback_data=
-                "deposit"
-
+                callback_data="deposit"
             ),
 
             InlineKeyboardButton(
-
                 "💳 Balance",
-
-                callback_data=
-                "balance"
-
+                callback_data="balance"
             ),
 
         ],
@@ -1052,21 +924,13 @@ def main_menu(
         [
 
             InlineKeyboardButton(
-
                 "🧾 My Cards",
-
-                callback_data=
-                "my_cards"
-
+                callback_data="my_cards"
             ),
 
             InlineKeyboardButton(
-
                 "💸 Withdrawal",
-
-                callback_data=
-                "withdrawal"
-
+                callback_data="withdrawal"
             ),
 
         ],
@@ -1074,21 +938,13 @@ def main_menu(
         [
 
             InlineKeyboardButton(
-
                 "📜 History",
-
-                callback_data=
-                "history"
-
+                callback_data="history"
             ),
 
             InlineKeyboardButton(
-
                 "🏆 Winners",
-
-                callback_data=
-                "winners"
-
+                callback_data="winners"
             ),
 
         ],
@@ -1096,12 +952,8 @@ def main_menu(
         [
 
             InlineKeyboardButton(
-
                 "ℹ️ How to Play",
-
-                callback_data=
-                "how_to_play"
-
+                callback_data="how_to_play"
             ),
 
         ],
@@ -1114,21 +966,13 @@ def main_menu(
         keyboard.append([
 
             InlineKeyboardButton(
-
                 "🔓 OPEN GAME",
-
-                callback_data=
-                "admin_open_game"
-
+                callback_data="admin_open_game"
             ),
 
             InlineKeyboardButton(
-
                 "🔒 CLOSE GAME",
-
-                callback_data=
-                "admin_close_game"
-
+                callback_data="admin_close_game"
             ),
 
         ])
@@ -1150,11 +994,8 @@ def register_keyboard():
         [[
 
             KeyboardButton(
-
                 "📱 Register",
-
                 request_contact=True
-
             )
 
         ]],
@@ -1183,9 +1024,7 @@ async def start(
         await update.message.reply_text(
 
             "🏠 <b>GADAA BINGO</b>\n\n"
-
             "Welcome back! 👋\n\n"
-
             "👇 Choose an option:",
 
             parse_mode="HTML",
@@ -1203,7 +1042,6 @@ async def start(
     await update.message.reply_text(
 
         "🎉 <b>WELCOME TO GADAA BINGO!</b> 🎉\n\n"
-
         "📱 Please register first.",
 
         parse_mode="HTML",
@@ -1213,6 +1051,10 @@ async def start(
 
     )
 
+
+# =========================================================
+# CONTACT REGISTER
+# =========================================================
 
 async def receive_contact(
     update: Update,
@@ -1255,11 +1097,8 @@ async def receive_contact(
 
 
     balances.setdefault(
-
         user_id,
-
         0
-
     )
 
 
@@ -1269,7 +1108,6 @@ async def receive_contact(
     await update.message.reply_text(
 
         "✅ <b>REGISTRATION SUCCESSFUL!</b>\n\n"
-
         f"Welcome {user.first_name}! 🎉",
 
         parse_mode="HTML",
@@ -1282,7 +1120,8 @@ async def receive_contact(
 
     await update.message.reply_text(
 
-        "🏠 <b>MAIN MENU</b>",
+        "🏠 <b>MAIN MENU</b>\n\n"
+        "👇 Wanta barbaadde filadhu:",
 
         parse_mode="HTML",
 
@@ -1307,12 +1146,8 @@ async def buy_card_menu(
         [
 
             InlineKeyboardButton(
-
                 "🎫 10 Birr Card",
-
-                callback_data=
-                "cards_10"
-
+                callback_data="cards_10"
             )
 
         ],
@@ -1320,12 +1155,8 @@ async def buy_card_menu(
         [
 
             InlineKeyboardButton(
-
                 "🎫 20 Birr Card",
-
-                callback_data=
-                "cards_20"
-
+                callback_data="cards_20"
             )
 
         ],
@@ -1333,12 +1164,8 @@ async def buy_card_menu(
         [
 
             InlineKeyboardButton(
-
                 "🔙 Back",
-
-                callback_data=
-                "back_menu"
-
+                callback_data="back_menu"
             )
 
         ],
@@ -1349,7 +1176,6 @@ async def buy_card_menu(
     await query.edit_message_text(
 
         "🎫 <b>BUY BINGO CARD</b>\n\n"
-
         "Choose card price:",
 
         parse_mode="HTML",
@@ -1390,7 +1216,6 @@ async def card_number_menu(
         await query.edit_message_text(
 
             "⏳ <b>CARD BUYING IS CLOSED</b>\n\n"
-
             "Wait for the next game.",
 
             parse_mode="HTML",
@@ -1408,9 +1233,7 @@ async def card_number_menu(
     owned_cards = (
 
         cards_10
-
         if card_type == "10"
-
         else cards_20
 
     )
@@ -1427,11 +1250,8 @@ async def card_number_menu(
     ):
 
         card = get_card_data(
-
             card_type,
-
             number
-
         )
 
 
@@ -1443,11 +1263,8 @@ async def card_number_menu(
         else:
 
             owner = get_card_owner(
-
                 card_type,
-
                 number
-
             )
 
 
@@ -1459,9 +1276,7 @@ async def card_number_menu(
             elif card_was_paid_for_game(
 
                 card_type,
-
                 number,
-
                 game_id
 
             ):
@@ -1512,12 +1327,8 @@ async def card_number_menu(
     keyboard.append([
 
         InlineKeyboardButton(
-
             "🔙 Back",
-
-            callback_data=
-            "buy_card"
-
+            callback_data="buy_card"
         )
 
     ])
@@ -1526,15 +1337,11 @@ async def card_number_menu(
     await query.edit_message_text(
 
         f"🎫 <b>{card_type} BIRR CARD</b>\n\n"
-
         f"🎮 Game: <b>{game_id}</b>\n\n"
 
         "🔴 Available\n"
-
         "⚫ Other user owns\n"
-
         "🔵 Your old card - pay again\n"
-
         "🟢 Already paid for this game\n\n"
 
         "Choose card number:",
@@ -1568,9 +1375,7 @@ async def select_card(
     price = (
 
         CARD_10_PRICE
-
         if card_type == "10"
-
         else CARD_20_PRICE
 
     )
@@ -1590,44 +1395,24 @@ async def select_card(
     if not card_buying:
 
         await query.answer(
-
             "⏳ Card buying ended.",
-
             show_alert=True
-
         )
 
         return
 
 
-    owned_cards = (
-
-        cards_10
-
-        if card_type == "10"
-
-        else cards_20
-
-    )
-
-
     owner = get_card_owner(
-
         card_type,
-
         card_number
-
     )
 
 
     if owner is not None and owner != user_id:
 
         await query.answer(
-
             "⚠️ Card already owned by another user.",
-
             show_alert=True
-
         )
 
         return
@@ -1636,19 +1421,14 @@ async def select_card(
     if owner == user_id and card_was_paid_for_game(
 
         card_type,
-
         card_number,
-
         game_id
 
     ):
 
         await query.answer(
-
-            "✅ You already paid for this card in this game.",
-
+            "✅ You already paid for this card.",
             show_alert=True
-
         )
 
         return
@@ -1670,22 +1450,25 @@ async def select_card(
 
 
     if not remove_balance(
-
         user_id,
-
         price
-
     ):
 
         await query.answer(
-
             "⚠️ Insufficient balance.",
-
             show_alert=True
-
         )
 
         return
+
+
+    owned_cards = (
+
+        cards_10
+        if card_type == "10"
+        else cards_20
+
+    )
 
 
     if owner is None:
@@ -1709,9 +1492,7 @@ async def select_card(
     mark_card_paid_for_game(
 
         card_type,
-
         card_number,
-
         game_id
 
     )
@@ -1733,11 +1514,8 @@ async def select_card(
 
 
     await query.answer(
-
         "✅ Card paid for this game!",
-
         show_alert=True
-
     )
 
 
@@ -1746,12 +1524,11 @@ async def select_card(
         f"✅ <b>Card {card_number} READY!</b>\n\n"
 
         f"🎮 Game: <b>{game_id}</b>\n"
-
         f"💰 Paid: {price} Birr\n"
-
         f"💳 Balance: {get_balance(user_id)} Birr\n\n"
 
-        "🎮 You can buy another card too.",
+        "🎮 You can buy another card too.\n\n"
+        "👇 Menu keessaa filadhu:",
 
         parse_mode="HTML",
 
@@ -1792,7 +1569,6 @@ async def play_game(
     cards = get_user_game_cards(
 
         user_id,
-
         game_id
 
     )
@@ -1803,7 +1579,6 @@ async def play_game(
         await query.edit_message_text(
 
             "⚠️ <b>You have no card for this game.</b>\n\n"
-
             "You must pay for a card for the current game.",
 
             parse_mode="HTML",
@@ -1845,9 +1620,7 @@ async def play_game(
     if card_buying:
 
         status_text = (
-
             "🎫 Card buying is open."
-
         )
 
 
@@ -1860,9 +1633,7 @@ async def play_game(
                 "🎮 OPEN BINGO GAME",
 
                 web_app=WebAppInfo(
-
                     url=BINGO_URL
-
                 )
 
             )
@@ -1875,8 +1646,7 @@ async def play_game(
 
                 "🎫 BUY ANOTHER CARD",
 
-                callback_data=
-                "buy_card"
+                callback_data="buy_card"
 
             )
 
@@ -1888,8 +1658,7 @@ async def play_game(
 
                 "🔙 Back",
 
-                callback_data=
-                "back_menu"
+                callback_data="back_menu"
 
             )
 
@@ -1903,7 +1672,6 @@ async def play_game(
         "🎮 <b>BINGO GAME</b>\n\n"
 
         f"🎯 Game ID: <b>{game_id}</b>\n"
-
         f"🎫 Your cards: <b>{card_numbers}</b>\n\n"
 
         f"{status_text}\n\n"
@@ -1918,7 +1686,7 @@ async def play_game(
 
 
 # =========================================================
-# DEPOSIT
+# DEPOSIT MENU
 # =========================================================
 
 async def deposit_menu(
@@ -1926,7 +1694,6 @@ async def deposit_menu(
 ):
 
     amounts = [
-
         10,
         20,
         50,
@@ -1934,7 +1701,6 @@ async def deposit_menu(
         200,
         500,
         1000
-
     ]
 
 
@@ -1951,11 +1717,8 @@ async def deposit_menu(
 
                 f"💰 {amount} Birr",
 
-                callback_data=(
-
-                    f"deposit_{amount}"
-
-                )
+                callback_data=
+                f"deposit_{amount}"
 
             )
 
@@ -1981,12 +1744,8 @@ async def deposit_menu(
     keyboard.append([
 
         InlineKeyboardButton(
-
             "🔙 Back",
-
-            callback_data=
-            "back_menu"
-
+            callback_data="back_menu"
         )
 
     ])
@@ -1995,7 +1754,6 @@ async def deposit_menu(
     await query.edit_message_text(
 
         "💰 <b>DEPOSIT</b>\n\n"
-
         "Choose amount:",
 
         parse_mode="HTML",
@@ -2007,6 +1765,10 @@ async def deposit_menu(
 
     )
 
+
+# =========================================================
+# CREATE DEPOSIT
+# =========================================================
 
 async def create_deposit(
     query,
@@ -2032,13 +1794,23 @@ async def create_deposit(
         f"💰 <b>Deposit {amount} Birr</b>\n\n"
 
         "📱 Pay using Telebirr.\n\n"
+        "📸 Send payment screenshot here.\n\n"
 
-        "📸 Send payment screenshot here.",
+        "👇 Yoo jijjiiruu barbaadde, /start tuqi.",
 
-        parse_mode="HTML"
+        parse_mode="HTML",
+
+        reply_markup=
+        main_menu(
+            user_id
+        )
 
     )
 
+
+# =========================================================
+# RECEIVE PHOTO
+# =========================================================
 
 async def receive_photo(
     update: Update,
@@ -2093,7 +1865,6 @@ async def receive_photo(
     await update.message.reply_text(
 
         "✅ Payment proof received!\n\n"
-
         "⏳ Waiting for admin approval.",
 
         reply_markup=
@@ -2112,12 +1883,8 @@ async def receive_photo(
 
                 "✅ Approve",
 
-                callback_data=(
-
-                    f"approve_deposit_"
-                    f"{user_id}"
-
-                )
+                callback_data=
+                f"approve_deposit_{user_id}"
 
             ),
 
@@ -2125,12 +1892,8 @@ async def receive_photo(
 
                 "❌ Reject",
 
-                callback_data=(
-
-                    f"reject_deposit_"
-                    f"{user_id}"
-
-                )
+                callback_data=
+                f"reject_deposit_{user_id}"
 
             ),
 
@@ -2150,9 +1913,7 @@ async def receive_photo(
             "💰 <b>NEW DEPOSIT</b>\n\n"
 
             f"👤 User ID: {user_id}\n"
-
-            f"💵 Amount: "
-            f"{deposit['amount']} Birr"
+            f"💵 Amount: {deposit['amount']} Birr"
 
         ),
 
@@ -2175,11 +1936,8 @@ async def approve_deposit(
     if query.from_user.id != ADMIN_ID:
 
         await query.answer(
-
             "⛔ Admin only.",
-
             show_alert=True
-
         )
 
         return
@@ -2193,11 +1951,8 @@ async def approve_deposit(
     if not deposit:
 
         await query.answer(
-
             "Deposit not found.",
-
             show_alert=True
-
         )
 
         return
@@ -2209,24 +1964,16 @@ async def approve_deposit(
 
 
     add_balance(
-
         user_id,
-
         amount
-
     )
 
 
     add_transaction(
-
         user_id,
-
         "deposit",
-
         amount,
-
         "approved"
-
     )
 
 
@@ -2242,7 +1989,6 @@ async def approve_deposit(
             "✅ <b>DEPOSIT APPROVED</b>\n\n"
 
             f"User: {user_id}\n"
-
             f"Amount: {amount} Birr"
 
         ),
@@ -2261,9 +2007,9 @@ async def approve_deposit(
             "✅ <b>Deposit Approved!</b>\n\n"
 
             f"💰 Added: {amount} Birr\n"
+            f"💳 Balance: {get_balance(user_id)} Birr\n\n"
 
-            f"💳 Balance: "
-            f"{get_balance(user_id)} Birr"
+            "👇 Menu keessaa wanta barbaadde filadhu."
 
         ),
 
@@ -2276,6 +2022,10 @@ async def approve_deposit(
 
     )
 
+
+# =========================================================
+# REJECT DEPOSIT
+# =========================================================
 
 async def reject_deposit(
     query,
@@ -2316,1122 +2066,20 @@ async def reject_deposit(
 
         chat_id=user_id,
 
-        text="❌ Deposit rejected.",
-
-        reply_markup=
-        main_menu(
-            user_id
-        )
-
-    )
-
-
-# =========================================================
-# BALANCE
-# =========================================================
-
-async def show_balance(
-    query,
-    user_id
-):
-
-    await query.edit_message_text(
-
-        "💳 <b>YOUR BALANCE</b>\n\n"
-
-        f"💰 Balance: "
-
-        f"<b>{get_balance(user_id)} Birr</b>",
-
-        parse_mode="HTML",
-
-        reply_markup=
-        main_menu(
-            user_id
-        )
-
-    )
-
-
-# =========================================================
-# MY CARDS
-# =========================================================
-
-async def show_my_cards(
-    query,
-    user_id
-):
-
-    cards10 = []
-
-
-    for number in cards_10:
-
-        if get_card_owner(
-
-            "10",
-
-            number
-
-        ) == user_id:
-
-            card = get_card_data(
-
-                "10",
-
-                number
-
-            )
-
-
-            cards10.append(
-
-                f"{number}"
-
-            )
-
-
-    cards20 = []
-
-
-    for number in cards_20:
-
-        if get_card_owner(
-
-            "20",
-
-            number
-
-        ) == user_id:
-
-            cards20.append(
-
-                f"{number}"
-
-            )
-
-
-    text = (
-
-        "🧾 <b>MY CARDS</b>\n\n"
-
-        "🎫 <b>10 Birr Cards:</b>\n"
-
-        + (
-
-            ", ".join(cards10)
-
-            if cards10
-
-            else
-
-            "None"
-
-        )
-
-        + "\n\n"
-
-        "🎫 <b>20 Birr Cards:</b>\n"
-
-        + (
-
-            ", ".join(cards20)
-
-            if cards20
-
-            else
-
-            "None"
-
-        )
-
-        + "\n\n"
-
-        "ℹ️ Card duraan bitame hin haqamu.\n"
-
-        "🎮 Game haaraa keessatti itti fayyadamuuf "
-
-        "irra deebiin kaffaluu qabda."
-
-    )
-
-
-    await query.edit_message_text(
-
-        text,
-
-        parse_mode="HTML",
-
-        reply_markup=
-        main_menu(
-            user_id
-        )
-
-    )
-
-
-# =========================================================
-# WITHDRAWAL
-# =========================================================
-
-async def withdrawal_start(
-    query,
-    user_id
-):
-
-    if get_balance(
-        user_id
-    ) <= 0:
-
-        await query.edit_message_text(
-
-            "💸 <b>WITHDRAWAL</b>\n\n"
-
-            "⚠️ Your balance is empty.\n\n"
-
-            "Send amount like:\n"
-
-            "<code>withdraw 100</code>",
-
-            parse_mode="HTML",
-
-            reply_markup=
-            main_menu(
-                user_id
-            )
-
-        )
-
-        return
-
-
-    await query.edit_message_text(
-
-        "💸 <b>WITHDRAWAL</b>\n\n"
-
-        f"💳 Balance: "
-
-        f"{get_balance(user_id)} Birr\n\n"
-
-        "Send your withdrawal request:\n\n"
-
-        "<code>withdraw 100\n"
-
-        "telebirr: 09xxxxxxxx</code>",
-
-        parse_mode="HTML",
-
-        reply_markup=
-        main_menu(
-            user_id
-        )
-
-    )
-
-
-async def process_withdrawal(
-    update: Update,
-    context: ContextTypes.DEFAULT_TYPE
-):
-
-    user_id = update.effective_user.id
-
-    text = update.message.text.strip()
-
-
-    if not text.lower().startswith(
-        "withdraw"
-    ):
-
-        return False
-
-
-    lines = text.splitlines()
-
-
-    if len(lines) < 2:
-
-        await update.message.reply_text(
-
-            "❌ Format sirrii miti.\n\n"
-
-            "Fakkeenya:\n"
-
-            "<code>withdraw 100\n"
-
-            "telebirr: 09xxxxxxxx</code>",
-
-            parse_mode="HTML"
-
-        )
-
-        return True
-
-
-    try:
-
-        amount = int(
-
-            lines[0].split()[1]
-
-        )
-
-    except Exception:
-
-        await update.message.reply_text(
-
-            "❌ Amount sirrii miti."
-
-        )
-
-        return True
-
-
-    account = lines[1].strip()
-
-
-    if amount <= 0:
-
-        await update.message.reply_text(
-
-            "❌ Amount sirrii miti."
-
-        )
-
-        return True
-
-
-    if get_balance(
-        user_id
-    ) < amount:
-
-        await update.message.reply_text(
-
-            "⚠️ Balance gahaa miti."
-
-        )
-
-        return True
-
-
-    if user_id in pending_withdrawals:
-
-        await update.message.reply_text(
-
-            "⏳ Withdrawal request duraan jira."
-
-        )
-
-        return True
-
-
-    remove_balance(
-
-        user_id,
-
-        amount
-
-    )
-
-
-    pending_withdrawals[
-        user_id
-    ] = {
-
-        "user_id":
-        user_id,
-
-        "amount":
-        amount,
-
-        "account":
-        account,
-
-        "status":
-        "pending",
-
-        "time":
-        time.time(),
-
-    }
-
-
-    add_transaction(
-
-        user_id,
-
-        "withdrawal",
-
-        amount,
-
-        "pending",
-
-        account
-
-    )
-
-
-    await update.message.reply_text(
-
-        "✅ <b>WITHDRAWAL REQUEST SENT</b>\n\n"
-
-        f"💰 Amount: {amount} Birr\n"
-
-        f"📱 Account: {account}\n\n"
-
-        "⏳ Waiting for admin approval.",
-
-        parse_mode="HTML",
-
-        reply_markup=
-        main_menu(
-            user_id
-        )
-
-    )
-
-
-    keyboard = InlineKeyboardMarkup([
-
-        [
-
-            InlineKeyboardButton(
-
-                "✅ Approve",
-
-                callback_data=(
-
-                    f"approve_withdrawal_"
-                    f"{user_id}"
-
-                )
-
-            ),
-
-            InlineKeyboardButton(
-
-                "❌ Reject",
-
-                callback_data=(
-
-                    f"reject_withdrawal_"
-                    f"{user_id}"
-
-                )
-
-            ),
-
-        ]
-
-    ])
-
-
-    await context.bot.send_message(
-
-        chat_id=ADMIN_ID,
-
         text=(
 
-            "💸 <b>NEW WITHDRAWAL</b>\n\n"
-
-            f"👤 User ID: {user_id}\n"
-
-            f"💰 Amount: {amount} Birr\n"
-
-            f"📱 Account: {account}"
+            "❌ Deposit rejected.\n\n"
+            "👇 Menu keessaa filadhu."
 
         ),
 
-        parse_mode="HTML",
-
-        reply_markup=keyboard
-
-    )
-
-
-    return True
-
-
-async def approve_withdrawal(
-    query,
-    user_id
-):
-
-    if query.from_user.id != ADMIN_ID:
-
-        return
-
-
-    request_data = pending_withdrawals.get(
-
-        user_id
-
-    )
-
-
-    if not request_data:
-
-        return
-
-
-    amount = request_data[
-        "amount"
-    ]
-
-
-    add_transaction(
-
-        user_id,
-
-        "withdrawal",
-
-        amount,
-
-        "approved",
-
-        request_data[
-            "account"
-        ]
-
-    )
-
-
-    del pending_withdrawals[
-        user_id
-    ]
-
-
-    await query.edit_message_text(
-
-        "✅ <b>WITHDRAWAL APPROVED</b>\n\n"
-
-        f"User: {user_id}\n"
-
-        f"Amount: {amount} Birr",
-
-        parse_mode="HTML"
-
-    )
-
-
-    await query.get_bot().send_message(
-
-        chat_id=user_id,
-
-        text=(
-
-            "✅ <b>WITHDRAWAL APPROVED</b>\n\n"
-
-            f"💰 Amount: {amount} Birr\n"
-
-            f"📱 Account: "
-
-            f"{request_data['account']}"
-
-        ),
-
-        parse_mode="HTML",
-
         reply_markup=
         main_menu(
             user_id
         )
 
-    )
-
-
-async def reject_withdrawal(
-    query,
-    user_id
-):
-
-    if query.from_user.id != ADMIN_ID:
-
-        return
-
-
-    request_data = pending_withdrawals.get(
-
-        user_id
-
-    )
-
-
-    if not request_data:
-
-        return
-
-
-    amount = request_data[
-        "amount"
-    ]
-
-
-    add_balance(
-
-        user_id,
-
-        amount
-
-    )
-
-
-    add_transaction(
-
-        user_id,
-
-        "withdrawal",
-
-        amount,
-
-        "rejected",
-
-        request_data[
-            "account"
-        ]
-
-    )
-
-
-    del pending_withdrawals[
-        user_id
-    ]
-
-
-    await query.edit_message_text(
-
-        "❌ <b>WITHDRAWAL REJECTED</b>\n\n"
-
-        f"User: {user_id}\n"
-
-        f"Amount returned: {amount} Birr",
-
-        parse_mode="HTML"
-
-    )
-
-
-    await query.get_bot().send_message(
-
-        chat_id=user_id,
-
-        text=(
-
-            "❌ <b>WITHDRAWAL REJECTED</b>\n\n"
-
-            f"💰 {amount} Birr balance kee irratti "
-
-            "deebi'e."
-
-        ),
-
-        parse_mode="HTML",
-
-        reply_markup=
-        main_menu(
-            user_id
-        )
-
-    )
-
-
-# =========================================================
-# HISTORY
-# =========================================================
-
-async def show_history(
-    query,
-    user_id
-):
-
-    user_transactions = [
-
-        item
-
-        for item in transactions
-
-        if item[
-            "user_id"
-        ] == user_id
-
-    ]
-
-
-    if not user_transactions:
-
-        text = (
-
-            "📜 <b>HISTORY</b>\n\n"
-
-            "No transactions yet."
-
-        )
-
-
-    else:
-
-        lines = [
-
-            "📜 <b>HISTORY</b>\n"
-
-        ]
-
-
-        for item in reversed(
-
-            user_transactions[
-                -15:
-            ]
-
-        ):
-
-            lines.append(
-
-                f"• {item['type']}\n"
-
-                f"  💰 {item['amount']} Birr\n"
-
-                f"  📌 {item['status']}\n"
-
-            )
-
-
-        text = "\n".join(
-            lines
-        )
-
-
-    await query.edit_message_text(
-
-        text,
-
-        parse_mode="HTML",
-
-        reply_markup=
-        main_menu(
-            user_id
-        )
-
-    )
-
-
-# =========================================================
-# WINNERS
-# =========================================================
-
-async def show_winners(
-    query,
-    user_id
-):
-
-    if not winners:
-
-        text = (
-
-            "🏆 <b>WINNERS</b>\n\n"
-
-            "No winners yet."
-
-        )
-
-
-    else:
-
-        lines = [
-
-            "🏆 <b>WINNERS</b>\n"
-
-        ]
-
-
-        for winner in reversed(
-
-            winners[
-                -20:
-            ]
-
-        ):
-
-            winner_id = winner[
-                "user_id"
-            ]
-
-
-            user_data = users.get(
-
-                winner_id,
-
-                {}
-
-            )
-
-
-            name = user_data.get(
-
-                "name",
-
-                str(
-                    winner_id
-                )
-
-            )
-
-
-            lines.append(
-
-                f"🏆 {name}\n"
-
-                f"🎮 Game: "
-
-                f"{winner['game_id']}\n"
-
-                f"🎫 Card: "
-
-                f"{winner.get('card_number', '-')}\n"
-
-                f"💰 Prize: "
-
-                f"{winner['prize']} Birr\n"
-
-            )
-
-
-        text = "\n".join(
-            lines
-        )
-
-
-    await query.edit_message_text(
-
-        text,
-
-        parse_mode="HTML",
-
-        reply_markup=
-        main_menu(
-            user_id
-        )
-
-    )
-
-
-# =========================================================
-# HOW TO PLAY
-# =========================================================
-
-async def how_to_play(
-    query
-):
-
-    await query.edit_message_text(
-
-        "ℹ️ <b>HOW TO PLAY GADAA BINGO</b>\n\n"
-
-        "1️⃣ Deposit money\n"
-
-        "2️⃣ Buy/pay for Bingo card\n"
-
-        "3️⃣ One card is valid for one game only\n"
-
-        "4️⃣ You can use multiple cards in one game\n"
-
-        "5️⃣ After the game ends, pay again for the next game\n"
-
-        "6️⃣ Wait until game starts\n"
-
-        "7️⃣ Numbers 1–75 are called\n"
-
-        "8️⃣ Complete row, column or diagonal\n"
-
-        "9️⃣ Press BINGO\n"
-
-        "🔟 Server checks your card\n\n"
-
-        "🏆 Winner gets the prize.",
-
-        parse_mode="HTML",
-
-        reply_markup=
-        main_menu(
-
-            query.from_user.id
-
-        )
-
-    )
-
-
-# =========================================================
-# START NEW GAME
-# =========================================================
-
-def start_new_game():
-
-    with bingo_lock:
-
-        bingo_game[
-            "game_id"
-        ] += 1
-
-        bingo_game[
-            "started"
-        ] = False
-
-        bingo_game[
-            "card_buying"
-        ] = True
-
-        bingo_game[
-            "card_buying_end_time"
-        ] = (
-
-            time.time()
-
-            + CARD_BUYING_SECONDS
-
-        )
-
-        bingo_game[
-            "called_numbers"
-        ] = []
-
-        bingo_game[
-            "current_number"
-        ] = None
-
-        bingo_game[
-            "players"
-        ] = {}
-
-        bingo_game[
-            "winner"
-        ] = None
-
-        bingo_game[
-            "winner_user_id"
-        ] = None
-
-        bingo_game[
-            "winner_card_number"
-        ] = None
-
-        bingo_game[
-            "prize"
-        ] = 0
-
-        bingo_game[
-            "total_sales"
-        ] = 0
-
-
-    print(
-
-        f"🎫 GAME {bingo_game['game_id']} "
-
-        "CARD BUYING OPENED"
-
-    )
-
-
-    threading.Thread(
-
-        target=card_timer_thread,
-
-        daemon=True
-
-    ).start()
-
-
-# =========================================================
-# CARD TIMER
-# =========================================================
-
-def card_timer_thread():
-
-    time.sleep(
-
-        CARD_BUYING_SECONDS
-
-    )
-
-
-    with bingo_lock:
-
-        if not bingo_game[
-            "card_buying"
-        ]:
-
-            return
-
-
-        bingo_game[
-            "card_buying"
-        ] = False
-
-        bingo_game[
-            "started"
-        ] = True
-
-
-    print(
-
-        f"🎮 GAME "
-
-        f"{bingo_game['game_id']} "
-
-        "STARTED"
-
-    )
-
-
-# =========================================================
-# ADMIN OPEN GAME
-# =========================================================
-
-async def admin_open_game(
-    query
-):
-
-    if query.from_user.id != ADMIN_ID:
-
-        await query.answer(
-
-            "⛔ Admin only.",
-
-            show_alert=True
-
-        )
-
-        return
-
-
-    with bingo_lock:
-
-        if bingo_game[
-            "started"
-        ] or bingo_game[
-            "card_buying"
-        ]:
-
-            await query.answer(
-
-                "⚠️ Game already open.",
-
-                show_alert=True
-
-            )
-
-            return
-
-
-    start_new_game()
-
-
-    with bingo_lock:
-
-        game_id = bingo_game[
-            "game_id"
-        ]
-
-
-    await query.edit_message_text(
-
-        "🔓 <b>GAME OPENED</b>\n\n"
-
-        f"🎮 Game ID: <b>{game_id}</b>\n"
-
-        f"🎫 Card buying: "
-
-        f"<b>{CARD_BUYING_SECONDS} seconds</b>\n\n"
-
-        "⏳ After 40 seconds game starts automatically.",
-
-        parse_mode="HTML",
-
-        reply_markup=
-        main_menu(
-            ADMIN_ID
-        )
-
-    )
-
-
-# =========================================================
-# ADMIN CLOSE GAME
-# =========================================================
-
-async def admin_close_game(
-    query
-):
-
-    if query.from_user.id != ADMIN_ID:
-
-        await query.answer(
-
-            "⛔ Admin only.",
-
-            show_alert=True
-
-        )
-
-        return
-
-
-    with bingo_lock:
-
-        bingo_game[
-            "started"
-        ] = False
-
-        bingo_game[
-            "card_buying"
-        ] = False
-
-        bingo_game[
-            "called_numbers"
-        ] = []
-
-        bingo_game[
-            "current_number"
-        ] = None
-
-        bingo_game[
-            "players"
-        ] = {}
-
-        bingo_game[
-            "winner"
-        ] = None
-
-        bingo_game[
-            "winner_user_id"
-        ] = None
-
-        bingo_game[
-            "winner_card_number"
-        ] = None
-
-        bingo_game[
-            "prize"
-        ] = 0
-
-
-    await query.edit_message_text(
-
-        "🔒 <b>GAME CLOSED</b>",
-
-        parse_mode="HTML",
-
-        reply_markup=
-        main_menu(
-            ADMIN_ID
-        )
-
-    )
-
-
-# =========================================================
-# CALLBACK HANDLER
+)# =========================================================
+# CALLBACK HANDLER - PART 2
 # =========================================================
 
 async def callback_handler(
@@ -3441,38 +2089,40 @@ async def callback_handler(
 
     query = update.callback_query
 
-
     await query.answer()
-
 
     user_id = query.from_user.id
 
     data = query.data
 
 
+    # =========================
+    # BACK TO MAIN MENU
+    # =========================
+
     if data == "back_menu":
 
         await query.edit_message_text(
 
-            "🏠 <b>MAIN MENU</b>",
+            "🏠 <b>MAIN MENU</b>\n\n"
+            "👇 Choose an option:",
 
             parse_mode="HTML",
 
-            reply_markup=
-            main_menu(
-                user_id
-            )
+            reply_markup=main_menu(user_id)
 
         )
 
         return
 
 
+    # =========================
+    # BUY CARD
+    # =========================
+
     if data == "buy_card":
 
-        await buy_card_menu(
-            query
-        )
+        await buy_card_menu(query)
 
         return
 
@@ -3480,11 +2130,8 @@ async def callback_handler(
     if data == "cards_10":
 
         await card_number_menu(
-
             query,
-
             "10"
-
         )
 
         return
@@ -3493,24 +2140,16 @@ async def callback_handler(
     if data == "cards_20":
 
         await card_number_menu(
-
             query,
-
             "20"
-
         )
 
         return
 
 
-    if data.startswith(
-        "select_"
-    ):
+    if data.startswith("select_"):
 
-        parts = data.split(
-            "_"
-        )
-
+        parts = data.split("_")
 
         await select_card(
 
@@ -3527,36 +2166,33 @@ async def callback_handler(
         return
 
 
+    # =========================
+    # PLAY GAME
+    # =========================
+
     if data == "play_game":
 
-        await play_game(
-            query
-        )
+        await play_game(query)
 
         return
 
+
+    # =========================
+    # DEPOSIT
+    # =========================
 
     if data == "deposit":
 
-        await deposit_menu(
-            query
-        )
+        await deposit_menu(query)
 
         return
 
 
-    if data.startswith(
-        "deposit_"
-    ):
+    if data.startswith("deposit_"):
 
         amount = int(
-
-            data.split(
-                "_"
-            )[1]
-
+            data.split("_")[1]
         )
-
 
         await create_deposit(
 
@@ -3571,6 +2207,10 @@ async def callback_handler(
         return
 
 
+    # =========================
+    # BALANCE
+    # =========================
+
     if data == "balance":
 
         await show_balance(
@@ -3583,6 +2223,10 @@ async def callback_handler(
 
         return
 
+
+    # =========================
+    # MY CARDS
+    # =========================
 
     if data == "my_cards":
 
@@ -3597,6 +2241,10 @@ async def callback_handler(
         return
 
 
+    # =========================
+    # WITHDRAWAL
+    # =========================
+
     if data == "withdrawal":
 
         await withdrawal_start(
@@ -3609,6 +2257,10 @@ async def callback_handler(
 
         return
 
+
+    # =========================
+    # HISTORY
+    # =========================
 
     if data == "history":
 
@@ -3623,6 +2275,10 @@ async def callback_handler(
         return
 
 
+    # =========================
+    # WINNERS
+    # =========================
+
     if data == "winners":
 
         await show_winners(
@@ -3636,47 +2292,50 @@ async def callback_handler(
         return
 
 
+    # =========================
+    # HOW TO PLAY
+    # =========================
+
     if data == "how_to_play":
 
-        await how_to_play(
-            query
-        )
+        await how_to_play(query)
 
         return
 
+
+    # =========================
+    # ADMIN OPEN GAME
+    # =========================
 
     if data == "admin_open_game":
 
-        await admin_open_game(
-            query
-        )
+        await admin_open_game(query)
 
         return
 
+
+    # =========================
+    # ADMIN CLOSE GAME
+    # =========================
 
     if data == "admin_close_game":
 
-        await admin_close_game(
-            query
-        )
+        await admin_close_game(query)
 
         return
 
 
-    if data.startswith(
+    # =========================
+    # APPROVE DEPOSIT
+    # =========================
 
-        "approve_deposit_"
-
-    ):
+    if data.startswith("approve_deposit_"):
 
         target_id = int(
 
-            data.split(
-                "_"
-            )[2]
+            data.split("_")[2]
 
         )
-
 
         await approve_deposit(
 
@@ -3689,20 +2348,17 @@ async def callback_handler(
         return
 
 
-    if data.startswith(
+    # =========================
+    # REJECT DEPOSIT
+    # =========================
 
-        "reject_deposit_"
-
-    ):
+    if data.startswith("reject_deposit_"):
 
         target_id = int(
 
-            data.split(
-                "_"
-            )[2]
+            data.split("_")[2]
 
         )
-
 
         await reject_deposit(
 
@@ -3715,20 +2371,17 @@ async def callback_handler(
         return
 
 
-    if data.startswith(
+    # =========================
+    # APPROVE WITHDRAWAL
+    # =========================
 
-        "approve_withdrawal_"
-
-    ):
+    if data.startswith("approve_withdrawal_"):
 
         target_id = int(
 
-            data.split(
-                "_"
-            )[2]
+            data.split("_")[2]
 
         )
-
 
         await approve_withdrawal(
 
@@ -3741,20 +2394,17 @@ async def callback_handler(
         return
 
 
-    if data.startswith(
+    # =========================
+    # REJECT WITHDRAWAL
+    # =========================
 
-        "reject_withdrawal_"
-
-    ):
+    if data.startswith("reject_withdrawal_"):
 
         target_id = int(
 
-            data.split(
-                "_"
-            )[2]
+            data.split("_")[2]
 
         )
-
 
         await reject_withdrawal(
 
@@ -3792,10 +2442,12 @@ async def text_handler(
 
     await update.message.reply_text(
 
-        "⚠️ Please use the menu buttons.",
+        "⚠️ <b>MENU BUTTONS QOFAAYADAMI.</b>\n\n"
+        "👇 Mee menu keessaa waan barbaadde filadhu.",
 
-        reply_markup=
-        main_menu(
+        parse_mode="HTML",
+
+        reply_markup=main_menu(
 
             update.effective_user.id
 
@@ -3808,9 +2460,7 @@ async def text_handler(
 # WEB APP HOME
 # =========================================================
 
-@web_app.route(
-    "/"
-)
+@web_app.route("/")
 def home():
 
     return render_template(
@@ -3832,59 +2482,40 @@ def game_state():
 
         return jsonify({
 
-            "success":
-            True,
+            "success": True,
 
             "game_id":
-            bingo_game[
-                "game_id"
-            ],
+            bingo_game["game_id"],
 
             "started":
-            bingo_game[
-                "started"
-            ],
+            bingo_game["started"],
 
             "card_buying":
-            bingo_game[
-                "card_buying"
-            ],
+            bingo_game["card_buying"],
 
             "card_buying_end_time":
-            bingo_game[
-                "card_buying_end_time"
-            ],
+            bingo_game["card_buying_end_time"],
 
             "called_numbers":
-            bingo_game[
-                "called_numbers"
-            ],
+            bingo_game["called_numbers"],
 
             "current_number":
-            bingo_game[
-                "current_number"
-            ],
+            bingo_game["current_number"],
 
             "winner":
-            bingo_game[
-                "winner"
-            ],
+            bingo_game["winner"],
 
             "winner_user_id":
-            bingo_game[
-                "winner_user_id"
-            ],
+            bingo_game["winner_user_id"],
 
             "winner_card_number":
-            bingo_game[
-                "winner_card_number"
-            ],
+            bingo_game["winner_card_number"],
 
         })
 
 
 # =========================================================
-# MY CARDS API
+# MY CARD API
 # =========================================================
 
 @web_app.route(
@@ -3902,8 +2533,7 @@ def my_card():
 
         return jsonify({
 
-            "success":
-            False,
+            "success": False,
 
             "message":
             "User ID missing."
@@ -3913,16 +2543,13 @@ def my_card():
 
     try:
 
-        user_id = int(
-            user_id
-        )
+        user_id = int(user_id)
 
     except ValueError:
 
         return jsonify({
 
-            "success":
-            False,
+            "success": False,
 
             "message":
             "Invalid user ID."
@@ -3938,15 +2565,11 @@ def my_card():
 
         game_open = (
 
-            bingo_game[
-                "started"
-            ]
+            bingo_game["started"]
 
             or
 
-            bingo_game[
-                "card_buying"
-            ]
+            bingo_game["card_buying"]
 
         )
 
@@ -3955,8 +2578,7 @@ def my_card():
 
         return jsonify({
 
-            "success":
-            False,
+            "success": False,
 
             "message":
             "Game is closed."
@@ -3977,8 +2599,7 @@ def my_card():
 
         return jsonify({
 
-            "success":
-            False,
+            "success": False,
 
             "message":
             "No card paid for this game."
@@ -4002,28 +2623,21 @@ def my_card():
             card_number,
 
             "card_type":
-            card[
-                "card_type"
-            ],
+            card["card_type"],
 
             "card":
-            generate_card(
-                card_number
-            )
+            generate_card(card_number)
 
         })
 
 
     return jsonify({
 
-        "success":
-        True,
+        "success": True,
 
-        "game_id":
-        game_id,
+        "game_id": game_id,
 
-        "cards":
-        result
+        "cards": result
 
     })
 
@@ -4052,8 +2666,7 @@ def join_game():
 
         return jsonify({
 
-            "success":
-            False,
+            "success": False,
 
             "message":
             "User ID missing."
@@ -4063,16 +2676,13 @@ def join_game():
 
     try:
 
-        user_id = int(
-            user_id
-        )
+        user_id = int(user_id)
 
     except ValueError:
 
         return jsonify({
 
-            "success":
-            False,
+            "success": False,
 
             "message":
             "Invalid user ID."
@@ -4088,15 +2698,11 @@ def join_game():
 
         game_open = (
 
-            bingo_game[
-                "started"
-            ]
+            bingo_game["started"]
 
             or
 
-            bingo_game[
-                "card_buying"
-            ]
+            bingo_game["card_buying"]
 
         )
 
@@ -4105,8 +2711,7 @@ def join_game():
 
         return jsonify({
 
-            "success":
-            False,
+            "success": False,
 
             "message":
             "Game is closed."
@@ -4127,8 +2732,7 @@ def join_game():
 
         return jsonify({
 
-            "success":
-            False,
+            "success": False,
 
             "message":
             "No paid card for this game."
@@ -4140,538 +2744,26 @@ def join_game():
 
         bingo_game[
             "players"
-        ][
-            user_id
-        ] = {
+        ][user_id] = {
 
-            "cards":
-            cards
+            "cards": cards
 
         }
 
 
-        for card in cards:
-
-            mark_card_used_in_game(
-
-                card[
-                    "card_type"
-                ],
-
-                card[
-                    "card_number"
-                ],
-
-                game_id
-
-            )
-
-
     return jsonify({
 
-        "success":
-        True,
+        "success": True,
 
-        "game_id":
-        game_id,
+        "game_id": game_id,
 
-        "cards":
-        cards
+        "cards": cards
 
     })
 
 
 # =========================================================
-# CALL NUMBER API
-# =========================================================
-
-@web_app.route(
-    "/api/call",
-    methods=["POST"]
-)
-def call_number():
-
-    data = request.get_json(
-        silent=True
-    ) or {}
-
-
-    admin_id = str(
-
-        data.get(
-
-            "admin_id",
-
-            ""
-
-        )
-
-    )
-
-
-    if admin_id != str(
-        ADMIN_ID
-    ):
-
-        return jsonify({
-
-            "success":
-            False,
-
-            "message":
-            "Admin only."
-
-        }), 403
-
-
-    with bingo_lock:
-
-        if not bingo_game[
-            "started"
-        ]:
-
-            return jsonify({
-
-                "success":
-                False,
-
-                "message":
-                "Game has not started."
-
-            }), 400
-
-
-        available = [
-
-            number
-
-            for number in range(
-                1,
-                76
-            )
-
-            if number not in bingo_game[
-                "called_numbers"
-            ]
-
-        ]
-
-
-        if not available:
-
-            return jsonify({
-
-                "success":
-                False,
-
-                "message":
-                "All numbers called."
-
-            }), 400
-
-
-        number = random.choice(
-            available
-        )
-
-
-        bingo_game[
-            "called_numbers"
-        ].append(
-            number
-        )
-
-
-        bingo_game[
-            "current_number"
-        ] = number
-
-
-        return jsonify({
-
-            "success":
-            True,
-
-            "number":
-            number,
-
-            "called_numbers":
-            bingo_game[
-                "called_numbers"
-            ]
-
-        })
-
-
-# =========================================================
-# CHECK BINGO API
-# =========================================================
-
-@web_app.route(
-    "/api/check-bingo",
-    methods=["POST"]
-)
-def check_bingo_api():
-
-    data = request.get_json(
-        silent=True
-    ) or {}
-
-
-    user_id = data.get(
-        "user_id"
-    )
-
-
-    if not user_id:
-
-        return jsonify({
-
-            "success":
-            False,
-
-            "message":
-            "User ID missing."
-
-        }), 400
-
-
-    try:
-
-        user_id = int(
-            user_id
-        )
-
-    except ValueError:
-
-        return jsonify({
-
-            "success":
-            False,
-
-            "message":
-            "Invalid User ID."
-
-        }), 400
-
-
-    with bingo_lock:
-
-        if not bingo_game[
-            "started"
-        ]:
-
-            return jsonify({
-
-                "success":
-                False,
-
-                "message":
-                "Game has not started."
-
-            }), 400
-
-
-        if bingo_game[
-            "winner_user_id"
-        ] is not None:
-
-            return jsonify({
-
-                "success":
-                False,
-
-                "message":
-                "Winner already exists."
-
-            }), 400
-
-
-        game_id = bingo_game[
-            "game_id"
-        ]
-
-
-        cards = get_user_game_cards(
-
-            user_id,
-
-            game_id
-
-        )
-
-
-        if not cards:
-
-            return jsonify({
-
-                "success":
-                False,
-
-                "message":
-                "No card for this game."
-
-            }), 403
-
-
-        winning_card = None
-
-
-        for card_data in cards:
-
-            card_number = card_data[
-                "card_number"
-            ]
-
-
-            card = generate_card(
-
-                card_number
-
-            )
-
-
-            if check_bingo(
-
-                card,
-
-                bingo_game[
-                    "called_numbers"
-                ]
-
-            ):
-
-                winning_card = card_number
-
-                break
-
-
-        if winning_card is None:
-
-            return jsonify({
-
-                "success":
-                False,
-
-                "message":
-                "Bingo is not complete."
-
-            }), 400
-
-
-        total_sales = 0
-
-
-        for card in cards_10.values():
-
-            total_sales += CARD_10_PRICE
-
-
-        for card in cards_20.values():
-
-            total_sales += CARD_20_PRICE
-
-
-        prize = int(
-
-            total_sales
-
-            * PRIZE_PERCENT
-
-            / 100
-
-        )
-
-
-        bingo_game[
-            "winner"
-        ] = True
-
-
-        bingo_game[
-            "winner_user_id"
-        ] = user_id
-
-
-        bingo_game[
-            "winner_card_number"
-        ] = winning_card
-
-
-        bingo_game[
-            "prize"
-        ] = prize
-
-
-        winners.append({
-
-            "game_id":
-            game_id,
-
-            "user_id":
-            user_id,
-
-            "card_number":
-            winning_card,
-
-            "prize":
-            prize,
-
-            "time":
-            time.time(),
-
-        })
-
-
-        add_balance(
-
-            user_id,
-
-            prize
-
-        )
-
-
-        add_transaction(
-
-            user_id,
-
-            "bingo_prize",
-
-            prize,
-
-            "completed",
-
-            f"Game {game_id}"
-
-        )
-
-
-        save_data()
-
-
-        threading.Thread(
-
-            target=automatic_next_game,
-
-            daemon=True
-
-        ).start()
-
-
-        return jsonify({
-
-            "success":
-            True,
-
-            "message":
-            "🏆 BINGO! YOU ARE THE WINNER!",
-
-            "prize":
-            prize,
-
-            "card_number":
-            winning_card
-
-        })
-
-
-# =========================================================
-# AUTOMATIC NEXT GAME
-# =========================================================
-
-def automatic_next_game():
-
-    print(
-
-        "⏳ Winner found."
-
-    )
-
-
-    time.sleep(
-        CARD_BUYING_SECONDS
-    )
-
-
-    with bingo_lock:
-
-        if bingo_game[
-            "winner_user_id"
-        ] is None:
-
-            return
-
-
-        print(
-
-            "🔄 STARTING NEW GAME..."
-
-        )
-
-
-    start_new_game()
-
-
-# =========================================================
-# RESET
-# =========================================================
-
-@web_app.route(
-    "/api/reset",
-    methods=["POST"]
-)
-def reset_game():
-
-    with bingo_lock:
-
-        bingo_game[
-            "started"
-        ] = False
-
-        bingo_game[
-            "card_buying"
-        ] = False
-
-        bingo_game[
-            "called_numbers"
-        ] = []
-
-        bingo_game[
-            "current_number"
-        ] = None
-
-        bingo_game[
-            "players"
-        ] = {}
-
-        bingo_game[
-            "winner"
-        ] = None
-
-        bingo_game[
-            "winner_user_id"
-        ] = None
-
-        bingo_game[
-            "winner_card_number"
-        ] = None
-
-        bingo_game[
-            "prize"
-        ] = 0
-
-
-    return jsonify({
-
-        "success":
-        True
-
-    })
-
-
-# =========================================================
-# FLASK
+# RUN FLASK
 # =========================================================
 
 def run_flask():
@@ -4733,9 +2825,7 @@ def main():
 
     load_data()
 
-
     normalize_card_data()
-
 
     save_data()
 
@@ -4755,9 +2845,7 @@ def main():
 
         .builder()
 
-        .token(
-            BOT_TOKEN
-        )
+        .token(BOT_TOKEN)
 
         .build()
 
@@ -4847,6 +2935,10 @@ def main():
 
     app.run_polling()
 
+
+# =========================================================
+# START
+# =========================================================
 
 if __name__ == "__main__":
 
