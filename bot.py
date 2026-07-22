@@ -4097,52 +4097,27 @@ def main():
 
     )
 
-
     application.add_handler(
-
         MessageHandler(
-
             filters.PHOTO,
-
             receive_deposit_photo
-
         )
-
     )
 
-
     application.add_handler(
-
         MessageHandler(
-
-            filters.TEXT
-            & ~filters.COMMAND,
-
+            filters.TEXT & ~filters.COMMAND,
             text_handler
-
         )
-
     )
-
 
     application.add_handler(
-
         CallbackQueryHandler(
-
             callback_handler
-
-        (
-
+        )
     )
-
 
     print("Bot started")
-    
-# =========================================================
-# RUN FLASK
-# =========================================================
-
-def run_flask():
 
     port = int(
         os.getenv(
