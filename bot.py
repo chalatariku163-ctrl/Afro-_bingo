@@ -6,7 +6,12 @@ import threading
 
 from threading import Lock
 
-from flask import Flask, jsonify, request, send_from_directory
+from flask import (
+    Flask,
+    jsonify,
+    request,
+    send_from_directory,
+)
 
 from telegram import (
     Update,
@@ -65,7 +70,7 @@ DATA_FILE = "data.json"
 
 
 # =========================================================
-# FLASK
+# FLASK APP
 # =========================================================
 
 web_app = Flask(
@@ -1003,6 +1008,10 @@ def check_bingo(
 # =========================================================
 # HOME ROUTE
 # =========================================================
+# IMPORTANT:
+# PLAY GAME yeroo banamu index.html dhugaa serve godha.
+# index.html fi bot.py folder tokko keessa ta'uu qabu.
+# =========================================================
 
 @web_app.route(
 
@@ -1018,49 +1027,50 @@ def check_bingo(
 
 def home():
 
-    return """
+    base_dir = os.path.dirname(
 
-    <!DOCTYPE html>
+        os.path.abspath(
 
-    <html>
+            __file__
 
-    <head>
+        )
 
-        <title>GADAA BINGO</title>
+    )
 
-        <meta name="viewport"
+    return send_from_directory(
 
-        content="width=device-width,
+        base_dir,
 
-        initial-scale=1.0">
+        "index.html"
 
-    </head>
+    )
 
-    <body style="
 
-        background:#061b2c;
+# =========================================================
+# HEALTH CHECK
+# =========================================================
 
-        color:white;
+@web_app.route(
 
-        text-align:center;
+    "/health",
 
-        padding:50px;
+    methods=[
 
-        font-family:Arial;
+        "GET"
 
-    ">
+    ]
 
-        <h1>🎯 GADAA BINGO</h1>
+)
 
-        <p>Server is running successfully ✅</p>
+def health():
 
-        <p>Telegram keessatti PLAY GAME cuqi.</p>
+    return jsonify({
 
-    </body>
+        "success": True,
 
-    </html>
+        "message": "GADAA BINGO SERVER IS RUNNING"
 
-    """
+    })
 
 
 # =========================================================
@@ -1448,13 +1458,7 @@ async def deposit_amount(
 
         "✅ Erga screenshot ergitee booda admin ni mirkaneessa.",
 
-        parse_mode="HTML",
-
-        reply_markup=main_menu(
-
-            user_id
-
-        )
+        parse_mode="HTML"
 
     )
 
@@ -1474,6 +1478,12 @@ async def receive_deposit_photo(
     user_id = update.effective_user.id
 
     if user_id not in pending_deposits:
+
+        await update.message.reply_text(
+
+            "⚠️ Deposit jalqabiitii amount filadhu."
+
+        )
 
         return
 
@@ -1569,7 +1579,7 @@ async def receive_deposit_photo(
 
     await update.message.reply_text(
 
-        "✅ Screenshot kee fudhatame.\n"
+        "✅ Screenshot kee fudhatame.\n\n"
 
         "⏳ Admin mirkaneessaa jira.",
 
