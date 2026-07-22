@@ -3663,7 +3663,6 @@ async def callback_handler(
 
     await query.answer()
 
-
     user_id = query.from_user.id
 
     data = query.data
@@ -3677,11 +3676,7 @@ async def callback_handler(
 
             parse_mode="HTML",
 
-            reply_markup=
-
-            main_menu(
-                user_id
-            )
+            reply_markup=main_menu(user_id)
 
         )
 
@@ -3690,46 +3685,28 @@ async def callback_handler(
 
     if data == "buy_card":
 
-        await buy_card_menu(
-            query
-        )
+        await buy_card_menu(query)
 
         return
 
 
     if data == "cards_10":
 
-        await card_number_menu(
-
-            query,
-
-            "10"
-
-        )
+        await card_number_menu(query, "10")
 
         return
 
 
     if data == "cards_20":
 
-        await card_number_menu(
-
-            query,
-
-            "20"
-
-        )
+        await card_number_menu(query, "20")
 
         return
 
 
-    if data.startswith(
-        "select_"
-    ):
+    if data.startswith("select_"):
 
-        parts = data.split(
-            "_"
-        )
+        parts = data.split("_")
 
         await select_card(
 
@@ -3748,81 +3725,47 @@ async def callback_handler(
 
     if data == "balance":
 
-        await show_balance(
-
-            query,
-
-            user_id
-
-        )
+        await show_balance(query, user_id)
 
         return
 
 
     if data == "my_cards":
 
-        await show_my_cards(
-
-            query,
-
-            user_id
-
-        )
+        await show_my_cards(query, user_id)
 
         return
 
 
     if data == "history":
 
-        await show_history(
-
-            query,
-
-            user_id
-
-        )
+        await show_history(query, user_id)
 
         return
 
 
     if data == "winners":
 
-        await show_winners(
-
-            query,
-
-            user_id
-
-        )
+        await show_winners(query, user_id)
 
         return
 
 
     if data == "how_to_play":
 
-        await how_to_play(
-            query
-        )
+        await how_to_play(query)
 
         return
 
 
     if data == "deposit":
 
-        await deposit_menu(
-
-            query,
-
-            user_id
-
-        )
+        await deposit_menu(query, user_id)
 
         return
 
 
-    if data.startswith(
-        "deposit_amount_"
-    ):
+    if data.startswith("deposit_amount_"):
 
         amount = int(
 
@@ -3835,7 +3778,6 @@ async def callback_handler(
             )
 
         )
-
 
         await deposit_amount(
 
@@ -3865,34 +3807,25 @@ async def callback_handler(
 
     if data == "admin_open_game":
 
-        await admin_open_game(
-            query
-        )
+        await admin_open_game(query)
 
         return
 
 
     if data == "admin_close_game":
 
-        await admin_close_game(
-            query
-        )
+        await admin_close_game(query)
 
         return
 
 
-    if data.startswith(
-        "approve_deposit_"
-    ):
+    if data.startswith("approve_deposit_"):
 
         target_user = int(
 
-            data.split(
-                "_"
-            )[-1]
+            data.split("_")[-1]
 
         )
-
 
         await approve_deposit(
 
@@ -3905,18 +3838,13 @@ async def callback_handler(
         return
 
 
-    if data.startswith(
-        "reject_deposit_"
-    ):
+    if data.startswith("reject_deposit_"):
 
         target_user = int(
 
-            data.split(
-                "_"
-            )[-1]
+            data.split("_")[-1]
 
         )
-
 
         await reject_deposit(
 
@@ -3929,18 +3857,13 @@ async def callback_handler(
         return
 
 
-    if data.startswith(
-        "approve_withdrawal_"
-    ):
+    if data.startswith("approve_withdrawal_"):
 
         target_user = int(
 
-            data.split(
-                "_"
-            )[-1]
+            data.split("_")[-1]
 
         )
-
 
         await approve_withdrawal(
 
@@ -3953,18 +3876,13 @@ async def callback_handler(
         return
 
 
-    if data.startswith(
-        "reject_withdrawal_"
-    ):
+    if data.startswith("reject_withdrawal_"):
 
         target_user = int(
 
-            data.split(
-                "_"
-            )[-1]
+            data.split("_")[-1]
 
         )
-
 
         await reject_withdrawal(
 
@@ -3983,17 +3901,11 @@ async def callback_handler(
 
             "🎮 <b>PLAY GAME</b>\n\n"
 
-            "Game web app irraa banuuf card kee filadhu.\n\n"
-
-            "Game yeroo banamu, index.html irraa game state argatta.",
+            "Game web app irraa banuuf card kee filadhu.",
 
             parse_mode="HTML",
 
-            reply_markup=
-
-            main_menu(
-                user_id
-            )
+            reply_markup=main_menu(user_id)
 
         )
 
@@ -4053,7 +3965,6 @@ def main():
 
     )
 
-
     flask_thread.start()
 
 
@@ -4063,9 +3974,7 @@ def main():
 
         .builder()
 
-        .token(
-            BOT_TOKEN
-        )
+        .token(BOT_TOKEN)
 
         .build()
 
@@ -4097,173 +4006,6 @@ def main():
 
     )
 
-    application.add_handler(
-        MessageHandler(
-            filters.PHOTO,
-            receive_deposit_photo
-        )
-    )
-
-    application.add_handler(
-        MessageHandler(
-            filters.TEXT & ~filters.COMMAND,
-            text_handler
-        )
-    )
-
-    application.add_handler(
-        CallbackQueryHandler(
-            callback_handler
-        )
-    )
-
-    print("Bot started")
-
-    port = int(
-        os.getenv(
-            "PORT",
-            10000
-        )
-    )
-
-    web_app.run(
-
-        host="0.0.0.0",
-
-        port=port,
-
-        debug=False
-
-    )
-
-
-# =========================================================
-# RUN BOT
-# =========================================================
-
-def run_bot():
-
-        application.add_handler(
-        MessageHandler(
-            filters.PHOTO,
-            receive_deposit_photo
-        )
-    )
-
-    application.add_handler(
-        MessageHandler(
-            filters.TEXT & ~filters.COMMAND,
-            text_handler
-        )
-    )
-
-    application.add_handler(
-        CallbackQueryHandler(
-            callback_handler
-        )
-    )
-
-    print(
-        "🤖 GADAA BINGO BOT STARTED"
-    )
-
-
-    application.run_polling()
-
-
-# =========================================================
-# MAIN
-# =========================================================
-
-def main():
-
-    if not BOT_TOKEN:
-
-        raise RuntimeError(
-
-            "BOT_TOKEN environment variable is missing."
-
-        )
-
-
-    # LOAD DATA
-
-    load_data()
-
-    normalize_card_data()
-
-    save_data()
-
-
-    # START FLASK SERVER
-
-    flask_thread = threading.Thread(
-
-        target=run_flask,
-
-        daemon=True
-
-    )
-
-    flask_thread.start()
-
-
-    # CREATE TELEGRAM APPLICATION
-
-    application = (
-
-        Application
-
-        .builder()
-
-        .token(
-
-            BOT_TOKEN
-
-        )
-
-        .build()
-
-    )
-
-
-    # =====================================================
-    # START COMMAND
-    # =====================================================
-
-    application.add_handler(
-
-        CommandHandler(
-
-            "start",
-
-            start
-
-        )
-
-    )
-
-
-    # =====================================================
-    # REGISTER CONTACT
-    # =====================================================
-
-    application.add_handler(
-
-        MessageHandler(
-
-            filters.CONTACT,
-
-            receive_contact
-
-        )
-
-    )
-
-
-    # =====================================================
-    # DEPOSIT SCREENSHOT
-    # =====================================================
 
     application.add_handler(
 
@@ -4278,10 +4020,6 @@ def main():
     )
 
 
-    # =====================================================
-    # TEXT HANDLER
-    # =====================================================
-
     application.add_handler(
 
         MessageHandler(
@@ -4294,10 +4032,6 @@ def main():
 
     )
 
-
-    # =====================================================
-    # CALLBACK BUTTON HANDLER
-    # =====================================================
 
     application.add_handler(
 
@@ -4316,8 +4050,6 @@ def main():
 
     )
 
-
-    # START BOT
 
     application.run_polling(
 
@@ -4327,7 +4059,7 @@ def main():
 
 
 # =========================================================
-# START PROGRAM
+# START
 # =========================================================
 
 if __name__ == "__main__":
