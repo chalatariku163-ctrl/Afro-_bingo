@@ -4137,19 +4137,7 @@ def main():
 
 
     print(
-        "🤖 GADAA BINGO BOT STARTED"
-    )
-
-
-    application.run_polling()
-
-
-# =========================================================
-# START
-# =========================================================
-
-if __name__ == "__main__":
-# =========================================================
+     # =========================================================
 # RUN FLASK
 # =========================================================
 
@@ -4166,7 +4154,9 @@ def run_flask():
 
         host="0.0.0.0",
 
-        port=port
+        port=port,
+
+        debug=False
 
     )
 
@@ -4177,22 +4167,11 @@ def run_flask():
 
 def run_bot():
 
-    if not BOT_TOKEN:
-
-        print(
-            "❌ BOT_TOKEN is missing"
-        )
-
-        return
-
-
     application = (
 
         Application.builder()
 
-        .token(
-            BOT_TOKEN
-        )
+        .token(BOT_TOKEN)
 
         .build()
 
@@ -4202,8 +4181,11 @@ def run_bot():
     application.add_handler(
 
         CommandHandler(
+
             "start",
+
             start
+
         )
 
     )
@@ -4229,7 +4211,7 @@ def run_bot():
             filters.TEXT
             & ~filters.COMMAND,
 
-            process_text
+            process_withdrawal
 
         )
 
@@ -4239,16 +4221,56 @@ def run_bot():
     application.add_handler(
 
         CallbackQueryHandler(
-            button_handler
+
+            callback_query_handler
+
         )
 
     )
 
 
     print(
-        "🤖 BOT STARTED"
+
+        "🤖 GADAA BINGO BOT STARTED"
+
     )
 
 
     application.run_polling()
+
+
+# =========================================================
+# MAIN
+# =========================================================
+
+def main():
+
+    load_data()
+
+    normalize_card_data()
+
+    save_data()
+
+
+    flask_thread = threading.Thread(
+
+        target=run_flask,
+
+        daemon=True
+
+    )
+
+
+    flask_thread.start()
+
+
+    run_bot()
+
+
+# =========================================================
+# START
+# =========================================================
+
+if __name__ == "__main__":
+
     main()
