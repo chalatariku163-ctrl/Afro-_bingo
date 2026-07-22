@@ -3,633 +3,464 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gadaa Bingo</title>
+
+<title>GADAA BINGO</title>
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
+
 *{
     box-sizing:border-box;
-}
-
-:root{
-    --bg:#b8a6d0;
-    --purple:#86008f;
-    --orange:#ff8200;
-    --blue:#1655d8;
-    --red:#e60000;
-    --green:#078b16;
+    margin:0;
+    padding:0;
 }
 
 body{
-    margin:0;
-    padding:8px;
     font-family:Arial,sans-serif;
-    background:var(--bg);
+    background:
+    linear-gradient(135deg,#061b2c,#0b3d5c,#061b2c);
     color:white;
+    min-height:100vh;
 }
 
-.app{
-    max-width:1100px;
-    margin:auto;
-}
-
-.top-info{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:5px;
-    padding:5px;
-    border:2px solid white;
-    border-radius:14px;
-    margin-bottom:8px;
-}
-
-.info{
-    background:#eeeeee;
-    color:#5a126e;
-    border:2px solid white;
-    border-radius:12px;
-    min-height:66px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
+.header{
+    padding:16px;
     text-align:center;
-    font-weight:bold;
-    font-size:15px;
+    background:rgba(0,0,0,.35);
+    border-bottom:1px solid rgba(255,255,255,.15);
 }
 
-.info b{
-    font-size:19px;
+.header h1{
+    font-size:24px;
+    color:#ffd700;
+}
+
+.header p{
     margin-top:5px;
+    font-size:13px;
+    opacity:.8;
 }
 
-.main{
-    display:grid;
-    grid-template-columns:270px 1fr;
-    gap:8px;
+.container{
+    max-width:700px;
+    margin:auto;
+    padding:15px;
 }
 
-.bingo-title{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:6px;
-    margin-bottom:6px;
-}
-
-.bingo-title div{
-    color:white;
-    font-size:20px;
-    font-weight:bold;
+.status-box{
+    background:rgba(255,255,255,.1);
+    border-radius:15px;
+    padding:15px;
+    margin-bottom:15px;
     text-align:center;
-    padding:9px 0;
-    border-radius:6px;
-    border:1px solid white;
 }
 
-.b{background:#ffad00}
-.i{background:#008b18}
-.n{background:#001de0}
-.g{background:#ed0000}
-.o{background:#78007e}
-
-.number-board{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:5px;
-}
-
-.number{
-    height:57px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:#b7b7d1;
-    border:1px solid rgba(255,255,255,.7);
-    border-radius:8px;
-    color:white;
-    font-size:20px;
+.status{
+    font-size:18px;
     font-weight:bold;
+    color:#00ff9d;
 }
 
-.number.called{
-    background:var(--orange);
+.timer{
+    margin-top:8px;
+    color:#ffd700;
 }
 
-.right-area{
+.game-area{
+    display:none;
+}
+
+.card-select{
+    background:rgba(255,255,255,.1);
+    border-radius:15px;
+    padding:15px;
+    margin-bottom:15px;
+}
+
+.card-select h2{
+    text-align:center;
+    margin-bottom:12px;
+    color:#ffd700;
+}
+
+.card-input{
     display:flex;
-    flex-direction:column;
     gap:8px;
 }
 
-.current-box{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    background:var(--purple);
-    border-radius:48px;
-    padding:10px 14px 10px 30px;
-    min-height:96px;
-}
-
-.current-title{
-    font-size:28px;
-    font-weight:bold;
-}
-
-.current-call{
-    width:76px;
-    height:76px;
-    border-radius:50%;
-    background:var(--orange);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:24px;
-    font-weight:bold;
-}
-
-.last-calls{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:15px;
-    padding:12px;
-    background:#cfc1df;
-    border:4px solid #ddd4e7;
-    border-radius:16px;
-    min-height:90px;
-}
-
-.last-ball{
-    width:58px;
-    height:58px;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:white;
-    font-size:17px;
-    font-weight:bold;
-}
-
-.last-ball:nth-child(1){background:#ed0000}
-.last-ball:nth-child(2){background:#ffad00}
-.last-ball:nth-child(3){background:#ed0000}
-
-.controls{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    background:#ded4e8;
-    color:#4b2860;
-    border-radius:12px;
-    padding:12px 18px;
-    font-size:20px;
-    font-weight:bold;
-}
-
-.sound{
-    display:flex;
-    align-items:center;
-    gap:8px;
-}
-
-.sound-btn{
-    width:42px;
-    height:42px;
-    border-radius:50%;
-    border:0;
-    background:var(--purple);
-    color:white;
-    font-size:20px;
-}
-
-.auto{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.auto-status{
-    background:#efa16f;
-    color:white;
-    border-radius:12px;
-    padding:8px 15px;
-    font-size:15px;
-}
-
-.message-box{
-    min-height:250px;
+.card-input input{
     flex:1;
-    background:rgba(210,201,230,.55);
-    border-radius:14px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    padding:13px;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
     text-align:center;
-    padding:20px;
 }
 
-#message{
-    color:#5b167e;
-    font-size:26px;
+button{
+    border:none;
+    border-radius:10px;
+    padding:13px 18px;
+    font-size:15px;
     font-weight:bold;
+    cursor:pointer;
 }
 
-.bottom-buttons{
-    display:grid;
-    grid-template-columns:1fr 1fr 2fr;
-    gap:8px;
-}
-
-.bottom-buttons button{
-    height:62px;
-    border:0;
-    border-radius:20px;
+.select-btn{
+    background:#00c853;
     color:white;
-    font-size:24px;
-    font-weight:bold;
 }
 
-.leave-btn{background:#d40000}
-.refresh-btn{background:#1254d5}
-.bingo-btn{background:#efa16f}
+.bingo-btn{
+    width:100%;
+    background:#ffd700;
+    color:#111;
+    font-size:20px;
+    margin-top:15px;
+}
+
+.bingo-btn:disabled{
+    opacity:.5;
+}
+
+.current-number-box{
+    text-align:center;
+    margin:15px 0;
+}
+
+.current-label{
+    font-size:14px;
+    opacity:.8;
+}
+
+.current-number{
+    width:100px;
+    height:100px;
+    margin:10px auto;
+    border-radius:50%;
+    background:#e53935;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:40px;
+    font-weight:bold;
+    box-shadow:0 0 25px rgba(255,0,0,.5);
+}
+
+.bingo-layout{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+}
 
 .card-area{
-    margin-top:10px;
-    background:#c9b9dc;
-    border-radius:12px;
-    padding:10px;
+    flex:1;
 }
 
 .card-title{
     text-align:center;
-    color:#5b167e;
-    font-size:21px;
-    font-weight:bold;
-}
-
-.card-number{
-    text-align:center;
-    color:#5b167e;
-    font-weight:bold;
-    margin:8px;
+    margin-bottom:8px;
+    color:#ffd700;
 }
 
 .bingo-card{
     display:grid;
     grid-template-columns:repeat(5,1fr);
-    gap:5px;
-}
-
-.card-cell{
-    min-height:55px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:#b7b7d1;
-    border:1px solid white;
-    border-radius:7px;
-    font-size:18px;
-    font-weight:bold;
-    color:white;
-}
-
-.card-cell.marked,
-.card-cell.free{
-    background:#078b16;
-}
-
-.no-card{
-    text-align:center;
-    padding:35px 15px;
-    border:2px dashed #777;
+    gap:4px;
+    background:#111;
+    padding:5px;
     border-radius:10px;
-    color:#5b167e;
+}
+
+.cell{
+    aspect-ratio:1;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#f5f5f5;
+    color:#111;
+    border-radius:5px;
+    font-size:14px;
     font-weight:bold;
 }
 
-@media(max-width:700px){
+.cell.called{
+    background:#00c853;
+    color:white;
+    box-shadow:0 0 8px #00ff88;
+}
 
-    body{
-        padding:5px;
+.cell.free{
+    background:#ffd700;
+    color:#111;
+}
+
+.called-area{
+    width:120px;
+    background:rgba(255,255,255,.1);
+    border-radius:12px;
+    padding:10px;
+}
+
+.called-area h3{
+    text-align:center;
+    font-size:14px;
+    color:#ffd700;
+    margin-bottom:8px;
+}
+
+.called-numbers{
+    display:flex;
+    flex-wrap:wrap;
+    gap:4px;
+    max-height:360px;
+    overflow-y:auto;
+}
+
+.called-number{
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    background:#2196f3;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.message{
+    text-align:center;
+    margin-top:15px;
+    padding:12px;
+    border-radius:10px;
+    background:rgba(0,0,0,.3);
+}
+
+.success{
+    color:#00ff88;
+}
+
+.error{
+    color:#ff5252;
+}
+
+.warning{
+    color:#ffd700;
+}
+
+.info{
+    margin-top:15px;
+    text-align:center;
+    font-size:13px;
+    opacity:.8;
+}
+
+@media(max-width:500px){
+
+    .bingo-layout{
+        gap:7px;
     }
 
-    .top-info{
-        gap:3px;
-        padding:3px;
+    .called-area{
+        width:95px;
+        padding:6px;
     }
 
-    .info{
-        min-height:60px;
+    .called-number{
+        width:24px;
+        height:24px;
+        font-size:10px;
+    }
+
+    .cell{
         font-size:11px;
     }
 
-    .info b{
-        font-size:15px;
+    .current-number{
+        width:80px;
+        height:80px;
+        font-size:32px;
     }
 
-    .main{
-        grid-template-columns:270px 1fr;
-        gap:6px;
-    }
-
-    .number{
-        height:57px;
-        font-size:19px;
-    }
-
-    .current-title{
-        font-size:21px;
-    }
-
-    .current-call{
-        width:65px;
-        height:65px;
-        font-size:20px;
-    }
-
-    .last-calls{
-        gap:8px;
-        padding:8px;
-    }
-
-    .last-ball{
-        width:52px;
-        height:52px;
-        font-size:15px;
-    }
-
-    .controls{
-        font-size:16px;
-        padding:10px;
-    }
-
-    #message{
-        font-size:20px;
-    }
-
-    .bottom-buttons{
-        position:fixed;
-        bottom:0;
-        left:0;
-        right:0;
-        padding:5px;
-        background:#b8a6d0;
-        z-index:20;
-    }
-
-    .bottom-buttons button{
-        height:55px;
-        font-size:19px;
-    }
-
-    .card-area{
-        margin-bottom:65px;
-    }
 }
 
-@media(max-width:430px){
-
-    .main{
-        grid-template-columns:170px 1fr;
-    }
-
-    .number{
-        height:49px;
-        font-size:16px;
-    }
-
-    .bingo-title div{
-        font-size:16px;
-        padding:7px 0;
-    }
-
-    .current-title{
-        font-size:16px;
-    }
-
-    .current-call{
-        width:54px;
-        height:54px;
-        font-size:16px;
-    }
-
-    .last-ball{
-        width:42px;
-        height:42px;
-        font-size:12px;
-    }
-
-    .controls{
-        font-size:13px;
-    }
-
-    .auto-status{
-        padding:6px 8px;
-        font-size:12px;
-    }
-
-    #message{
-        font-size:17px;
-    }
-}
 </style>
 </head>
 
 <body>
 
-<div class="app">
+<div class="header">
 
-    <div class="top-info">
+    <h1>🎯 GADAA BINGO</h1>
 
-        <div class="info">
-            GAME ID
-            <b id="gameId">---</b>
+    <p>Play • Win • Enjoy</p>
+
+</div>
+
+
+<div class="container">
+
+    <div class="status-box">
+
+        <div id="status" class="status">
+            ⏳ Connecting...
+        </div>
+
+        <div id="timer" class="timer"></div>
+
+    </div>
+
+
+    <!-- CARD SELECT -->
+
+    <div id="cardSelect" class="card-select">
+
+        <h2>🎫 SELECT YOUR CARD</h2>
+
+        <div class="card-input">
+
+            <input
+                id="cardNumber"
+                type="number"
+                min="1"
+                max="500"
+                placeholder="Card Number 1 - 500"
+            >
+
+            <button
+                class="select-btn"
+                onclick="selectCard()"
+            >
+                SELECT
+            </button>
+
         </div>
 
         <div class="info">
-            DERASH
-            <b id="derash">0</b>
-        </div>
-
-        <div class="info">
-            PLAYERS
-            <b id="players">0</b>
-        </div>
-
-        <div class="info">
-            STAKE
-            <b id="stake">10</b>
-        </div>
-
-        <div class="info">
-            CALLED
-            <b id="calledCount">0</b>
+            Card number kee Telegram keessatti bitatte galchi.
         </div>
 
     </div>
 
-    <div class="main">
 
-        <div class="left-board">
+    <!-- GAME -->
 
-            <div class="bingo-title">
-                <div class="b">B</div>
-                <div class="i">I</div>
-                <div class="n">N</div>
-                <div class="g">G</div>
-                <div class="o">O</div>
+    <div id="gameArea" class="game-area">
+
+
+        <div class="current-number-box">
+
+            <div class="current-label">
+                📢 CURRENT NUMBER
             </div>
 
-            <div id="numberBoard" class="number-board"></div>
-
-        </div>
-
-        <div class="right-area">
-
-            <div class="current-box">
-
-                <div class="current-title">
-                    CURRENT CALL
-                </div>
-
-                <div id="currentCall" class="current-call">
-                    -
-                </div>
-
-            </div>
-
-            <div class="last-calls">
-
-                <div id="last1" class="last-ball">-</div>
-                <div id="last2" class="last-ball">-</div>
-                <div id="last3" class="last-ball">-</div>
-
-            </div>
-
-            <div class="controls">
-
-                <div class="sound">
-
-                    <span>Sound</span>
-
-                    <button
-                        class="sound-btn"
-                        onclick="toggleSound()">
-                        🔊
-                    </button>
-
-                </div>
-
-                <div class="auto">
-
-                    <span>Auto</span>
-
-                    <span id="autoStatus" class="auto-status">
-                        5 SEC
-                    </span>
-
-                </div>
-
-            </div>
-
-            <div class="message-box">
-
-                <div id="message">
-                    ⏳ Game loading...
-                </div>
-
-            </div>
-
-            <div class="bottom-buttons">
-
-                <button
-                    class="leave-btn"
-                    onclick="leaveGame()">
-                    ↪ Leave
-                </button>
-
-                <button
-                    class="refresh-btn"
-                    onclick="refreshGame()">
-                    ⟳ Refresh
-                </button>
-
-                <button
-                    class="bingo-btn"
-                    onclick="checkBingo()">
-                    Bingo!
-                </button>
-
+            <div
+                id="currentNumber"
+                class="current-number"
+            >
+                -
             </div>
 
         </div>
 
-    </div>
 
-    <div id="cardArea" class="card-area">
+        <div class="bingo-layout">
 
-        <div class="card-title">
-            🎫 YOUR BINGO CARD
+
+            <div class="card-area">
+
+                <div
+                    id="cardTitle"
+                    class="card-title"
+                >
+                    🎫 CARD
+                </div>
+
+                <div
+                    id="bingoCard"
+                    class="bingo-card"
+                ></div>
+
+            </div>
+
+
+            <div class="called-area">
+
+                <h3>📢 CALLED</h3>
+
+                <div
+                    id="calledNumbers"
+                    class="called-numbers"
+                ></div>
+
+            </div>
+
+
         </div>
 
-        <div id="cardNumber" class="card-number">
-            Card: Loading...
-        </div>
 
-        <div id="bingoCard" class="bingo-card"></div>
+        <button
+            id="bingoButton"
+            class="bingo-btn"
+            onclick="claimBingo()"
+            disabled
+        >
+            🏆 BINGO!
+        </button>
 
-    </div>
 
-    <div id="noCardArea" class="no-card" style="display:none">
-
-        <h2>🎫 CARD NOT PURCHASED</h2>
-
-        <p>You do not have a card for this game.</p>
+        <div
+            id="message"
+            class="message"
+        ></div>
 
     </div>
 
 </div>
 
+
 <script>
 
-let tg = null;
+const tg = window.Telegram.WebApp;
 
-if(
-    window.Telegram &&
-    window.Telegram.WebApp
-){
+tg.ready();
 
-    tg = window.Telegram.WebApp;
+tg.expand();
 
-    tg.ready();
 
-    tg.expand();
+/* =====================================================
+   API
+===================================================== */
 
-}
+const API_BASE = window.location.origin;
 
-let playerId = null;
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+let selectedCard = null;
+
+let selectedCardType = "10";
+
+let currentGameId = 0;
 
 let calledNumbers = [];
 
 let gameStarted = false;
 
-let currentGameId = null;
-
-let playerCards = [];
+let cardBuying = false;
 
 let cardData = [];
 
-let soundEnabled = true;
-
-let pollingTimer = null;
+let lastCurrentNumber = null;
 
 
-/* =========================
+/* =====================================================
    USER ID
-========================= */
+===================================================== */
 
 function getUserId(){
 
@@ -639,427 +470,41 @@ function getUserId(){
         tg.initDataUnsafe.user
     ){
 
-        return String(
-            tg.initDataUnsafe.user.id
-        );
+        return tg.initDataUnsafe.user.id;
 
     }
 
-    return null;
+    const saved =
+        localStorage.getItem("user_id");
+
+    return saved || null;
 
 }
 
 
-/* =========================
-   BINGO LETTER
-========================= */
+/* =====================================================
+   MESSAGE
+===================================================== */
 
-function getLetter(number){
+function showMessage(
+    text,
+    type="info"
+){
 
-    number = Number(number);
+    const message =
+        document.getElementById("message");
 
-    if(number >= 1 && number <= 15)
-        return "B";
+    message.innerHTML = text;
 
-    if(number >= 16 && number <= 30)
-        return "I";
-
-    if(number >= 31 && number <= 45)
-        return "N";
-
-    if(number >= 46 && number <= 60)
-        return "G";
-
-    if(number >= 61 && number <= 75)
-        return "O";
-
-    return "";
+    message.className =
+        "message " + type;
 
 }
 
 
-/* =========================
-   NUMBER BOARD
-========================= */
-
-function createNumberBoard(){
-
-    const board =
-        document.getElementById(
-            "numberBoard"
-        );
-
-    board.innerHTML = "";
-
-    for(
-        let number = 1;
-        number <= 75;
-        number++
-    ){
-
-        const box =
-            document.createElement(
-                "div"
-            );
-
-        box.className = "number";
-
-        box.id =
-            "number-" + number;
-
-        box.innerText =
-            number;
-
-        board.appendChild(box);
-
-    }
-
-}
-
-
-function updateNumberBoard(){
-
-    for(
-        let number = 1;
-        number <= 75;
-        number++
-    ){
-
-        const box =
-            document.getElementById(
-                "number-" + number
-            );
-
-        if(!box)
-            continue;
-
-        box.classList.toggle(
-
-            "called",
-
-            calledNumbers.includes(
-                number
-            )
-
-        );
-
-    }
-
-}
-
-
-/* =========================
-   LAST CALLS
-========================= */
-
-function updateLastCalls(){
-
-    const recent =
-        calledNumbers
-        .slice(-3)
-        .reverse();
-
-    const ids = [
-        "last1",
-        "last2",
-        "last3"
-    ];
-
-    ids.forEach(
-
-        (
-            id,
-            index
-        ) => {
-
-            const element =
-                document.getElementById(
-                    id
-                );
-
-            if(
-                recent[index] !== undefined
-            ){
-
-                element.innerText =
-                    getLetter(
-                        recent[index]
-                    )
-                    +
-                    "-"
-                    +
-                    recent[index];
-
-            }else{
-
-                element.innerText =
-                    "-";
-
-            }
-
-        }
-
-    );
-
-}
-
-
-/* =========================
-   CARD FROM BOT.PY
-========================= */
-
-function renderCard(card){
-
-    const container =
-        document.getElementById(
-            "bingoCard"
-        );
-
-    container.innerHTML = "";
-
-    cardData = [];
-
-    for(
-        let row = 0;
-        row < 5;
-        row++
-    ){
-
-        for(
-            let col = 0;
-            col < 5;
-            col++
-        ){
-
-            const value =
-                card[row][col];
-
-            cardData.push(value);
-
-            const cell =
-                document.createElement(
-                    "div"
-                );
-
-            cell.className =
-                "card-cell";
-
-            cell.innerText =
-                value;
-
-            if(
-                value === "FREE"
-            ){
-
-                cell.classList.add(
-                    "free",
-                    "marked"
-                );
-
-            }
-
-            container.appendChild(
-                cell
-            );
-
-        }
-
-    }
-
-    updateCardMarks();
-
-}
-
-
-function updateCardMarks(){
-
-    const cells =
-        document.querySelectorAll(
-            ".bingo-card .card-cell"
-        );
-
-    cardData.forEach(
-
-        (
-            value,
-            index
-        ) => {
-
-            if(
-                value === "FREE"
-            )
-                return;
-
-            cells[index].classList.toggle(
-
-                "marked",
-
-                calledNumbers.includes(
-                    Number(value)
-                )
-
-            );
-
-        }
-
-    );
-
-}
-
-
-/* =========================
-   LOAD MY CARD
-========================= */
-
-async function loadMyCard(){
-
-    if(!playerId)
-        return;
-
-    try{
-
-        const response =
-            await fetch(
-
-                "/api/my-card?user_id="
-                +
-                encodeURIComponent(
-                    playerId
-                ),
-
-                {
-                    cache:
-                        "no-store"
-                }
-
-            );
-
-        const data =
-            await response.json();
-
-        if(
-            !response.ok ||
-            !data.success ||
-            !data.cards ||
-            data.cards.length === 0
-        ){
-
-            document.getElementById(
-                "cardArea"
-            ).style.display =
-                "none";
-
-            document.getElementById(
-                "noCardArea"
-            ).style.display =
-                "block";
-
-            playerCards = [];
-
-            return;
-
-        }
-
-        playerCards =
-            data.cards;
-
-        const firstCard =
-            playerCards[0];
-
-        document.getElementById(
-            "cardArea"
-        ).style.display =
-            "block";
-
-        document.getElementById(
-            "noCardArea"
-        ).style.display =
-            "none";
-
-        document.getElementById(
-            "cardNumber"
-        ).innerText =
-            "🎫 Card: "
-            +
-            firstCard.card_number
-            +
-            " | "
-            +
-            firstCard.card_type
-            +
-            " Birr";
-
-        renderCard(
-            firstCard.card
-        );
-
-    }catch(error){
-
-        console.log(
-            "CARD ERROR:",
-            error
-        );
-
-    }
-
-}
-
-
-/* =========================
-   JOIN GAME
-========================= */
-
-async function joinGame(){
-
-    if(!playerId)
-        return;
-
-    try{
-
-        await fetch(
-
-            "/api/join-game",
-
-            {
-
-                method:
-                    "POST",
-
-                headers:
-                    {
-                        "Content-Type":
-                        "application/json"
-                    },
-
-                body:
-                    JSON.stringify({
-
-                        user_id:
-                        Number(
-                            playerId
-                        )
-
-                    })
-
-            }
-
-        );
-
-    }catch(error){
-
-        console.log(
-            "JOIN ERROR:",
-            error
-        );
-
-    }
-
-}
-
-
-/* =========================
+/* =====================================================
    GAME STATE
-========================= */
+===================================================== */
 
 async function loadGameState(){
 
@@ -1067,123 +512,79 @@ async function loadGameState(){
 
         const response =
             await fetch(
-
-                "/api/game",
-
-                {
-                    cache:
-                        "no-store"
-                }
-
+                API_BASE +
+                "/api/game-state"
             );
 
         const data =
             await response.json();
 
-        if(
-            !data.success
-        )
+        if(!data.success){
+
+            showMessage(
+                "Game state error.",
+                "error"
+            );
+
             return;
+
+        }
+
 
         currentGameId =
             data.game_id;
 
         calledNumbers =
-            data.called_numbers
-            ||
-            [];
+            data.called_numbers || [];
 
         gameStarted =
-            Boolean(
-                data.started
-            );
+            data.started;
 
-        document.getElementById(
-            "gameId"
-        ).innerText =
-            data.game_id;
+        cardBuying =
+            data.card_buying;
 
-        document.getElementById(
-            "calledCount"
-        ).innerText =
-            calledNumbers.length;
 
-        document.getElementById(
-            "players"
-        ).innerText =
-            data.players
-            ?
-            Object.keys(
-                data.players
-            ).length
-            :
-            0;
+        updateStatus(data);
 
-        document.getElementById(
-            "currentCall"
-        ).innerText =
+        updateCalledNumbers();
 
+        updateCurrentNumber(
             data.current_number
-            ?
-            getLetter(
-                data.current_number
-            )
-            +
-            "-"
-            +
-            data.current_number
-            :
-            "-";
+        );
 
-        updateNumberBoard();
-
-        updateLastCalls();
-
-        updateCardMarks();
 
         if(
-            data.winner
-        ){
-
-            showMessage(
-                "🏆 WINNER: "
-                +
-                data.winner
-            );
-
-        }else if(
+            selectedCard &&
             gameStarted
         ){
 
-            showMessage(
-                "🎮 GAME STARTED"
-            );
-
-        }else if(
-            data.card_buying
-        ){
-
-            showMessage(
-                "🎫 CARD BUYING OPEN"
-            );
-
-        }else{
-
-            showMessage(
-                "⏳ WAITING FOR GAME"
-            );
+            document
+            .getElementById(
+                "bingoButton"
+            )
+            .disabled = false;
 
         }
 
-    }catch(error){
 
-        console.log(
-            "GAME STATE ERROR:",
-            error
-        );
+        if(
+            selectedCard &&
+            gameStarted
+        ){
+
+            renderCard();
+
+        }
+
+    }
+
+    catch(error){
+
+        console.error(error);
 
         showMessage(
-            "❌ Server connection error."
+            "Server waliin wal qunnamtiin hin jiru.",
+            "error"
         );
 
     }
@@ -1191,50 +592,271 @@ async function loadGameState(){
 }
 
 
-/* =========================
-   BINGO CHECK
-========================= */
+/* =====================================================
+   UPDATE STATUS
+===================================================== */
 
-function checkBingo(){
+function updateStatus(data){
 
-    if(
-        cardData.length !== 25
-    ){
-
-        showMessage(
-            "🎫 No Bingo card found."
+    const status =
+        document.getElementById(
+            "status"
         );
+
+    const timer =
+        document.getElementById(
+            "timer"
+        );
+
+
+    if(data.winner){
+
+        status.innerHTML =
+            "🏆 WINNER FOUND";
+
+        timer.innerHTML =
+            "Game xumurame.";
 
         return;
 
     }
 
-    if(
-        !gameStarted
-    ){
 
-        showMessage(
-            "⏳ Game has not started."
-        );
+    if(data.card_buying){
 
-        return;
+        status.innerHTML =
+            "🎫 CARD BUYING OPEN";
 
-    }
-
-    const marked =
-        cardData.map(
-
-            value =>
-
-                value === "FREE"
-                ||
-                calledNumbers.includes(
-                    Number(value)
+        const remaining =
+            Math.max(
+                0,
+                Math.ceil(
+                    data.card_buying_end_time
+                    - Date.now()/1000
                 )
+            );
 
+        timer.innerHTML =
+            "⏳ Card buying: " +
+            remaining +
+            " seconds";
+
+        return;
+
+    }
+
+
+    if(data.started){
+
+        status.innerHTML =
+            "🎮 GAME IS RUNNING";
+
+        timer.innerHTML =
+            "📢 Number waamamaa jira";
+
+        return;
+
+    }
+
+
+    status.innerHTML =
+        "⏸ GAME NOT STARTED";
+
+    timer.innerHTML =
+        "Game itti aanu eegi.";
+
+}
+
+
+/* =====================================================
+   SELECT CARD
+===================================================== */
+
+function selectCard(){
+
+    const input =
+        document.getElementById(
+            "cardNumber"
         );
 
-    let bingo = false;
+    const number =
+        parseInt(
+            input.value
+        );
+
+
+    if(
+        !number ||
+        number < 1 ||
+        number > 500
+    ){
+
+        showMessage(
+            "⚠️ Card number 1 hanga 500 galchi.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    selectedCard =
+        number;
+
+
+    localStorage.setItem(
+        "selected_card",
+        number
+    );
+
+
+    document
+    .getElementById(
+        "cardSelect"
+    )
+    .style.display =
+        "none";
+
+
+    document
+    .getElementById(
+        "gameArea"
+    )
+    .style.display =
+        "block";
+
+
+    document
+    .getElementById(
+        "cardTitle"
+    )
+    .innerHTML =
+        "🎫 CARD " +
+        number;
+
+
+    generateCard();
+
+
+    showMessage(
+        "✅ Card " +
+        number +
+        " filatame. Game jalqaba.",
+        "success"
+    );
+
+
+    loadGameState();
+
+}
+
+
+/* =====================================================
+   GENERATE CARD
+===================================================== */
+
+function generateCard(){
+
+    if(!selectedCard){
+
+        return;
+
+    }
+
+
+    let seed =
+        parseInt(
+            selectedCard
+        );
+
+
+    function seededRandom(
+        min,
+        max
+    ){
+
+        seed =
+            (
+                seed *
+                9301 +
+                49297
+            ) % 233280;
+
+
+        const rnd =
+            seed / 233280;
+
+
+        return Math.floor(
+            min +
+            rnd *
+            (
+                max -
+                min +
+                1
+            )
+        );
+
+    }
+
+
+    function generateColumn(
+        min,
+        max
+    ){
+
+        const numbers = [];
+
+
+        while(
+            numbers.length < 5
+        ){
+
+            const number =
+                seededRandom(
+                    min,
+                    max
+                );
+
+
+            if(
+                !numbers.includes(
+                    number
+                )
+            ){
+
+                numbers.push(
+                    number
+                );
+
+            }
+
+        }
+
+
+        return numbers;
+
+    }
+
+
+    const columns = [
+
+        generateColumn(1,15),
+
+        generateColumn(16,30),
+
+        generateColumn(31,45),
+
+        generateColumn(46,60),
+
+        generateColumn(61,75)
+
+    ];
+
+
+    cardData = [];
+
 
     for(
         let row = 0;
@@ -1242,235 +864,467 @@ function checkBingo(){
         row++
     ){
 
-        if(
+        const rowData = [];
 
-            marked.slice(
-                row * 5,
-                row * 5 + 5
-            )
-            .every(Boolean)
 
+        for(
+            let col = 0;
+            col < 5;
+            col++
         ){
 
-            bingo = true;
+            if(
+                row === 2 &&
+                col === 2
+            ){
+
+                rowData.push(
+                    "FREE"
+                );
+
+            }
+
+            else{
+
+                rowData.push(
+                    columns[col][row]
+                );
+
+            }
 
         }
 
-    }
 
-    for(
-        let col = 0;
-        col < 5;
-        col++
-    ){
-
-        if(
-
-            [0,1,2,3,4]
-            .every(
-
-                row =>
-                    marked[
-                        row * 5
-                        +
-                        col
-                    ]
-
-            )
-
-        ){
-
-            bingo = true;
-
-        }
-
-    }
-
-    if(
-
-        [0,6,12,18,24]
-        .every(
-            index =>
-                marked[index]
-        )
-
-    ){
-
-        bingo = true;
-
-    }
-
-    if(
-
-        [4,8,12,16,20]
-        .every(
-            index =>
-                marked[index]
-        )
-
-    ){
-
-        bingo = true;
-
-    }
-
-    if(
-        bingo
-    ){
-
-        showMessage(
-            "🏆 BINGO! You won!"
-        );
-
-        if(tg){
-
-            tg.showAlert(
-                "🏆 BINGO!"
-            );
-
-        }
-
-    }else{
-
-        showMessage(
-            "❌ Bingo is not complete."
+        cardData.push(
+            rowData
         );
 
     }
 
-}
 
-
-/* =========================
-   SOUND
-========================= */
-
-function toggleSound(){
-
-    soundEnabled =
-        !soundEnabled;
-
-    document.querySelector(
-        ".sound-btn"
-    ).innerText =
-        soundEnabled
-        ?
-        "🔊"
-        :
-        "🔇";
+    renderCard();
 
 }
 
 
-function speakNumber(number){
+/* =====================================================
+   RENDER CARD
+===================================================== */
 
-    if(
-        !soundEnabled
-    )
+function renderCard(){
+
+    const container =
+        document.getElementById(
+            "bingoCard"
+        );
+
+
+    container.innerHTML = "";
+
+
+    if(!cardData.length){
+
         return;
 
-    if(
-        "speechSynthesis"
-        in
-        window
-    ){
+    }
 
-        const voice =
-            new SpeechSynthesisUtterance(
 
-                getLetter(
-                    number
-                )
-                +
-                " "
-                +
-                number
+    cardData.forEach(
+
+        (row) => {
+
+            row.forEach(
+
+                (value) => {
+
+                    const cell =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    cell.className =
+                        "cell";
+
+
+                    cell.innerText =
+                        value;
+
+
+                    if(
+                        value === "FREE"
+                    ){
+
+                        cell.classList.add(
+                            "free"
+                        );
+
+                    }
+
+                    else if(
+                        calledNumbers
+                        .includes(
+                            value
+                        )
+                    ){
+
+                        cell.classList.add(
+                            "called"
+                        );
+
+                    }
+
+
+                    container.appendChild(
+                        cell
+                    );
+
+                }
 
             );
 
-        speechSynthesis.cancel();
+        }
 
-        speechSynthesis.speak(
-            voice
+    );
+
+}
+
+
+/* =====================================================
+   CURRENT NUMBER
+===================================================== */
+
+function updateCurrentNumber(
+    number
+){
+
+    const element =
+        document.getElementById(
+            "currentNumber"
         );
 
+
+    if(
+        number === null ||
+        number === undefined
+    ){
+
+        element.innerText =
+            "-";
+
+        return;
+
+    }
+
+
+    element.innerText =
+        number;
+
+
+    if(
+        number !== lastCurrentNumber
+    ){
+
+        lastCurrentNumber =
+            number;
+
+
+        try{
+
+            if(
+                navigator.vibrate
+            ){
+
+                navigator.vibrate(
+                    200
+                );
+
+            }
+
+        }
+
+        catch(error){}
+
     }
 
 }
 
 
-/* =========================
-   REFRESH
-========================= */
+/* =====================================================
+   CALLED NUMBERS
+===================================================== */
 
-async function refreshGame(){
+function updateCalledNumbers(){
 
-    await loadGameState();
+    const container =
+        document.getElementById(
+            "calledNumbers"
+        );
 
-    await loadMyCard();
+
+    container.innerHTML = "";
+
+
+    [...calledNumbers]
+    .reverse()
+    .forEach(
+
+        (number) => {
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+
+            item.className =
+                "called-number";
+
+
+            item.innerText =
+                number;
+
+
+            container.appendChild(
+                item
+            );
+
+        }
+
+    );
+
+
+    renderCard();
 
 }
 
 
-/* =========================
-   LEAVE
-========================= */
+/* =====================================================
+   CHECK BINGO
+===================================================== */
 
-function leaveGame(){
+async function claimBingo(){
 
-    if(tg){
+    if(!selectedCard){
 
-        tg.close();
+        showMessage(
+            "Card hin filatam.",
+            "error"
+        );
 
-    }else{
-
-        history.back();
+        return;
 
     }
 
-}
 
-
-/* =========================
-   START
-========================= */
-
-async function startGame(){
-
-    createNumberBoard();
-
-    playerId =
+    const userId =
         getUserId();
 
-    await joinGame();
 
-    await loadMyCard();
+    if(!userId){
 
-    await loadGameState();
+        showMessage(
+            "Telegram user ID hin argamne.",
+            "error"
+        );
 
-    pollingTimer =
-        setInterval(
+        return;
 
-            async function(){
+    }
 
-                await loadGameState();
 
-                await loadMyCard();
+    const button =
+        document.getElementById(
+            "bingoButton"
+        );
 
-            },
 
-            2000
+    button.disabled =
+        true;
+
+
+    showMessage(
+        "⏳ Bingo mirkaneessaa jira...",
+        "warning"
+    );
+
+
+    try{
+
+        const response =
+            await fetch(
+
+                API_BASE +
+                "/api/check-bingo",
+
+                {
+
+                    method:
+                    "POST",
+
+                    headers:{
+                        "Content-Type":
+                        "application/json"
+                    },
+
+                    body:
+
+                    JSON.stringify({
+
+                        user_id:
+                        userId,
+
+                        card_number:
+                        selectedCard,
+
+                        card_type:
+                        selectedCardType
+
+                    })
+
+                }
+
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if(
+            data.success
+        ){
+
+            showMessage(
+
+                "🏆 BINGO! ATI MO'ATTE!<br>" +
+
+                "💰 Prize: " +
+
+                data.prize +
+
+                " Birr",
+
+                "success"
+
+            );
+
+
+            if(
+                tg &&
+                tg.showPopup
+            ){
+
+                tg.showPopup({
+
+                    title:
+                    "🏆 BINGO!",
+
+                    message:
+                    "Ati mo'atte! Prize: " +
+                    data.prize +
+                    " Birr",
+
+                    buttons:[
+                        {
+                            type:
+                            "ok"
+                        }
+                    ]
+
+                });
+
+            }
+
+
+            return;
+
+        }
+
+
+        showMessage(
+
+            "❌ " +
+            (
+                data.message ||
+                "Bingo hin guunne."
+            ),
+
+            "error"
 
         );
 
+
+        button.disabled =
+            false;
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        showMessage(
+
+            "❌ Server error.",
+
+            "error"
+
+        );
+
+
+        button.disabled =
+            false;
+
+    }
+
 }
 
+
+/* =====================================================
+   AUTO REFRESH
+===================================================== */
+
+setInterval(
+
+    loadGameState,
+
+    1000
+
+);
+
+
+/* =====================================================
+   START
+===================================================== */
 
 window.addEventListener(
 
     "load",
 
-    startGame
+    () => {
+
+        const savedCard =
+            localStorage.getItem(
+                "selected_card"
+            );
+
+
+        if(savedCard){
+
+            document
+            .getElementById(
+                "cardNumber"
+            )
+            .value =
+                savedCard;
+
+        }
+
+
+        loadGameState();
+
+    }
 
 );
 
