@@ -4143,64 +4143,28 @@ def main():
 
 def run_bot():
 
-    application = (
-
-        Application.builder()
-
-        .token(BOT_TOKEN)
-
-        .build()
-
-    )
-
-
-    application.add_handler(
-
-        CommandHandler(
-
-            "start",
-
-            start
-
-        )
-
-    )
-
-
-    application.add_handler(
-
+        application.add_handler(
         MessageHandler(
-
-            filters.CONTACT,
-
-            receive_contact
-
+            filters.PHOTO,
+            receive_deposit_photo
         )
-
     )
 
-
     application.add_handler(
-
         MessageHandler(
-
-            filters.TEXT
-            & ~filters.COMMAND,
-
-            process_withdrawal
-
+            filters.TEXT & ~filters.COMMAND,
+            text_handler
         )
-
     )
 
-
     application.add_handler(
+        CallbackQueryHandler(
+            callback_handler
+        )
+    )
 
-        CallbackQueryHandler)
-    
-
- "🤖 GADAA BINGO BOT STARTED"
-
+    print(
+        "🤖 GADAA BINGO BOT STARTED"
     )
 
 
