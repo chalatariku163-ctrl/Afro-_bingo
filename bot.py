@@ -4149,5 +4149,106 @@ def main():
 # =========================================================
 
 if __name__ == "__main__":
+# =========================================================
+# RUN FLASK
+# =========================================================
 
+def run_flask():
+
+    port = int(
+        os.getenv(
+            "PORT",
+            10000
+        )
+    )
+
+    web_app.run(
+
+        host="0.0.0.0",
+
+        port=port
+
+    )
+
+
+# =========================================================
+# RUN BOT
+# =========================================================
+
+def run_bot():
+
+    if not BOT_TOKEN:
+
+        print(
+            "❌ BOT_TOKEN is missing"
+        )
+
+        return
+
+
+    application = (
+
+        Application.builder()
+
+        .token(
+            BOT_TOKEN
+        )
+
+        .build()
+
+    )
+
+
+    application.add_handler(
+
+        CommandHandler(
+            "start",
+            start
+        )
+
+    )
+
+
+    application.add_handler(
+
+        MessageHandler(
+
+            filters.CONTACT,
+
+            receive_contact
+
+        )
+
+    )
+
+
+    application.add_handler(
+
+        MessageHandler(
+
+            filters.TEXT
+            & ~filters.COMMAND,
+
+            process_text
+
+        )
+
+    )
+
+
+    application.add_handler(
+
+        CallbackQueryHandler(
+            button_handler
+        )
+
+    )
+
+
+    print(
+        "🤖 BOT STARTED"
+    )
+
+
+    application.run_polling()
     main()
