@@ -4177,12 +4177,25 @@ def run_bot():
 
 def main():
 
+    if not BOT_TOKEN:
+
+        raise RuntimeError(
+
+            "BOT_TOKEN environment variable is missing."
+
+        )
+
+
+    # LOAD DATA
+
     load_data()
 
     normalize_card_data()
 
     save_data()
 
+
+    # START FLASK SERVER
 
     flask_thread = threading.Thread(
 
@@ -4192,15 +4205,129 @@ def main():
 
     )
 
-
     flask_thread.start()
 
 
-    run_bot()
+    # CREATE TELEGRAM APPLICATION
+
+    application = (
+
+        Application
+
+        .builder()
+
+        .token(
+
+            BOT_TOKEN
+
+        )
+
+        .build()
+
+    )
+
+
+    # =====================================================
+    # START COMMAND
+    # =====================================================
+
+    application.add_handler(
+
+        CommandHandler(
+
+            "start",
+
+            start
+
+        )
+
+    )
+
+
+    # =====================================================
+    # REGISTER CONTACT
+    # =====================================================
+
+    application.add_handler(
+
+        MessageHandler(
+
+            filters.CONTACT,
+
+            receive_contact
+
+        )
+
+    )
+
+
+    # =====================================================
+    # DEPOSIT SCREENSHOT
+    # =====================================================
+
+    application.add_handler(
+
+        MessageHandler(
+
+            filters.PHOTO,
+
+            receive_deposit_photo
+
+        )
+
+    )
+
+
+    # =====================================================
+    # TEXT HANDLER
+    # =====================================================
+
+    application.add_handler(
+
+        MessageHandler(
+
+            filters.TEXT & ~filters.COMMAND,
+
+            text_handler
+
+        )
+
+    )
+
+
+    # =====================================================
+    # CALLBACK BUTTON HANDLER
+    # =====================================================
+
+    application.add_handler(
+
+        CallbackQueryHandler(
+
+            callback_handler
+
+        )
+
+    )
+
+
+    print(
+
+        "🤖 GADAA BINGO BOT STARTED"
+
+    )
+
+
+    # START BOT
+
+    application.run_polling(
+
+        drop_pending_updates=True
+
+    )
 
 
 # =========================================================
-# START
+# START PROGRAM
 # =========================================================
 
 if __name__ == "__main__":
