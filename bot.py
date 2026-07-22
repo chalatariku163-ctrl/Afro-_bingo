@@ -4224,7 +4224,7 @@ def run_bot():
         CallbackQueryHandler(
 
             application.add_handler(
-    CallbackQueryHandler(your_callback_function)
+    
             )
 
         )
