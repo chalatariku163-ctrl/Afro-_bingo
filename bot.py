@@ -4131,7 +4131,7 @@ def main():
 
             callback_handler
 
-        )
+        (
 
     )
 
@@ -4221,13 +4221,7 @@ def run_bot():
 
     application.add_handler(
 
-        CallbackQueryHandler(
-
-            application.add_handler(
-    
-            )
-
-        )
+        CallbackQueryHandler)
 
     )
 
