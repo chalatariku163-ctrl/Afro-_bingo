@@ -4197,14 +4197,9 @@ def run_bot():
     application.add_handler(
 
         CallbackQueryHandler)
+    
 
-    )
-
-    )
-
- print("Bot started")
-
-        "🤖 GADAA BINGO BOT STARTED"
+ "🤖 GADAA BINGO BOT STARTED"
 
     )
 
