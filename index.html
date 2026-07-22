@@ -1,14 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>GADAA BINGO</title>
-
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-<style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>GADAA BINGO</title><script src="https://telegram.org/js/telegram-web-app.js"></script><style>
 
 *{
     box-sizing:border-box;
@@ -18,8 +11,7 @@
 
 body{
     font-family:Arial,sans-serif;
-    background:
-    linear-gradient(135deg,#061b2c,#0b3d5c,#061b2c);
+    background:linear-gradient(135deg,#061b2c,#0b3d5c,#061b2c);
     color:white;
     min-height:100vh;
 }
@@ -48,11 +40,15 @@ body{
     padding:15px;
 }
 
-.status-box{
+.status-box,
+.card-select{
     background:rgba(255,255,255,.1);
     border-radius:15px;
     padding:15px;
     margin-bottom:15px;
+}
+
+.status-box{
     text-align:center;
 }
 
@@ -67,61 +63,38 @@ body{
     color:#ffd700;
 }
 
-.game-area{
-    display:none;
-}
-
-.card-select{
-    background:rgba(255,255,255,.1);
-    border-radius:15px;
-    padding:15px;
-    margin-bottom:15px;
-}
-
 .card-select h2{
     text-align:center;
     margin-bottom:12px;
     color:#ffd700;
 }
 
-.card-input{
-    display:flex;
-    gap:8px;
-}
-
-.card-input input{
-    flex:1;
-    padding:13px;
-    border:none;
-    border-radius:10px;
-    font-size:16px;
+.info{
+    margin-top:12px;
     text-align:center;
+    font-size:13px;
+    opacity:.8;
 }
 
-button{
-    border:none;
-    border-radius:10px;
-    padding:13px 18px;
-    font-size:15px;
-    font-weight:bold;
-    cursor:pointer;
+.buy-card-row{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-top:15px;
 }
 
-.select-btn{
+.buy-card-btn{
+    width:100%;
     background:#00c853;
     color:white;
 }
 
-.bingo-btn{
-    width:100%;
-    background:#ffd700;
-    color:#111;
-    font-size:20px;
-    margin-top:15px;
+.buy-card-btn:disabled{
+    opacity:.5;
 }
 
-.bingo-btn:disabled{
-    opacity:.5;
+.game-area{
+    display:none;
 }
 
 .current-number-box{
@@ -230,6 +203,18 @@ button{
     font-weight:bold;
 }
 
+.bingo-btn{
+    width:100%;
+    background:#ffd700;
+    color:#111;
+    font-size:20px;
+    margin-top:15px;
+}
+
+.bingo-btn:disabled{
+    opacity:.5;
+}
+
 .message{
     text-align:center;
     margin-top:15px;
@@ -248,13 +233,6 @@ button{
 
 .warning{
     color:#ffd700;
-}
-
-.info{
-    margin-top:15px;
-    text-align:center;
-    font-size:13px;
-    opacity:.8;
 }
 
 @media(max-width:500px){
@@ -286,144 +264,164 @@ button{
 
 }
 
-</style>
-</head>
+</style></head><body><div class="header"><h1>🎯 GADAA BINGO</h1>
 
-<body>
+<p>Play • Win • Enjoy</p>
 
-<div class="header">
+</div><div class="container"><!-- GAME STATUS -->
 
-    <h1>🎯 GADAA BINGO</h1>
+<div class="status-box">
 
-    <p>Play • Win • Enjoy</p>
+    <div
+        id="status"
+        class="status"
+    >
+        ⏳ Connecting...
+    </div>
+
+    <div
+        id="timer"
+        class="timer"
+    ></div>
 
 </div>
 
 
-<div class="container">
+<!-- CARD BUYING -->
 
-    <div class="status-box">
+<div
+    id="cardBuyingBox"
+    class="card-select"
+>
 
-        <div id="status" class="status">
-            ⏳ Connecting...
-        </div>
+    <h2>🎫 BUY CARD</h2>
 
-        <div id="timer" class="timer"></div>
+    <div
+        id="buyTimer"
+        class="timer"
+    >
+        ⏳ Waiting...
+    </div>
+
+    <div class="info">
+
+        Game jalqabamuun dura
+        card kee bitadhu.
 
     </div>
 
 
-    <!-- CARD SELECT -->
-
-    <div id="cardSelect" class="card-select">
-
-        <h2>🎫 SELECT YOUR CARD</h2>
-
-        <div class="card-input">
-
-            <input
-                id="cardNumber"
-                type="number"
-                min="1"
-                max="500"
-                placeholder="Card Number 1 - 500"
-            >
-
-            <button
-                class="select-btn"
-                onclick="selectCard()"
-            >
-                SELECT
-            </button>
-
-        </div>
-
-        <div class="info">
-            Card number kee Telegram keessatti bitatte galchi.
-        </div>
-
-    </div>
-
-
-    <!-- GAME -->
-
-    <div id="gameArea" class="game-area">
-
-
-        <div class="current-number-box">
-
-            <div class="current-label">
-                📢 CURRENT NUMBER
-            </div>
-
-            <div
-                id="currentNumber"
-                class="current-number"
-            >
-                -
-            </div>
-
-        </div>
-
-
-        <div class="bingo-layout">
-
-
-            <div class="card-area">
-
-                <div
-                    id="cardTitle"
-                    class="card-title"
-                >
-                    🎫 CARD
-                </div>
-
-                <div
-                    id="bingoCard"
-                    class="bingo-card"
-                ></div>
-
-            </div>
-
-
-            <div class="called-area">
-
-                <h3>📢 CALLED</h3>
-
-                <div
-                    id="calledNumbers"
-                    class="called-numbers"
-                ></div>
-
-            </div>
-
-
-        </div>
-
+    <div class="buy-card-row">
 
         <button
-            id="bingoButton"
-            class="bingo-btn"
-            onclick="claimBingo()"
-            disabled
+            id="buy10Button"
+            class="buy-card-btn"
+            onclick="buyCard('10')"
         >
-            🏆 BINGO!
+            🎫 BUY 10 BIRR CARD
         </button>
 
 
-        <div
-            id="message"
-            class="message"
-        ></div>
+        <button
+            id="buy20Button"
+            class="buy-card-btn"
+            onclick="buyCard('20')"
+        >
+            🎫 BUY 20 BIRR CARD
+        </button>
 
     </div>
 
 </div>
 
 
-<script>
+<!-- GAME -->
 
-const tg = window.Telegram.WebApp;
+<div
+    id="gameArea"
+    class="game-area"
+>
+
+
+    <div class="current-number-box">
+
+        <div class="current-label">
+            📢 CURRENT NUMBER
+        </div>
+
+
+        <div
+            id="currentNumber"
+            class="current-number"
+        >
+            -
+        </div>
+
+    </div>
+
+
+    <div class="bingo-layout">
+
+
+        <div class="card-area">
+
+            <div
+                id="cardTitle"
+                class="card-title"
+            >
+                🎫 CARD
+            </div>
+
+
+            <div
+                id="bingoCard"
+                class="bingo-card"
+            ></div>
+
+        </div>
+
+
+        <div class="called-area">
+
+            <h3>📢 CALLED</h3>
+
+
+            <div
+                id="calledNumbers"
+                class="called-numbers"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <button
+        id="bingoButton"
+        class="bingo-btn"
+        onclick="claimBingo()"
+        disabled
+    >
+        🏆 BINGO!
+    </button>
+
+
+    <div
+        id="message"
+        class="message"
+    ></div>
+
+</div>
+
+</div><script>
+
+
+/* =====================================================
+   TELEGRAM
+===================================================== */
+
+const tg =
+    window.Telegram.WebApp;
 
 tg.ready();
 
@@ -434,28 +432,40 @@ tg.expand();
    API
 ===================================================== */
 
-const API_BASE = window.location.origin;
+const API_BASE =
+    window.location.origin;
 
 
 /* =====================================================
    VARIABLES
 ===================================================== */
 
-let selectedCard = null;
+let selectedCard =
+    null;
 
-let selectedCardType = "10";
+let selectedCardType =
+    null;
 
-let currentGameId = 0;
+let currentGameId =
+    0;
 
-let calledNumbers = [];
+let calledNumbers =
+    [];
 
-let gameStarted = false;
+let gameStarted =
+    false;
 
-let cardBuying = false;
+let cardBuying =
+    false;
 
-let cardData = [];
+let cardBuyingEndTime =
+    0;
 
-let lastCurrentNumber = null;
+let cardData =
+    [];
+
+let lastCurrentNumber =
+    null;
 
 
 /* =====================================================
@@ -465,17 +475,26 @@ let lastCurrentNumber = null;
 function getUserId(){
 
     if(
+
         tg &&
         tg.initDataUnsafe &&
         tg.initDataUnsafe.user
+
     ){
 
-        return tg.initDataUnsafe.user.id;
+        return tg
+        .initDataUnsafe
+        .user
+        .id;
 
     }
 
+
     const saved =
-        localStorage.getItem("user_id");
+        localStorage.getItem(
+            "user_id"
+        );
+
 
     return saved || null;
 
@@ -487,14 +506,22 @@ function getUserId(){
 ===================================================== */
 
 function showMessage(
+
     text,
+
     type="info"
+
 ){
 
     const message =
-        document.getElementById("message");
+        document.getElementById(
+            "message"
+        );
 
-    message.innerHTML = text;
+
+    message.innerHTML =
+        text;
+
 
     message.className =
         "message " + type;
@@ -503,7 +530,7 @@ function showMessage(
 
 
 /* =====================================================
-   GAME STATE
+   LOAD GAME STATE
 ===================================================== */
 
 async function loadGameState(){
@@ -512,18 +539,29 @@ async function loadGameState(){
 
         const response =
             await fetch(
+
                 API_BASE +
                 "/api/game-state"
+
             );
+
 
         const data =
             await response.json();
 
-        if(!data.success){
+
+        if(
+
+            !data.success
+
+        ){
 
             showMessage(
+
                 "Game state error.",
+
                 "error"
+
             );
 
             return;
@@ -534,43 +572,55 @@ async function loadGameState(){
         currentGameId =
             data.game_id;
 
+
         calledNumbers =
             data.called_numbers || [];
 
+
         gameStarted =
             data.started;
+
 
         cardBuying =
             data.card_buying;
 
 
-        updateStatus(data);
+        cardBuyingEndTime =
+            data.card_buying_end_time || 0;
+
+
+        updateStatus(
+            data
+        );
+
+
+        updateCardBuyingUI();
+
 
         updateCalledNumbers();
 
+
         updateCurrentNumber(
+
             data.current_number
+
         );
 
 
         if(
+
             selectedCard &&
             gameStarted
+
         ){
 
             document
             .getElementById(
                 "bingoButton"
             )
-            .disabled = false;
+            .disabled =
+                false;
 
-        }
-
-
-        if(
-            selectedCard &&
-            gameStarted
-        ){
 
             renderCard();
 
@@ -580,11 +630,17 @@ async function loadGameState(){
 
     catch(error){
 
-        console.error(error);
+        console.error(
+            error
+        );
+
 
         showMessage(
-            "Server waliin wal qunnamtiin hin jiru.",
+
+            "Server waliin qunnamtiin hin jiru.",
+
             "error"
+
         );
 
     }
@@ -603,56 +659,85 @@ function updateStatus(data){
             "status"
         );
 
+
     const timer =
         document.getElementById(
             "timer"
         );
 
 
-    if(data.winner){
+    if(
+
+        data.winner
+
+    ){
 
         status.innerHTML =
             "🏆 WINNER FOUND";
 
+
         timer.innerHTML =
             "Game xumurame.";
+
 
         return;
 
     }
 
 
-    if(data.card_buying){
+    if(
+
+        data.card_buying
+
+    ){
 
         status.innerHTML =
             "🎫 CARD BUYING OPEN";
 
+
         const remaining =
             Math.max(
+
                 0,
+
                 Math.ceil(
+
                     data.card_buying_end_time
-                    - Date.now()/1000
+                    -
+                    Date.now() / 1000
+
                 )
+
             );
 
+
         timer.innerHTML =
-            "⏳ Card buying: " +
-            remaining +
+
+            "⏳ Card bitachuuf: "
+            +
+            remaining
+            +
             " seconds";
+
 
         return;
 
     }
 
 
-    if(data.started){
+    if(
+
+        data.started
+
+    ){
 
         status.innerHTML =
             "🎮 GAME IS RUNNING";
 
+
         timer.innerHTML =
             "📢 Number waamamaa jira";
+
 
         return;
 
@@ -660,7 +745,8 @@ function updateStatus(data){
 
 
     status.innerHTML =
-        "⏸ GAME NOT STARTED";
+        "⏸ WAITING FOR NEXT GAME";
+
 
     timer.innerHTML =
         "Game itti aanu eegi.";
@@ -669,31 +755,122 @@ function updateStatus(data){
 
 
 /* =====================================================
-   SELECT CARD
+   CARD BUYING UI
 ===================================================== */
 
-function selectCard(){
+function updateCardBuyingUI(){
 
-    const input =
+    const box =
         document.getElementById(
-            "cardNumber"
-        );
-
-    const number =
-        parseInt(
-            input.value
+            "cardBuyingBox"
         );
 
 
     if(
-        !number ||
-        number < 1 ||
-        number > 500
+
+        !box
+
+    ){
+
+        return;
+
+    }
+
+
+    if(
+
+        cardBuying
+
+    ){
+
+        box.style.display =
+            "block";
+
+
+        const remaining =
+            Math.max(
+
+                0,
+
+                Math.ceil(
+
+                    cardBuyingEndTime
+                    -
+                    Date.now() / 1000
+
+                )
+
+            );
+
+
+        const buyTimer =
+            document.getElementById(
+                "buyTimer"
+            );
+
+
+        buyTimer.innerHTML =
+
+            "⏳ Yeroo hafe: "
+            +
+            remaining
+            +
+            " seconds";
+
+
+        document
+        .getElementById(
+            "buy10Button"
+        )
+        .disabled =
+            false;
+
+
+        document
+        .getElementById(
+            "buy20Button"
+        )
+        .disabled =
+            false;
+
+    }
+
+    else{
+
+        box.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =====================================================
+   BUY CARD
+===================================================== */
+
+async function buyCard(
+
+    cardType
+
+){
+
+    const userId =
+        getUserId();
+
+
+    if(
+
+        !userId
+
     ){
 
         showMessage(
-            "⚠️ Card number 1 hanga 500 galchi.",
+
+            "Telegram user ID hin argamne.",
+
             "error"
+
         );
 
         return;
@@ -701,53 +878,237 @@ function selectCard(){
     }
 
 
-    selectedCard =
-        number;
+    if(
 
+        !cardBuying
 
-    localStorage.setItem(
-        "selected_card",
-        number
-    );
+    ){
 
+        showMessage(
 
-    document
-    .getElementById(
-        "cardSelect"
-    )
-    .style.display =
-        "none";
+            "⏳ Yeroon card bitachuu xumurame.",
 
+            "error"
 
-    document
-    .getElementById(
-        "gameArea"
-    )
-    .style.display =
-        "block";
+        );
+
+        return;
+
+    }
 
 
     document
     .getElementById(
-        "cardTitle"
+        "buy10Button"
     )
-    .innerHTML =
-        "🎫 CARD " +
-        number;
+    .disabled =
+        true;
 
 
-    generateCard();
+    document
+    .getElementById(
+        "buy20Button"
+    )
+    .disabled =
+        true;
 
 
     showMessage(
-        "✅ Card " +
-        number +
-        " filatame. Game jalqaba.",
-        "success"
+
+        "⏳ Card siif bitamaa jira...",
+
+        "warning"
+
     );
 
 
-    loadGameState();
+    try{
+
+        const response =
+            await fetch(
+
+                API_BASE +
+                "/api/buy-card",
+
+                {
+
+                    method:
+                    "POST",
+
+
+                    headers:{
+
+                        "Content-Type":
+                        "application/json"
+
+                    },
+
+
+                    body:
+
+                    JSON.stringify({
+
+                        user_id:
+                        userId,
+
+
+                        card_type:
+                        cardType,
+
+
+                        game_id:
+                        currentGameId
+
+                    })
+
+                }
+
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if(
+
+            !data.success
+
+        ){
+
+            showMessage(
+
+                "❌ " +
+                (
+
+                    data.message ||
+                    "Card bituun hin milkoofne."
+
+                ),
+
+                "error"
+
+            );
+
+
+            document
+            .getElementById(
+                "buy10Button"
+            )
+            .disabled =
+                false;
+
+
+            document
+            .getElementById(
+                "buy20Button"
+            )
+            .disabled =
+                false;
+
+
+            return;
+
+        }
+
+
+        selectedCard =
+            data.card_number;
+
+
+        selectedCardType =
+            cardType;
+
+
+        localStorage.setItem(
+
+            "selected_card",
+
+            selectedCard
+
+        );
+
+
+        localStorage.setItem(
+
+            "selected_card_type",
+
+            selectedCardType
+
+        );
+
+
+        generateCard();
+
+
+        document
+        .getElementById(
+            "gameArea"
+        )
+        .style.display =
+            "block";
+
+
+        document
+        .getElementById(
+            "cardTitle"
+        )
+        .innerHTML =
+
+            "🎫 CARD "
+            +
+            data.card_number;
+
+
+        showMessage(
+
+            "✅ Card "
+            +
+            data.card_number
+            +
+            " bitatte.",
+
+            "success"
+
+        );
+
+
+        loadGameState();
+
+    }
+
+    catch(error){
+
+        console.error(
+            error
+        );
+
+
+        showMessage(
+
+            "❌ Server error.",
+
+            "error"
+
+        );
+
+
+        document
+        .getElementById(
+            "buy10Button"
+        )
+        .disabled =
+            false;
+
+
+        document
+        .getElementById(
+            "buy20Button"
+        )
+        .disabled =
+            false;
+
+    }
 
 }
 
@@ -758,7 +1119,11 @@ function selectCard(){
 
 function generateCard(){
 
-    if(!selectedCard){
+    if(
+
+        !selectedCard
+
+    ){
 
         return;
 
@@ -772,58 +1137,85 @@ function generateCard(){
 
 
     function seededRandom(
+
         min,
+
         max
+
     ){
 
         seed =
+
             (
+
                 seed *
-                9301 +
+                9301
+                +
                 49297
-            ) % 233280;
+
+            )
+            %
+            233280;
 
 
         const rnd =
-            seed / 233280;
+            seed /
+            233280;
 
 
         return Math.floor(
-            min +
+
+            min
+            +
             rnd *
             (
+
                 max -
-                min +
+                min
+                +
                 1
+
             )
+
         );
 
     }
 
 
     function generateColumn(
+
         min,
+
         max
+
     ){
 
-        const numbers = [];
+        const numbers =
+            [];
 
 
         while(
+
             numbers.length < 5
+
         ){
 
             const number =
                 seededRandom(
+
                     min,
+
                     max
+
                 );
 
 
             if(
+
                 !numbers.includes(
                     number
                 )
+
             ){
 
                 numbers.push(
@@ -842,40 +1234,71 @@ function generateCard(){
 
     const columns = [
 
-        generateColumn(1,15),
+        generateColumn(
+            1,
+            15
+        ),
 
-        generateColumn(16,30),
 
-        generateColumn(31,45),
+        generateColumn(
+            16,
+            30
+        ),
 
-        generateColumn(46,60),
 
-        generateColumn(61,75)
+        generateColumn(
+            31,
+            45
+        ),
+
+
+        generateColumn(
+            46,
+            60
+        ),
+
+
+        generateColumn(
+            61,
+            75
+        )
 
     ];
 
 
-    cardData = [];
+    cardData =
+        [];
 
 
     for(
+
         let row = 0;
+
         row < 5;
+
         row++
+
     ){
 
-        const rowData = [];
+        const rowData =
+            [];
 
 
         for(
+
             let col = 0;
+
             col < 5;
+
             col++
+
         ){
 
             if(
+
                 row === 2 &&
                 col === 2
+
             ){
 
                 rowData.push(
@@ -887,7 +1310,9 @@ function generateCard(){
             else{
 
                 rowData.push(
+
                     columns[col][row]
+
                 );
 
             }
@@ -919,10 +1344,15 @@ function renderCard(){
         );
 
 
-    container.innerHTML = "";
+    container.innerHTML =
+        "";
 
 
-    if(!cardData.length){
+    if(
+
+        !cardData.length
+
+    ){
 
         return;
 
@@ -931,11 +1361,11 @@ function renderCard(){
 
     cardData.forEach(
 
-        (row) => {
+        row => {
 
             row.forEach(
 
-                (value) => {
+                value => {
 
                     const cell =
                         document.createElement(
@@ -952,7 +1382,9 @@ function renderCard(){
 
 
                     if(
+
                         value === "FREE"
+
                     ){
 
                         cell.classList.add(
@@ -961,11 +1393,13 @@ function renderCard(){
 
                     }
 
+
                     else if(
-                        calledNumbers
-                        .includes(
+
+                        calledNumbers.includes(
                             value
                         )
+
                     ){
 
                         cell.classList.add(
@@ -995,7 +1429,9 @@ function renderCard(){
 ===================================================== */
 
 function updateCurrentNumber(
+
     number
+
 ){
 
     const element =
@@ -1005,12 +1441,15 @@ function updateCurrentNumber(
 
 
     if(
+
         number === null ||
         number === undefined
+
     ){
 
         element.innerText =
             "-";
+
 
         return;
 
@@ -1022,28 +1461,27 @@ function updateCurrentNumber(
 
 
     if(
-        number !== lastCurrentNumber
+
+        number !==
+        lastCurrentNumber
+
     ){
 
         lastCurrentNumber =
             number;
 
 
-        try{
+        if(
 
-            if(
-                navigator.vibrate
-            ){
+            navigator.vibrate
 
-                navigator.vibrate(
-                    200
-                );
+        ){
 
-            }
+            navigator.vibrate(
+                200
+            );
 
         }
-
-        catch(error){}
 
     }
 
@@ -1062,14 +1500,15 @@ function updateCalledNumbers(){
         );
 
 
-    container.innerHTML = "";
+    container.innerHTML =
+        "";
 
 
     [...calledNumbers]
     .reverse()
     .forEach(
 
-        (number) => {
+        number => {
 
             const item =
                 document.createElement(
@@ -1100,17 +1539,25 @@ function updateCalledNumbers(){
 
 
 /* =====================================================
-   CHECK BINGO
+   CLAIM BINGO
 ===================================================== */
 
 async function claimBingo(){
 
-    if(!selectedCard){
+    if(
+
+        !selectedCard
+
+    ){
 
         showMessage(
+
             "Card hin filatam.",
+
             "error"
+
         );
+
 
         return;
 
@@ -1121,12 +1568,20 @@ async function claimBingo(){
         getUserId();
 
 
-    if(!userId){
+    if(
+
+        !userId
+
+    ){
 
         showMessage(
+
             "Telegram user ID hin argamne.",
+
             "error"
+
         );
+
 
         return;
 
@@ -1144,8 +1599,11 @@ async function claimBingo(){
 
 
     showMessage(
+
         "⏳ Bingo mirkaneessaa jira...",
+
         "warning"
+
     );
 
 
@@ -1162,10 +1620,14 @@ async function claimBingo(){
                     method:
                     "POST",
 
+
                     headers:{
+
                         "Content-Type":
                         "application/json"
+
                     },
+
 
                     body:
 
@@ -1174,8 +1636,10 @@ async function claimBingo(){
                         user_id:
                         userId,
 
+
                         card_number:
                         selectedCard,
+
 
                         card_type:
                         selectedCardType
@@ -1192,17 +1656,19 @@ async function claimBingo(){
 
 
         if(
+
             data.success
+
         ){
 
             showMessage(
 
-                "🏆 BINGO! ATI MO'ATTE!<br>" +
-
-                "💰 Prize: " +
-
-                data.prize +
-
+                "🏆 BINGO! ATI MO'ATTE!<br>"
+                +
+                "💰 Prize: "
+                +
+                data.prize
+                +
                 " Birr",
 
                 "success"
@@ -1211,8 +1677,10 @@ async function claimBingo(){
 
 
             if(
+
                 tg &&
                 tg.showPopup
+
             ){
 
                 tg.showPopup({
@@ -1220,16 +1688,25 @@ async function claimBingo(){
                     title:
                     "🏆 BINGO!",
 
+
                     message:
-                    "Ati mo'atte! Prize: " +
-                    data.prize +
+
+                    "Ati mo'atte! Prize: "
+                    +
+                    data.prize
+                    +
                     " Birr",
 
+
                     buttons:[
+
                         {
+
                             type:
                             "ok"
+
                         }
+
                     ]
 
                 });
@@ -1244,10 +1721,13 @@ async function claimBingo(){
 
         showMessage(
 
-            "❌ " +
+            "❌ "
+            +
             (
+
                 data.message ||
                 "Bingo hin guunne."
+
             ),
 
             "error"
@@ -1262,7 +1742,10 @@ async function claimBingo(){
 
     catch(error){
 
-        console.error(error);
+        console.error(
+            error
+        );
+
 
         showMessage(
 
@@ -1310,14 +1793,30 @@ window.addEventListener(
             );
 
 
-        if(savedCard){
+        const savedCardType =
+            localStorage.getItem(
+                "selected_card_type"
+            );
 
-            document
-            .getElementById(
-                "cardNumber"
-            )
-            .value =
-                savedCard;
+
+        if(
+
+            savedCard
+
+        ){
+
+            selectedCard =
+                parseInt(
+                    savedCard
+                );
+
+
+            selectedCardType =
+                savedCardType ||
+                "10";
+
+
+            generateCard();
 
         }
 
@@ -1328,7 +1827,5 @@ window.addEventListener(
 
 );
 
-</script>
-
-</body>
-</html>
+</script></body>
+    </html>
