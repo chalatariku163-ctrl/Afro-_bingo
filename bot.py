@@ -4200,8 +4200,9 @@ def run_bot():
 
     )
 
+    )
 
-    print(
+ print("Bot started")
 
         "🤖 GADAA BINGO BOT STARTED"
 
