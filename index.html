@@ -282,7 +282,7 @@ button:disabled{
 
 
 /* ================================= */
-/* LEFT CALLED / RIGHT USER CARD */
+/* LEFT CALLED / RIGHT CARD */
 /* ================================= */
 
 .game-layout{
@@ -387,6 +387,9 @@ button:disabled{
 
     font-weight:bold;
 
+    box-shadow:
+        0 0 8px #16c784;
+
 }
 
 
@@ -410,7 +413,8 @@ button:disabled{
 
     margin-bottom:15px;
 
-    box-shadow:0 4px 15px #0005;
+    box-shadow:
+        0 4px 15px #0005;
 
 }
 
@@ -486,6 +490,8 @@ button:disabled{
 
     cursor:pointer;
 
+    transition:.2s;
+
 }
 
 .bingo-card td.marked{
@@ -493,6 +499,11 @@ button:disabled{
     background:#16c784;
 
     color:white;
+
+    font-weight:bold;
+
+    box-shadow:
+        0 0 8px #16c784;
 
 }
 
@@ -524,7 +535,7 @@ button:disabled{
 
 
 /* ================================= */
-/* MOBILE: CALLED LEFT / CARD RIGHT */
+/* MOBILE */
 /* ================================= */
 
 @media(max-width:700px){
@@ -649,7 +660,9 @@ button:disabled{
 
 </head>
 
+
 <body>
+
 
 <div class="container">
 
@@ -726,9 +739,7 @@ button:disabled{
 </div>
 
 
-<!-- ================================= -->
-<!-- CALLED LEFT / CARD RIGHT -->
-<!-- ================================= -->
+<!-- CALLED NUMBERS LEFT / USER CARD RIGHT -->
 
 <div class="game-layout">
 
@@ -782,7 +793,9 @@ button:disabled{
 const tg =
     window.Telegram.WebApp;
 
+
 tg.ready();
+
 
 tg.expand();
 
@@ -975,6 +988,7 @@ async function loadGameState(){
             gameStatus.innerText =
                 "⚠️ GAME STATE ERROR";
 
+
             return;
 
         }
@@ -1029,30 +1043,9 @@ function updateGameUI(data){
                 winnerCardTimeout
             );
 
+
             winnerCardTimeout =
                 null;
-
-        }
-
-
-        /*
-        CARD DURAA HIN HAQAMNE.
-
-        Garuu game haaraa keessatti
-        backend card haaraa yoo erge,
-        card haaraa qofa fudhanna.
-        */
-
-        if(
-
-            Array.isArray(
-                data.user_cards
-            )
-
-        ){
-
-            myCards =
-                data.user_cards;
 
         }
 
@@ -1106,20 +1099,12 @@ function updateGameUI(data){
             + " SEC";
 
 
-        /*
-        CARD ID MUL'ATA
-        */
-
         cardIdPanel.style.display =
             "block";
 
 
         renderCardIds();
 
-
-        /*
-        USER CARD MIRGA MUL'ATA
-        */
 
         if(
 
@@ -1157,17 +1142,9 @@ function updateGameUI(data){
             "🎱 NUMBERS ARE BEING CALLED";
 
 
-        /*
-        CARD ID DHOKATA
-        */
-
         cardIdPanel.style.display =
             "none";
 
-
-        /*
-        USER CARD MIRGA MUL'ATA
-        */
 
         if(
 
@@ -1208,10 +1185,6 @@ function updateGameUI(data){
         cardIdPanel.style.display =
             "none";
 
-
-        /*
-        CARD 40 SEC MUL'ATA
-        */
 
         if(
 
@@ -1277,11 +1250,6 @@ function updateGameUI(data){
             "none";
 
 
-        /*
-        USER CARD YOO JIRAATE
-        HARKA MIRGAA IRRATTI MULA'ATA
-        */
-
         if(
 
             myCards.length > 0
@@ -1335,7 +1303,24 @@ function updateGameUI(data){
 
 
     // =================================================
-    // USER CARDS
+    // AUTO MARK USER CARDS
+    // =================================================
+
+    myCards.forEach(
+
+        function(card){
+
+            autoMarkCalledNumbers(
+                card
+            );
+
+        }
+
+    );
+
+
+    // =================================================
+    // RENDER USER CARDS
     // =================================================
 
     renderMyCards();
@@ -1344,7 +1329,7 @@ function updateGameUI(data){
 
 
 // =====================================================
-// CARD ID TABLE
+// CARD ID TABLE 1 - 500
 // =====================================================
 
 function renderCardIds(){
@@ -1510,25 +1495,75 @@ function renderCardIds(){
 
 
 // =====================================================
-// FORMAT CALL
+// FORMAT CALL NUMBER
 // =====================================================
 
 function formatCall(number){
 
-    if(number >= 1 && number <= 15)
+    if(
+
+        number >= 1 &&
+
+        number <= 15
+
+    ){
+
         return "B-" + number;
 
-    if(number >= 16 && number <= 30)
+    }
+
+
+    if(
+
+        number >= 16 &&
+
+        number <= 30
+
+    ){
+
         return "I-" + number;
 
-    if(number >= 31 && number <= 45)
+    }
+
+
+    if(
+
+        number >= 31 &&
+
+        number <= 45
+
+    ){
+
         return "N-" + number;
 
-    if(number >= 46 && number <= 60)
+    }
+
+
+    if(
+
+        number >= 46 &&
+
+        number <= 60
+
+    ){
+
         return "G-" + number;
 
-    if(number >= 61 && number <= 75)
+    }
+
+
+    if(
+
+        number >= 61 &&
+
+        number <= 75
+
+    ){
+
         return "O-" + number;
+
+    }
+
 
     return number;
 
@@ -1536,7 +1571,7 @@ function formatCall(number){
 
 
 // =====================================================
-// CALLED NUMBERS
+// CALLED NUMBERS TABLE
 // =====================================================
 
 function renderCalledNumbers(numbers){
@@ -1585,6 +1620,8 @@ function renderCalledNumbers(numbers){
     ];
 
 
+    // HEADER
+
     columns.forEach(
 
         function(column){
@@ -1611,6 +1648,8 @@ function renderCalledNumbers(numbers){
 
     );
 
+
+    // NUMBERS 1 - 75
 
     for(
 
@@ -1646,7 +1685,9 @@ function renderCalledNumbers(numbers){
 
                 if(
 
-                    calledSet.has(number)
+                    calledSet.has(
+                        number
+                    )
 
                 ){
 
@@ -1664,6 +1705,153 @@ function renderCalledNumbers(numbers){
             }
 
         );
+
+    }
+
+}
+
+
+// =====================================================
+// AUTO MARK CALLED NUMBERS
+// =====================================================
+
+function autoMarkCalledNumbers(userCard){
+
+    if(
+
+        !userCard ||
+
+        !Array.isArray(
+            userCard.card
+        )
+
+    ){
+
+        return;
+
+    }
+
+
+    if(
+
+        !Array.isArray(
+            userCard.markedCells
+        )
+
+    ){
+
+        userCard.markedCells =
+            [];
+
+    }
+
+
+    // FREE SPACE
+
+    if(
+
+        !userCard.markedCells.includes(
+            "2-2"
+        )
+
+    ){
+
+        userCard.markedCells.push(
+            "2-2"
+        );
+
+    }
+
+
+    if(
+
+        !gameState ||
+
+        !Array.isArray(
+            gameState.called_numbers
+        )
+
+    ){
+
+        return;
+
+    }
+
+
+    const calledSet =
+        new Set(
+
+            gameState.called_numbers.map(
+                Number
+            )
+
+        );
+
+
+    for(
+
+        let row = 0;
+
+        row < 5;
+
+        row++
+
+    ){
+
+        for(
+
+            let col = 0;
+
+            col < 5;
+
+            col++
+
+        ){
+
+            const value =
+                userCard.card[row][col];
+
+
+            if(
+
+                value === "FREE"
+
+            ){
+
+                continue;
+
+            }
+
+
+            if(
+
+                calledSet.has(
+                    Number(value)
+                )
+
+            ){
+
+                const key =
+                    row + "-" + col;
+
+
+                if(
+
+                    !userCard.markedCells.includes(
+                        key
+                    )
+
+                ){
+
+                    userCard.markedCells.push(
+                        key
+                    );
+
+                }
+
+            }
+
+        }
 
     }
 
@@ -1756,12 +1944,14 @@ async function buyCard(type){
                     method:
                         "POST",
 
+
                     headers:{
 
                         "Content-Type":
                             "application/json"
 
                     },
+
 
                     body:
 
@@ -1770,8 +1960,10 @@ async function buyCard(type){
                             user_id:
                                 userId,
 
+
                             card_type:
                                 type,
+
 
                             card_number:
                                 selectedCardNumber
@@ -1812,16 +2004,21 @@ async function buyCard(type){
             game_id:
                 data.game_id,
 
+
             card_number:
                 data.card_number,
+
 
             card_type:
                 data.card_type,
 
+
             card:
                 data.card,
 
+
             markedCells:
+
                 [
 
                     "2-2"
@@ -1830,10 +2027,6 @@ async function buyCard(type){
 
         };
 
-
-        /*
-        DUPLICATE CARD AKKA HIN UUMAMNE
-        */
 
         const exists =
             myCards.some(
@@ -1844,7 +2037,11 @@ async function buyCard(type){
 
                         Number(
                             card.card_number
-                        ) === Number(
+                        )
+
+                        ===
+
+                        Number(
                             newCard.card_number
                         )
 
@@ -2011,6 +2208,11 @@ function renderMyCards(){
             }
 
 
+            autoMarkCalledNumbers(
+                userCard
+            );
+
+
             const cardPanel =
                 document.createElement(
                     "div"
@@ -2119,6 +2321,8 @@ function renderMyCards(){
                 );
 
 
+            // 5 x 5 CARD
+
             for(
 
                 let row = 0;
@@ -2163,6 +2367,8 @@ function renderMyCards(){
                         row + "-" + col;
 
 
+                    // FREE
+
                     if(
 
                         value === "FREE"
@@ -2178,31 +2384,43 @@ function renderMyCards(){
                             "marked"
                         );
 
+                    }
 
-                        if(
 
-                            !userCard.markedCells
-                                .includes(
-                                    key
-                                )
+                    // CALLED NUMBER
 
-                        ){
+                    else if(
 
-                            userCard.markedCells.push(
-                                key
-                            );
+                        gameState &&
 
-                        }
+                        Array.isArray(
+                            gameState.called_numbers
+                        ) &&
+
+                        gameState.called_numbers
+
+                            .map(Number)
+
+                            .includes(
+                                Number(value)
+                            )
+
+                    ){
+
+                        td.classList.add(
+                            "marked"
+                        );
 
                     }
 
 
+                    // MANUAL / SAVED MARK
+
                     if(
 
-                        userCard.markedCells
-                            .includes(
-                                key
-                            )
+                        userCard.markedCells.includes(
+                            key
+                        )
 
                     ){
 
@@ -2311,7 +2529,9 @@ function toggleCardCell(
 
         !gameState ||
 
-        !gameState.called_numbers
+        !Array.isArray(
+            gameState.called_numbers
+        )
 
     ){
 
@@ -2371,11 +2591,9 @@ function toggleCardCell(
 
         if(
 
-            !userCard.markedCells
-
-                .includes(
-                    key
-                )
+            !userCard.markedCells.includes(
+                key
+            )
 
         ){
 
@@ -2402,6 +2620,275 @@ function toggleCardCell(
             );
 
     }
+
+}
+
+
+// =====================================================
+// CHECK BINGO PATTERNS
+// =====================================================
+
+function checkLocalBingo(userCard){
+
+    if(
+
+        !userCard ||
+
+        !Array.isArray(
+            userCard.card
+        )
+
+    ){
+
+        return false;
+
+    }
+
+
+    const marked =
+        userCard.markedCells || [];
+
+
+    function isMarked(row,col){
+
+        return marked.includes(
+
+            row + "-" + col
+
+        );
+
+    }
+
+
+    // =================================
+    // HORIZONTAL LINES
+    // =================================
+
+    for(
+
+        let row = 0;
+
+        row < 5;
+
+        row++
+
+    ){
+
+        let complete =
+            true;
+
+
+        for(
+
+            let col = 0;
+
+            col < 5;
+
+            col++
+
+        ){
+
+            if(
+
+                !isMarked(
+                    row,
+                    col
+                )
+
+            ){
+
+                complete =
+                    false;
+
+
+                break;
+
+            }
+
+        }
+
+
+        if(complete){
+
+            return true;
+
+        }
+
+    }
+
+
+    // =================================
+    // VERTICAL LINES
+    // =================================
+
+    for(
+
+        let col = 0;
+
+        col < 5;
+
+        col++
+
+    ){
+
+        let complete =
+            true;
+
+
+        for(
+
+            let row = 0;
+
+            row < 5;
+
+            row++
+
+        ){
+
+            if(
+
+                !isMarked(
+                    row,
+                    col
+                )
+
+            ){
+
+                complete =
+                    false;
+
+
+                break;
+
+            }
+
+        }
+
+
+        if(complete){
+
+            return true;
+
+        }
+
+    }
+
+
+    // =================================
+    // DIAGONAL \
+    // =================================
+
+    let diagonal1 =
+        true;
+
+
+    for(
+
+        let i = 0;
+
+        i < 5;
+
+        i++
+
+    ){
+
+        if(
+
+            !isMarked(
+                i,
+                i
+            )
+
+        ){
+
+            diagonal1 =
+                false;
+
+
+            break;
+
+        }
+
+    }
+
+
+    if(diagonal1){
+
+        return true;
+
+    }
+
+
+    // =================================
+    // DIAGONAL /
+    // =================================
+
+    let diagonal2 =
+        true;
+
+
+    for(
+
+        let i = 0;
+
+        i < 5;
+
+        i++
+
+    ){
+
+        if(
+
+            !isMarked(
+
+                i,
+
+                4 - i
+
+            )
+
+        ){
+
+            diagonal2 =
+                false;
+
+
+            break;
+
+        }
+
+    }
+
+
+    if(diagonal2){
+
+        return true;
+
+    }
+
+
+    // =================================
+    // FOUR CORNERS
+    // =================================
+
+    if(
+
+        isMarked(0,0) &&
+
+        isMarked(0,4) &&
+
+        isMarked(4,0) &&
+
+        isMarked(4,4)
+
+    ){
+
+        return true;
+
+    }
+
+
+    return false;
 
 }
 
@@ -2436,6 +2923,41 @@ async function claimBingo(
     }
 
 
+    // AUTO MARK BEFORE CHECKING
+
+    autoMarkCalledNumbers(
+        userCard
+    );
+
+
+    // LOCAL BINGO CHECK
+
+    if(
+
+        !checkLocalBingo(
+            userCard
+        )
+
+    ){
+
+        showMessage(
+
+            cardPanel.querySelector(
+                ".bingo-card-message"
+            ),
+
+            "⚠️ BINGO HIN GUUTAMNE. Toora, diagonal ykn goleewwan afran guutuu qaba.",
+
+            "error"
+
+        );
+
+
+        return;
+
+    }
+
+
     const button =
         cardPanel.querySelector(
             ".btn-bingo"
@@ -2458,12 +2980,14 @@ async function claimBingo(
                     method:
                         "POST",
 
+
                     headers:{
 
                         "Content-Type":
                             "application/json"
 
                     },
+
 
                     body:
 
@@ -2472,8 +2996,10 @@ async function claimBingo(
                             user_id:
                                 userId,
 
+
                             card_number:
                                 userCard.card_number,
+
 
                             card_type:
                                 userCard.card_type
@@ -2563,7 +3089,7 @@ async function claimBingo(
 
 
 // =====================================================
-// AUTO REFRESH
+// AUTO REFRESH GAME STATE
 // =====================================================
 
 setInterval(
@@ -2638,6 +3164,7 @@ loadGameState();
 
 
 </script>
+
 
 </body>
 
