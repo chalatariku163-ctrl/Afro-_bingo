@@ -138,16 +138,6 @@ button:disabled{
     font-size:15px;
 }
 
-.selected-card-info{
-    text-align:center;
-    background:#0f172a;
-    border-radius:8px;
-    padding:8px;
-    margin-bottom:7px;
-    color:#ffd700;
-    font-weight:bold;
-}
-
 .card-buttons{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -179,7 +169,7 @@ button:disabled{
     display:grid;
     grid-template-columns:repeat(10,1fr);
     gap:3px;
-    max-height:220px;
+    max-height:260px;
     overflow-y:auto;
 }
 
@@ -199,15 +189,24 @@ button:disabled{
     background:#3b4f72;
 }
 
+/* CARD ID FILATAMEE */
 .card-id.selected{
     background:#e11d48;
     color:white;
-    box-shadow:0 0 5px #fb7185;
+    box-shadow:0 0 6px #fb7185;
 }
 
-.card-id.owned{
+/* CARD ID KAN USER BITATE */
+.card-id.my-card{
     background:#16a34a;
     color:white;
+    box-shadow:0 0 6px #4ade80;
+}
+
+/* CARD ID FILATAMEE + BITAME */
+.card-id.selected.my-card{
+    background:#e11d48;
+    box-shadow:0 0 8px #fb7185;
 }
 
 .called-title{
@@ -398,6 +397,9 @@ button:disabled{
 
 <div class="container">
 
+
+<!-- GAME STATUS -->
+
 <div class="panel">
 
     <div id="gameStatus" class="status">
@@ -427,7 +429,7 @@ button:disabled{
 </div>
 
 
-<!-- CARD BUY -->
+<!-- BUY CARD -->
 
 <div id="buyPanel" class="panel">
 
@@ -437,24 +439,12 @@ button:disabled{
 
     </h3>
 
-
-    <div
-        id="selectedCardInfo"
-        class="selected-card-info"
-    >
-
-        ⚠️ CARD ID 1 - 500 keessaa tokko filadhu
-
-    </div>
-
-
     <div class="card-buttons">
 
         <button
             class="btn10"
             id="buy10Btn"
             onclick="buyCard('10')"
-            disabled
         >
 
             🎫 BUY CARD 10 Birr
@@ -465,7 +455,6 @@ button:disabled{
             class="btn20"
             id="buy20Btn"
             onclick="buyCard('20')"
-            disabled
         >
 
             🎫 BUY CARD 20 Birr
@@ -474,10 +463,7 @@ button:disabled{
 
     </div>
 
-    <div
-        id="buyMessage"
-        class="message"
-    ></div>
+    <div id="buyMessage" class="message"></div>
 
 </div>
 
@@ -487,14 +473,16 @@ button:disabled{
 <div class="game-layout">
 
 
-<!-- LEFT -->
+<!-- LEFT SIDE -->
 
 <div class="panel">
+
+
+    <!-- ID CARD TABLE -->
 
     <div
         id="cardIdPanel"
         class="card-id-panel"
-        style="display:none;"
     >
 
         <h3 class="card-id-title">
@@ -506,10 +494,14 @@ button:disabled{
         <div
             id="cardIdGrid"
             class="card-id-grid"
-        ></div>
+        >
+
+        </div>
 
     </div>
 
+
+    <!-- CALLED NUMBERS -->
 
     <h3 class="called-title">
 
@@ -520,7 +512,10 @@ button:disabled{
     <div
         id="calledNumbers"
         class="called-grid"
-    ></div>
+    >
+
+    </div>
+
 
     <div class="called-controls">
 
@@ -547,7 +542,7 @@ button:disabled{
 </div>
 
 
-<!-- RIGHT -->
+<!-- RIGHT SIDE -->
 
 <div
     id="myCardBox"
@@ -575,6 +570,7 @@ button:disabled{
 
     </div>
 
+
     <table class="bingo-card">
 
         <thead>
@@ -595,6 +591,7 @@ button:disabled{
 
     </table>
 
+
     <button
         class="btn-bingo"
         id="bingoBtn"
@@ -605,10 +602,13 @@ button:disabled{
 
     </button>
 
+
     <div
         id="bingoMessage"
         class="message"
-    ></div>
+    >
+
+    </div>
 
 </div>
 
@@ -657,13 +657,6 @@ if(
 // =====================================================
 
 let currentGameId = null;
-
-
-// IMPORTANT:
-// selectedCardId = ID user filate
-// myCardNumber = CARD ID dhugaa erga bitamee booda
-
-let selectedCardId = null;
 
 let myCardNumber = null;
 
@@ -735,11 +728,6 @@ const bingoBtn =
         "bingoBtn"
     );
 
-const cardIdPanel =
-    document.getElementById(
-        "cardIdPanel"
-    );
-
 const cardIdGrid =
     document.getElementById(
         "cardIdGrid"
@@ -753,11 +741,6 @@ const buyMessage =
 const bingoMessage =
     document.getElementById(
         "bingoMessage"
-    );
-
-const selectedCardInfo =
-    document.getElementById(
-        "selectedCardInfo"
     );
 
 
@@ -779,7 +762,8 @@ function showMessage(
         text;
 
     element.className =
-        "message " + type;
+        "message "
+        + type;
 
     setTimeout(
 
@@ -850,18 +834,15 @@ async function loadGameState(){
 // UPDATE GAME UI
 // =====================================================
 
-function updateGameUI(
-
-    data
-
-){
+function updateGameUI(data){
 
     const now =
-        Date.now() / 1000;
+        Date.now()
+        / 1000;
 
 
     // =========================================
-    // NEW GAME
+    // NEW GAME CYCLE
     // =========================================
 
     if(
@@ -871,9 +852,6 @@ function updateGameUI(
         currentGameId !== data.game_id
 
     ){
-
-        selectedCardId =
-            null;
 
         myCardNumber =
             null;
@@ -889,9 +867,6 @@ function updateGameUI(
 
         myCardBox.style.display =
             "none";
-
-        selectedCardInfo.innerText =
-            "⚠️ CARD ID 1 - 500 keessaa tokko filadhu";
 
         buyMessage.className =
             "message";
@@ -922,6 +897,13 @@ function updateGameUI(
         gameStatus.innerText =
             "🟢 CARD BUYING IS OPEN";
 
+        buy10Btn.disabled =
+            false;
+
+        buy20Btn.disabled =
+            false;
+
+
         let remaining =
             Math.max(
 
@@ -936,42 +918,16 @@ function updateGameUI(
 
             );
 
+
         timer.innerText =
             "⏱️ Card buying: "
             + remaining
             + " sec";
 
 
-        cardIdPanel.style.display =
-            "block";
-
-
+        // IMPORTANT:
+        // ID TABLE YEROO MUL'ATA
         renderCardIds();
-
-
-        if(
-
-            selectedCardId
-
-        ){
-
-            buy10Btn.disabled =
-                false;
-
-            buy20Btn.disabled =
-                false;
-
-        }
-
-        else{
-
-            buy10Btn.disabled =
-                true;
-
-            buy20Btn.disabled =
-                true;
-
-        }
 
     }
 
@@ -989,20 +945,28 @@ function updateGameUI(
         gameStatus.innerText =
             "🎮 GAME IS RUNNING";
 
-        timer.innerText =
-            "🎱 Numbers are being called";
-
         buy10Btn.disabled =
             true;
 
         buy20Btn.disabled =
             true;
 
-        cardIdPanel.style.display =
-            "none";
+        timer.innerText =
+            "🎱 Numbers are being called";
 
-        cardIdGrid.innerHTML =
-            "";
+
+        /*
+        IMPORTANT FIX:
+
+        DURAN:
+        cardIdPanel.style.display = "none";
+
+        KANA TURAN HIN JIRU.
+
+        ID CARD TABLE YEROO MUL'ATA.
+        */
+
+        renderCardIds();
 
     }
 
@@ -1029,11 +993,10 @@ function updateGameUI(
         buy20Btn.disabled =
             true;
 
-        cardIdPanel.style.display =
-            "none";
 
-        cardIdGrid.innerHTML =
-            "";
+        // ID CARD TABLE HIN DHOKATU
+
+        renderCardIds();
 
     }
 
@@ -1053,11 +1016,10 @@ function updateGameUI(
         buy20Btn.disabled =
             true;
 
-        cardIdPanel.style.display =
-            "none";
 
-        cardIdGrid.innerHTML =
-            "";
+        // ID CARD TABLE HIN DHOKATU
+
+        renderCardIds();
 
     }
 
@@ -1139,28 +1101,15 @@ function renderCardIds(){
 
 
         div.id =
-            "card-id-" + i;
+            "card-id-"
+            + i;
 
 
-        // USER DURSEE CARD BITATE
+        // CARD ID USER FILATE
+
         if(
 
             Number(myCardNumber)
-            === i
-
-        ){
-
-            div.classList.add(
-                "owned"
-            );
-
-        }
-
-
-        // USER CARD ID FILATE
-        if(
-
-            Number(selectedCardId)
             === i
 
         ){
@@ -1172,78 +1121,81 @@ function renderCardIds(){
         }
 
 
-        // CARD ID CUQASUU
+        // CARD ID USER BITATE
+
+        if(
+
+            Number(myCardNumber)
+            === i &&
+
+            myCardType
+
+        ){
+
+            div.classList.add(
+                "my-card"
+            );
+
+        }
+
+
+        // CARD ID CLICK
+
         div.onclick =
             function(){
 
+
+                // GAME BUYING YEROO FILATU
+
                 if(
 
-                    !gameState ||
+                    gameState &&
 
-                    !gameState.card_buying
+                    gameState.card_buying
 
                 ){
 
-                    return;
-
-                }
-
-
-                // ID FILATAME
-
-                selectedCardId =
-                    i;
+                    myCardNumber =
+                        i;
 
 
-                // UI UPDATE
+                    document
+                        .querySelectorAll(
+                            ".card-id"
+                        )
+                        .forEach(
 
-                document
-                    .querySelectorAll(
-                        ".card-id"
-                    )
-                    .forEach(
+                            function(item){
 
-                        function(item){
+                                item.classList
+                                    .remove(
+                                        "selected"
+                                    );
 
-                            item.classList.remove(
-                                "selected"
-                            );
+                            }
 
-                        }
+                        );
 
+
+                    div.classList.add(
+                        "selected"
                     );
 
 
-                div.classList.add(
-                    "selected"
-                );
+                    showMessage(
 
+                        buyMessage,
 
-                selectedCardInfo.innerText =
-                    "🎫 CARD ID #" + i
-                    + " FILATAMEERA";
+                        "🎫 Card #"
+                        + i
+                        + " filatameera. "
+                        + "Amma Card 10 ykn Card 20 bitadhu.",
 
+                        "success"
 
-                // BUY BUTTON BAN
+                    );
 
-                buy10Btn.disabled =
-                    false;
-
-                buy20Btn.disabled =
-                    false;
-
-
-                showMessage(
-
-                    buyMessage,
-
-                    "✅ Card ID #"
-                    + i
-                    + " filatameera. Amma gosa card filadhu.",
-
-                    "success"
-
-                );
+                }
 
             };
 
@@ -1261,11 +1213,7 @@ function renderCardIds(){
 // FORMAT NUMBER
 // =====================================================
 
-function formatCall(
-
-    number
-
-){
+function formatCall(number){
 
     if(
 
@@ -1367,7 +1315,9 @@ function renderCalledNumbers(
 
 
         div.innerText =
-            i;
+            formatCall(
+                i
+            );
 
 
         if(
@@ -1425,11 +1375,9 @@ async function buyCard(
     }
 
 
-    // CARD ID DIRQAMA
-
     if(
 
-        !selectedCardId
+        !myCardNumber
 
     ){
 
@@ -1460,7 +1408,7 @@ async function buyCard(
 
             buyMessage,
 
-            "⚠️ Yeroon card bitachuu xumurame.",
+            "⚠️ Yeroon Card bitachuu xumurame.",
 
             "error"
 
@@ -1507,9 +1455,8 @@ async function buyCard(
                             card_type:
                                 type,
 
-                            // ID USER FILATE
                             card_number:
-                                selectedCardId
+                                myCardNumber
 
                         })
 
@@ -1545,44 +1492,29 @@ async function buyCard(
         }
 
 
-        // =========================================
-        // CARD BINGO DHUGAA SERVER IRRAA DHUFE
-        // =========================================
+        // SERVER irraa CARD BINGO DHUGAA
 
         myCardNumber =
             data.card_number;
 
-
         myCardType =
             data.card_type;
 
-
         myCard =
             data.card;
-
 
         currentGameId =
             data.game_id;
 
 
-        // SELECTED ID
-        selectedCardId =
-            myCardNumber;
-
-
-        // CARD BINGO DHUGAA MUL'ISI
+        // CARD BINGO MUL'ISIISI
 
         showMyCard();
 
 
-        // CARD ID 1-500 IRRAA MALLATTOO DIIMAA
+        // ID TABLE UPDATE GODHI
 
         renderCardIds();
-
-
-        selectedCardInfo.innerText =
-            "✅ CARD #" + myCardNumber
-            + " BITAMEERA";
 
 
         showMessage(
@@ -1679,19 +1611,6 @@ function renderCard(){
         [];
 
 
-    if(
-
-        !Array.isArray(
-            myCard
-        )
-
-    ){
-
-        return;
-
-    }
-
-
     for(
 
         let row = 0;
@@ -1754,9 +1673,12 @@ function renderCard(){
                     "marked"
                 );
 
+
                 markedCells.push(
 
-                    row + "-" + col
+                    row
+                    + "-"
+                    + col
 
                 );
 
@@ -1840,7 +1762,9 @@ function toggleCell(
     if(
 
         !gameState.called_numbers.includes(
+
             value
+
         )
 
     ){
@@ -1866,7 +1790,9 @@ function toggleCell(
 
 
     const key =
-        row + "-" + col;
+        row
+        + "-"
+        + col;
 
 
     if(
@@ -2029,6 +1955,7 @@ async function claimBingo(){
 
         }
 
+
         else{
 
             showMessage(
@@ -2078,7 +2005,7 @@ async function claimBingo(){
 
 
 // =====================================================
-// LEAVE
+// LEAVE GAME
 // =====================================================
 
 function leaveGame(){
@@ -2090,7 +2017,7 @@ function leaveGame(){
 
 
 // =====================================================
-// AUTO REFRESH GAME
+// AUTO REFRESH
 // =====================================================
 
 setInterval(
@@ -2144,4 +2071,4 @@ loadGameState();
 
 </body>
 
-    </html>
+</html>
