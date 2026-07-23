@@ -207,31 +207,31 @@ def save_data():
 
 def load_data():
 
-global users
+    global users
 
-global balances
+    global balances
 
-global transactions
+    global transactions
 
-global cards_10
+    global cards_10
 
-global cards_20
+    global cards_20
 
-global pending_deposits
+    global pending_deposits
 
-global pending_withdrawals
+    global pending_withdrawals
 
-global winners
+    global winners
 
-if not os.path.exists(
+    if not os.path.exists(
 
     DATA_FILE
 
-):
+    ):
 
     return
 
-try:
+    try:
 
     with open(
 
@@ -373,7 +373,7 @@ except Exception as error:
 
 def get_balance(user_id):
 
-return balances.get(
+    return balances.get(
 
     int(user_id),
 
@@ -481,7 +481,7 @@ save_data()
 
 def normalize_card_data():
 
-for cards in [
+    for cards in [
 
     cards_10,
 
