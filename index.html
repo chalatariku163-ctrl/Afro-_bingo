@@ -201,9 +201,9 @@ button:disabled{
 }
 
 
-/* =============================== */
-/* CARD ID PANEL */
-/* =============================== */
+/* ================================= */
+/* CARD ID TABLE */
+/* ================================= */
 
 #cardIdPanel{
 
@@ -281,16 +281,17 @@ button:disabled{
 }
 
 
-/* =============================== */
-/* MAIN LAYOUT */
-/* =============================== */
+/* ================================= */
+/* LEFT CALLED / RIGHT USER CARD */
+/* ================================= */
 
 .game-layout{
 
     display:grid;
 
     grid-template-columns:
-        1fr 1fr;
+        minmax(0,1fr)
+        minmax(0,1fr);
 
     gap:15px;
 
@@ -298,16 +299,22 @@ button:disabled{
 
 }
 
-
-/* =============================== */
-/* LEFT CALLED NUMBERS */
-/* =============================== */
-
 .left-side{
 
     min-width:0;
 
 }
+
+.right-side{
+
+    min-width:0;
+
+}
+
+
+/* ================================= */
+/* CALLED NUMBERS */
+/* ================================= */
 
 .called-box{
 
@@ -362,6 +369,16 @@ button:disabled{
 
 }
 
+.called-number.header{
+
+    background:#00a8ff;
+
+    font-weight:bold;
+
+    font-size:15px;
+
+}
+
 .called-number.active{
 
     background:#16c784;
@@ -373,19 +390,13 @@ button:disabled{
 }
 
 
-/* =============================== */
-/* RIGHT USER CARDS */
-/* =============================== */
-
-.right-side{
-
-    min-width:0;
-
-}
+/* ================================= */
+/* USER CARD */
+/* ================================= */
 
 #myCardBox{
 
-    display:none;
+    display:block;
 
 }
 
@@ -516,8 +527,7 @@ button:disabled{
 
     .game-layout{
 
-        grid-template-columns:
-            1fr;
+        grid-template-columns:1fr;
 
     }
 
@@ -641,12 +651,16 @@ button:disabled{
 </div>
 
 
-<!-- CALLED LEFT / USER CARD RIGHT -->
+<!-- ================================= -->
+<!-- CALLED LEFT / CARD RIGHT -->
+<!-- ================================= -->
 
 <div class="game-layout">
 
 
-    <!-- LEFT -->
+    <!-- ============================= -->
+    <!-- LEFT SIDE: CALLED NUMBERS -->
+    <!-- ============================= -->
 
     <div class="left-side">
 
@@ -663,7 +677,9 @@ button:disabled{
     </div>
 
 
-    <!-- RIGHT -->
+    <!-- ============================= -->
+    <!-- RIGHT SIDE: USER CARD -->
+    <!-- ============================= -->
 
     <div class="right-side">
 
@@ -678,7 +694,6 @@ button:disabled{
         </div>
 
     </div>
-
 
 </div>
 
@@ -707,7 +722,8 @@ tg.expand();
 // USER ID
 // =====================================================
 
-let userId = null;
+let userId =
+    null;
 
 
 if(
@@ -736,11 +752,21 @@ let gameState =
     null;
 
 
+// USER CARDS
+
 let myCards =
     [];
 
 
+// SELECTED CARD ID
+
 let selectedCardNumber =
+    null;
+
+
+// WINNER CARD TIMER
+
+let winnerCardTimeout =
     null;
 
 
@@ -919,6 +945,10 @@ function updateGameUI(data){
         Date.now() / 1000;
 
 
+    // =========================================
+    // NEW GAME
+    // =========================================
+
     if(
 
         currentGameId !== null &&
@@ -927,16 +957,24 @@ function updateGameUI(data){
 
     ){
 
-        myCards =
-            [];
-
+        // IMPORTANT:
+        // CARD USER BITATE HIN HAQAMNE
 
         selectedCardNumber =
             null;
 
 
-        myCardBox.style.display =
-            "none";
+        if(winnerCardTimeout){
+
+            clearTimeout(
+                winnerCardTimeout
+            );
+
+
+            winnerCardTimeout =
+                null;
+
+        }
 
     }
 
@@ -997,9 +1035,13 @@ function updateGameUI(data){
         renderCardIds();
 
 
-        // USER CARD GARA MIRGAA
+        // USER CARD MIRGAA IRRATTI MULA'ATA
 
-        if(myCards.length > 0){
+        if(
+
+            myCards.length > 0
+
+        ){
 
             myCardBox.style.display =
                 "block";
@@ -1010,7 +1052,7 @@ function updateGameUI(data){
 
 
     // =========================================
-    // GAME STARTED / CALL NUMBER
+    // GAME RUNNING
     // =========================================
 
     else if(data.started){
@@ -1037,9 +1079,13 @@ function updateGameUI(data){
             "none";
 
 
-        // USER CARD GARA MIRGAA
+        // USER CARD MIRGAA
 
-        if(myCards.length > 0){
+        if(
+
+            myCards.length > 0
+
+        ){
 
             myCardBox.style.display =
                 "block";
@@ -1077,12 +1123,46 @@ function updateGameUI(data){
             "none";
 
 
-        // CARD USER ITTI MUL'ATA
+        // USER CARD MUL'ATA
 
-        if(myCards.length > 0){
+        if(
+
+            myCards.length > 0
+
+        ){
 
             myCardBox.style.display =
                 "block";
+
+        }
+
+
+        // 40 SEC BOODA CARD DHOKATA
+
+        if(
+
+            !winnerCardTimeout
+
+        ){
+
+            winnerCardTimeout =
+
+                setTimeout(
+
+                    function(){
+
+                        myCardBox.style.display =
+                            "none";
+
+
+                        winnerCardTimeout =
+                            null;
+
+                    },
+
+                    40000
+
+                );
 
         }
 
@@ -1107,8 +1187,25 @@ function updateGameUI(data){
             true;
 
 
+        // CARD ID TABLE DHOKATA
+
         cardIdPanel.style.display =
             "none";
+
+
+        // USER CARD YOO JIRAATE
+        // HARKA MIRGAA IRRATTI MUL'ATA
+
+        if(
+
+            myCards.length > 0
+
+        ){
+
+            myCardBox.style.display =
+                "block";
+
+        }
 
     }
 
@@ -1161,7 +1258,7 @@ function updateGameUI(data){
 
 
 // =====================================================
-// CARD ID TABLE
+// CARD ID TABLE 1 - 500
 // =====================================================
 
 function renderCardIds(){
@@ -1198,6 +1295,8 @@ function renderCardIds(){
             "card-id-" + i;
 
 
+        // USER CARD BITATEE
+
         const alreadyBought =
             myCards.some(
 
@@ -1222,6 +1321,8 @@ function renderCardIds(){
 
         }
 
+
+        // SELECTED CARD
 
         if(
 
@@ -1327,40 +1428,70 @@ function renderCardIds(){
 
 
 // =====================================================
-// FORMAT CALL
+// FORMAT CALL NUMBER
 // =====================================================
 
 function formatCall(number){
 
-    if(number >= 1 && number <= 15){
+    if(
+
+        number >= 1 &&
+
+        number <= 15
+
+    ){
 
         return "B-" + number;
 
     }
 
 
-    if(number >= 16 && number <= 30){
+    if(
+
+        number >= 16 &&
+
+        number <= 30
+
+    ){
 
         return "I-" + number;
 
     }
 
 
-    if(number >= 31 && number <= 45){
+    if(
+
+        number >= 31 &&
+
+        number <= 45
+
+    ){
 
         return "N-" + number;
 
     }
 
 
-    if(number >= 46 && number <= 60){
+    if(
+
+        number >= 46 &&
+
+        number <= 60
+
+    ){
 
         return "G-" + number;
 
     }
 
 
-    if(number >= 61 && number <= 75){
+    if(
+
+        number >= 61 &&
+
+        number <= 75
+
+    ){
 
         return "O-" + number;
 
@@ -1373,7 +1504,9 @@ function formatCall(number){
 
 
 // =====================================================
-// CALLED NUMBERS
+// CALLED NUMBERS TABLE
+// B I N G O
+// EACH NUMBER UNDER ITS COLUMN
 // =====================================================
 
 function renderCalledNumbers(numbers){
@@ -1447,6 +1580,8 @@ function renderCalledNumbers(numbers){
     ];
 
 
+    // HEADER
+
     columns.forEach(
 
         function(column){
@@ -1458,19 +1593,11 @@ function renderCalledNumbers(numbers){
 
 
             header.className =
-                "called-number";
+                "called-number header";
 
 
             header.innerText =
                 column.letter;
-
-
-            header.style.background =
-                "#00a8ff";
-
-
-            header.style.fontWeight =
-                "bold";
 
 
             calledNumbers.appendChild(
@@ -1481,6 +1608,8 @@ function renderCalledNumbers(numbers){
 
     );
 
+
+    // NUMBERS 1 - 75
 
     for(
 
@@ -1681,6 +1810,8 @@ async function buyCard(type){
         }
 
 
+        // CARD HAARAA
+
         const newCard = {
 
             game_id:
@@ -1710,12 +1841,22 @@ async function buyCard(type){
         };
 
 
+        // USER CARD LIST KEESSATTI DABALI
+
         myCards.push(
             newCard
         );
 
 
+        // CARD ID TABLE UPDATE
+
         renderCardIds();
+
+
+        // CARD GARA MIRGAA MUL'ISIISI
+
+        myCardBox.style.display =
+            "block";
 
 
         renderMyCards();
@@ -1733,6 +1874,8 @@ async function buyCard(type){
 
         );
 
+
+        // SELECTION CLEAR
 
         selectedCardNumber =
             null;
@@ -1804,7 +1947,7 @@ async function buyCard(type){
 
 
 // =====================================================
-// RENDER USER CARDS
+// RENDER ALL USER CARDS
 // =====================================================
 
 function renderMyCards(){
@@ -1934,6 +2077,8 @@ function renderMyCards(){
                     "tbody"
                 );
 
+
+            // 5 x 5 CARD
 
             for(
 
@@ -2385,7 +2530,7 @@ async function claimBingo(
 
 
 // =====================================================
-// AUTO REFRESH
+// AUTO REFRESH GAME STATE
 // =====================================================
 
 setInterval(
@@ -2402,7 +2547,7 @@ setInterval(
 
 
 // =====================================================
-// TIMER
+// TIMER UPDATE
 // =====================================================
 
 setInterval(
@@ -2443,20 +2588,6 @@ setInterval(
 
                 + " SEC";
 
-
-            // 40 SEC XUMURAMEERA
-
-            if(
-
-                remaining <= 0
-
-            ){
-
-                cardIdPanel.style.display =
-                    "none";
-
-            }
-
         }
 
     },
@@ -2477,4 +2608,4 @@ loadGameState();
 
 </body>
 
-</html>
+      </html>
