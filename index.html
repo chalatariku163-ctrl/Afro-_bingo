@@ -1,18 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
-<head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
-<title>GADAA BINGO</title>
-
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-<style>
+<title>GADAA BINGO</title><script src="https://telegram.org/js/telegram-web-app.js"></script><style>
 
 *{
     box-sizing:border-box;
@@ -475,179 +464,168 @@ button:disabled{
 
 }
 
-</style>
+</style></head><body><div class="container"><h1>🎱 GADAA BINGO</h1><!-- GAME INFORMATION --><div class="game-info"><div class="game-info-item">
 
-</head>
+    <span class="game-info-label">
+        BALANCE
+    </span>
 
-<body>
+    <span class="game-info-value"
+          id="balanceValue">
 
-<div class="container">
+        0 Birr
 
-<h1>🎱 GADAA BINGO</h1>
-
-
-<!-- GAME INFORMATION -->
-
-<div class="game-info">
-
-    <div class="game-info-item">
-        <span class="game-info-label">GAME ID</span>
-        <span class="game-info-value" id="gameIdValue">--</span>
-    </div>
-
-    <div class="game-info-item">
-        <span class="game-info-label">DERASH</span>
-        <span class="game-info-value" id="derashValue">--</span>
-    </div>
-
-    <div class="game-info-item">
-        <span class="game-info-label">PLAYER</span>
-        <span class="game-info-value" id="playerValue">0</span>
-    </div>
-
-    <div class="game-info-item">
-        <span class="game-info-label">STAKE</span>
-        <span class="game-info-value" id="stakeValue">0 Birr</span>
-    </div>
-
-    <div class="game-info-item">
-        <span class="game-info-label">CALLED</span>
-        <span class="game-info-value" id="calledValue">0</span>
-    </div>
+    </span>
 
 </div>
 
 
-<!-- FIRST SCREEN -->
+<div class="game-info-item">
 
-<div id="gameEntryPanel">
+    <span class="game-info-label">
+        GAME ID
+    </span>
 
-    <h2>🎮 PLAY GAME</h2>
+    <span class="game-info-value"
+          id="gameIdValue">
 
-    <p>Card gosa filadhu</p>
-
-    <button
-        class="entry-btn buy10"
-        onclick="enterGame(10)">
-
-        🎫 BUY CARD 10 BIRR
-
-    </button>
-
-    <button
-        class="entry-btn buy20"
-        onclick="enterGame(20)">
-
-        🎫 BUY CARD 20 BIRR
-
-    </button>
-
-</div>
-
-
-<!-- GAME SCREEN -->
-
-<div id="gameScreen">
-
-
-<div class="status-box">
-
-    <div id="gameStatus">
-        ⏳ WAITING FOR GAME
-    </div>
-
-    <div id="timer">
         --
-    </div>
+
+    </span>
 
 </div>
 
 
-<div class="current-number">
+<div class="game-info-item">
 
-    <h3>🎱 CURRENT NUMBER</h3>
+    <span class="game-info-label">
+        DERASH
+    </span>
 
-    <div id="currentNumber">
+    <span class="game-info-value"
+          id="derashValue">
+
         --
-    </div>
+
+    </span>
 
 </div>
 
 
-<div class="buttons">
+<div class="game-info-item">
 
-    <button id="buy10Btn"
-            onclick="buyCard(10)">
+    <span class="game-info-label">
+        PLAYER
+    </span>
 
-        🎫 BUY 10 BIRR
+    <span class="game-info-value"
+          id="playerValue">
 
-    </button>
+        0
 
-    <button id="buy20Btn"
-            onclick="buyCard(20)">
-
-        🎫 BUY 20 BIRR
-
-    </button>
+    </span>
 
 </div>
 
 
-<div id="buyMessage"
+<div class="game-info-item">
+
+    <span class="game-info-label">
+        CALLED
+    </span>
+
+    <span class="game-info-value"
+          id="calledValue">
+
+        0
+
+    </span>
+
+</div>
+
+</div><!-- FIRST SCREEN --><div id="gameEntryPanel"><h2>🎮 PLAY GAME</h2>
+
+<p>
+    Card gosa filadhu
+</p>
+
+<button
+    class="entry-btn buy10"
+    onclick="enterGame(10)">
+
+    🎫 BUY CARD 10 BIRR
+
+</button>
+
+<button
+    class="entry-btn buy20"
+    onclick="enterGame(20)">
+
+    🎫 BUY CARD 20 BIRR
+
+</button>
+
+</div><!-- GAME SCREEN --><div id="gameScreen"><div class="status-box"><div id="gameStatus">
+
+    ⏳ WAITING FOR GAME
+
+</div>
+
+<div id="timer">
+
+    --
+
+</div>
+
+</div><div class="current-number"><h3>
+    🎱 CURRENT NUMBER
+</h3>
+
+<div id="currentNumber">
+
+    --
+
+</div>
+
+</div><div class="buttons"><button id="buy10Btn"
+        onclick="buyCard(10)">
+
+    🎫 BUY 10 BIRR
+
+</button>
+
+<button id="buy20Btn"
+        onclick="buyCard(20)">
+
+    🎫 BUY 20 BIRR
+
+</button>
+
+</div><div id="buyMessage"
+     class="message"></div><!-- CARD ID TABLE --><div id="cardIdPanel"><h3>
+    🎫 SELECT CARD ID 1 - 500
+</h3>
+
+<div id="cardIdGrid"></div>
+
+</div><!-- GAME --><div class="game-layout"><div class="left-side"><div class="called-box">
+
+    <h3>
+        📢 CALLED NUMBERS
+    </h3>
+
+    <div id="calledNumbers"></div>
+
+</div>
+
+</div><div class="right-side"><div id="bingoMessage"
      class="message">
 
 </div>
 
+<div id="myCardBox"></div>
 
-<!-- CARD ID TABLE -->
-
-<div id="cardIdPanel">
-
-    <h3>🎫 SELECT CARD ID 1 - 500</h3>
-
-    <div id="cardIdGrid"></div>
-
-</div>
-
-
-<!-- GAME -->
-
-<div class="game-layout">
-
-
-<div class="left-side">
-
-    <div class="called-box">
-
-        <h3>📢 CALLED NUMBERS</h3>
-
-        <div id="calledNumbers"></div>
-
-    </div>
-
-</div>
-
-
-<div class="right-side">
-
-    <div id="bingoMessage"
-         class="message">
-
-    </div>
-
-    <div id="myCardBox"></div>
-
-</div>
-
-
-</div>
-
-</div>
-
-</div>
-
-
-<script>
+</div></div></div></div><script>
 
 // =====================================================
 // TELEGRAM
@@ -766,6 +744,11 @@ const myCardBox =
         "myCardBox"
     );
 
+const balanceValue =
+    document.getElementById(
+        "balanceValue"
+    );
+
 const gameIdValue =
     document.getElementById(
         "gameIdValue"
@@ -779,11 +762,6 @@ const derashValue =
 const playerValue =
     document.getElementById(
         "playerValue"
-    );
-
-const stakeValue =
-    document.getElementById(
-        "stakeValue"
     );
 
 const calledValue =
@@ -828,7 +806,9 @@ function showMessage(
 ){
 
     if(!element){
+
         return;
+
     }
 
     element.innerText =
@@ -863,7 +843,10 @@ async function loadGameState(){
 
         const response =
             await fetch(
-                "/api/game-state"
+                "/api/game-state?user_id="
+                + encodeURIComponent(
+                    userId
+                )
             );
 
         const data =
@@ -949,6 +932,29 @@ function updateGameUI(data){
         Date.now() / 1000;
 
 
+    // BALANCE
+
+    if(
+        data.balance !== undefined &&
+        data.balance !== null
+    ){
+
+        balanceValue.innerText =
+            Number(
+                data.balance
+            ).toLocaleString()
+            + " Birr";
+
+    }
+
+    else{
+
+        balanceValue.innerText =
+            "0 Birr";
+
+    }
+
+
     // NEW GAME
 
     if(
@@ -1009,9 +1015,6 @@ function updateGameUI(data){
     let playerCount =
         0;
 
-    let stake =
-        0;
-
 
     if(
         Array.isArray(
@@ -1024,6 +1027,7 @@ function updateGameUI(data){
 
     }
 
+
     if(
         data.player_count !== undefined
     ){
@@ -1032,6 +1036,7 @@ function updateGameUI(data){
             data.player_count;
 
     }
+
 
     if(
         data.players_count !== undefined
@@ -1042,30 +1047,9 @@ function updateGameUI(data){
 
     }
 
-    if(
-        data.stake !== undefined
-    ){
-
-        stake =
-            data.stake;
-
-    }
-
-    if(
-        data.total_stake !== undefined
-    ){
-
-        stake =
-            data.total_stake;
-
-    }
-
 
     playerValue.innerText =
         playerCount;
-
-    stakeValue.innerText =
-        stake + " Birr";
 
 
     if(
@@ -1094,9 +1078,7 @@ function updateGameUI(data){
     }
 
 
-    // =========================================
     // CARD BUYING
-    // =========================================
 
     if(data.card_buying){
 
@@ -1139,9 +1121,7 @@ function updateGameUI(data){
     }
 
 
-    // =========================================
-    // GAME RUNNING / CALLED NUMBER
-    // =========================================
+    // GAME RUNNING
 
     else if(data.started){
 
@@ -1183,9 +1163,7 @@ function updateGameUI(data){
     }
 
 
-    // =========================================
     // WINNER
-    // =========================================
 
     else if(data.winner){
 
@@ -1220,9 +1198,7 @@ function updateGameUI(data){
     }
 
 
-    // =========================================
     // WAITING
-    // =========================================
 
     else{
 
@@ -2389,8 +2365,8 @@ function checkLocalBingo(userCard){
 
         for(
             let col = 0;
-            col < 5;
-            col++
+        col < 5;
+        col++
         ){
 
             if(
@@ -2768,8 +2744,4 @@ setInterval(
     500
 );
 
-</script>
-
-</body>
-
-      </html>
+</script></body></html>
