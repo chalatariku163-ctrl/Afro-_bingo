@@ -145,59 +145,59 @@ winners = []
 
 def save_data():
 
-data = {
+    data = {
 
-    "users": users,
+        "users": users,
 
-    "balances": balances,
+        "balances": balances,
 
-    "transactions": transactions,
+        "transactions": transactions,
 
-    "cards_10": cards_10,
+        "cards_10": cards_10,
 
-    "cards_20": cards_20,
+        "cards_20": cards_20,
 
-    "pending_deposits": pending_deposits,
+        "pending_deposits": pending_deposits,
 
-    "pending_withdrawals": pending_withdrawals,
+        "pending_withdrawals": pending_withdrawals,
 
-    "winners": winners,
+        "winners": winners,
 
-}
+    }
 
-try:
+    try:
 
-    with open(
+        with open(
 
-        DATA_FILE,
+            DATA_FILE,
 
-        "w",
+            "w",
 
-        encoding="utf-8"
+            encoding="utf-8"
 
-    ) as file:
+        ) as file:
 
-        json.dump(
+            json.dump(
 
-            data,
+                data,
 
-            file,
+                file,
 
-            ensure_ascii=False,
+                ensure_ascii=False,
 
-            indent=2
+                indent=2
+
+            )
+
+    except Exception as error:
+
+        print(
+
+            "SAVE ERROR:",
+
+            error
 
         )
-
-except Exception as error:
-
-    print(
-
-        "SAVE ERROR:",
-
-        error
-
-    )
 
 #=========================================================
 
