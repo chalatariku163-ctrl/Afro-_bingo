@@ -1,8 +1,19 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GADAA BINGO</title><script src="https://telegram.org/js/telegram-web-app.js"></script><style>
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>GADAA BINGO</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+
 *{
     box-sizing:border-box;
     margin:0;
@@ -10,561 +21,887 @@
 }
 
 body{
+
     font-family:Arial,sans-serif;
-    background:linear-gradient(135deg,#061b2c,#0b3d5c,#061b2c);
+
+    background:
+    linear-gradient(
+        135deg,
+        #061b2c,
+        #0b3d5c,
+        #061b2c
+    );
+
     color:white;
+
     min-height:100vh;
+
 }
 
 .header{
+
     text-align:center;
+
     padding:12px 8px;
-    background:rgba(0,0,0,.35);
-    border-bottom:1px solid rgba(255,255,255,.15);
+
+    background:
+    rgba(0,0,0,.35);
+
+    border-bottom:
+    1px solid
+    rgba(255,255,255,.15);
+
 }
 
 .header h1{
+
     color:#ffd700;
+
     font-size:22px;
+
 }
 
 .header p{
+
     font-size:11px;
+
     opacity:.75;
+
     margin-top:4px;
+
 }
 
 .container{
+
     width:100%;
+
     max-width:850px;
+
     margin:auto;
+
     padding:8px;
+
 }
 
-/* GAME INFO */
-
 .game-info{
+
     display:grid;
-    grid-template-columns:repeat(4,1fr);
+
+    grid-template-columns:
+    repeat(4,1fr);
+
     gap:5px;
+
     margin-bottom:8px;
+
 }
 
 .info-box{
-    background:rgba(255,255,255,.1);
+
+    background:
+    rgba(255,255,255,.1);
+
     border-radius:8px;
+
     padding:7px 3px;
+
     text-align:center;
+
 }
 
 .info-box small{
+
     display:block;
+
     font-size:9px;
+
     opacity:.7;
+
 }
 
 .info-box strong{
+
     display:block;
+
     margin-top:3px;
+
     color:#ffd700;
+
     font-size:13px;
+
 }
 
-/* STATUS */
-
 .status-box{
-    background:rgba(255,255,255,.1);
+
+    background:
+    rgba(255,255,255,.1);
+
     border-radius:10px;
+
     padding:8px;
+
     text-align:center;
+
     margin-bottom:8px;
+
 }
 
 .status{
+
     font-size:15px;
+
     font-weight:bold;
+
     color:#00ff9d;
+
 }
 
 .timer{
+
     margin-top:4px;
+
     color:#ffd700;
+
     font-size:12px;
+
 }
 
-/* BUY */
-
 .card-buying{
-    background:rgba(255,255,255,.1);
+
+    background:
+    rgba(255,255,255,.1);
+
     padding:10px;
+
     border-radius:10px;
+
     margin-bottom:8px;
+
     text-align:center;
+
 }
 
 .card-buying h2{
+
     color:#ffd700;
+
     font-size:16px;
+
     margin-bottom:8px;
+
 }
 
 .buy-buttons{
+
     display:flex;
+
     gap:8px;
+
 }
 
 button{
+
     border:none;
+
     border-radius:8px;
+
     padding:10px;
+
     font-size:14px;
+
     font-weight:bold;
+
     cursor:pointer;
+
 }
 
 .buy-btn{
+
     flex:1;
+
     background:#00c853;
+
     color:white;
+
 }
 
 button:disabled{
+
     opacity:.45;
+
     cursor:not-allowed;
+
 }
 
-/* CURRENT CALL */
-
 .current-call{
-    background:rgba(0,0,0,.35);
+
+    background:
+    rgba(0,0,0,.35);
+
     border-radius:10px;
+
     padding:8px;
+
     text-align:center;
+
     margin-bottom:8px;
+
 }
 
 .current-label{
+
     font-size:11px;
+
     opacity:.75;
+
 }
 
 .current-number{
-    font-size:34px;
-    font-weight:bold;
-    color:#ffd700;
-    margin-top:3px;
-}
 
-/* MAIN GAME */
+    font-size:34px;
+
+    font-weight:bold;
+
+    color:#ffd700;
+
+    margin-top:3px;
+
+}
 
 .game-layout{
+
     display:grid;
-    grid-template-columns:1fr 1.25fr;
+
+    grid-template-columns:
+    1fr 1.25fr;
+
     gap:8px;
+
     align-items:start;
+
 }
 
-/* CALLED BOARD */
-
 .called-board{
-    background:rgba(255,255,255,.08);
+
+    background:
+    rgba(255,255,255,.08);
+
     border-radius:10px;
+
     padding:7px;
+
 }
 
 .called-board h3{
+
     text-align:center;
+
     color:#ffd700;
+
     font-size:14px;
+
     margin-bottom:6px;
+
 }
 
 .bingo-table{
+
     display:grid;
-    grid-template-columns:repeat(5,1fr);
+
+    grid-template-columns:
+    repeat(5,1fr);
+
     gap:3px;
+
 }
 
 .bingo-head{
+
     text-align:center;
+
     color:#ffd700;
+
     font-size:13px;
+
     font-weight:bold;
+
     padding:3px 0;
+
 }
 
 .number{
+
     aspect-ratio:1;
+
     display:flex;
+
     align-items:center;
+
     justify-content:center;
+
     border-radius:5px;
+
     background:#18394d;
+
     font-size:11px;
+
     font-weight:bold;
+
 }
 
 .number.called{
+
     background:#00c853;
+
     color:white;
-    box-shadow:0 0 7px #00ff88;
+
+    box-shadow:
+    0 0 7px
+    #00ff88;
+
 }
 
 .number.current{
+
     background:#e53935;
+
     color:white;
-    box-shadow:0 0 10px #ff5252;
+
+    box-shadow:
+    0 0 10px
+    #ff5252;
+
 }
 
-/* CARD */
-
 .card-area{
-    background:rgba(255,255,255,.08);
+
+    background:
+    rgba(255,255,255,.08);
+
     border-radius:10px;
+
     padding:7px;
+
 }
 
 .card-title{
+
     text-align:center;
+
     color:#ffd700;
+
     font-size:14px;
+
     font-weight:bold;
+
     margin-bottom:6px;
+
 }
 
 .card-header{
+
     display:grid;
-    grid-template-columns:repeat(5,1fr);
+
+    grid-template-columns:
+    repeat(5,1fr);
+
     gap:3px;
+
     margin-bottom:3px;
+
 }
 
 .card-header div{
+
     text-align:center;
+
     color:#ffd700;
+
     font-weight:bold;
+
     font-size:14px;
+
 }
 
 .bingo-card{
+
     display:grid;
-    grid-template-columns:repeat(5,1fr);
+
+    grid-template-columns:
+    repeat(5,1fr);
+
     gap:3px;
+
     background:#111;
+
     padding:4px;
+
     border-radius:8px;
+
 }
 
 .cell{
+
     aspect-ratio:1;
+
     display:flex;
+
     align-items:center;
+
     justify-content:center;
+
     background:#f5f5f5;
+
     color:#111;
+
     border-radius:4px;
+
     font-size:12px;
+
     font-weight:bold;
+
 }
 
 .cell.called{
+
     background:#00c853;
+
     color:white;
+
 }
 
 .cell.free{
+
     background:#ffd700;
+
     color:#111;
+
 }
 
-/* CONTROLS */
-
 .controls{
+
     display:flex;
+
     gap:5px;
+
     margin-top:8px;
+
 }
 
 .control-btn{
+
     flex:1;
+
     padding:8px 4px;
+
     background:#263238;
+
     color:white;
+
     font-size:11px;
+
 }
 
 .control-btn.active{
+
     background:#00c853;
+
 }
 
-/* BINGO */
-
 .bingo-btn{
+
     width:100%;
+
     margin-top:8px;
+
     padding:13px;
+
     background:#ffd700;
+
     color:#111;
+
     font-size:20px;
+
 }
 
 .message{
+
     text-align:center;
+
     margin-top:8px;
+
     min-height:20px;
+
     padding:7px;
+
     border-radius:7px;
+
     font-size:12px;
+
 }
 
-.success{color:#00ff88;}
-.error{color:#ff5252;}
-.warning{color:#ffd700;}
+.success{
+
+    color:#00ff88;
+
+}
+
+.error{
+
+    color:#ff5252;
+
+}
+
+.warning{
+
+    color:#ffd700;
+
+}
+
+.winner-box{
+
+    display:none;
+
+    background:
+    rgba(255,215,0,.15);
+
+    border:
+    2px solid
+    #ffd700;
+
+    border-radius:12px;
+
+    padding:15px;
+
+    margin-bottom:8px;
+
+    text-align:center;
+
+}
+
+.winner-box h2{
+
+    color:#ffd700;
+
+    font-size:22px;
+
+    margin-bottom:8px;
+
+}
+
+.winner-box p{
+
+    font-size:14px;
+
+    line-height:1.6;
+
+}
 
 @media(max-width:600px){
 
     .container{
+
         padding:6px;
+
     }
 
     .game-info{
+
         gap:3px;
+
     }
 
     .info-box{
+
         padding:5px 2px;
+
     }
 
     .info-box small{
+
         font-size:8px;
+
     }
 
     .info-box strong{
+
         font-size:11px;
+
     }
 
     .game-layout{
-        grid-template-columns:1fr 1.15fr;
+
+        grid-template-columns:
+        1fr 1.15fr;
+
         gap:5px;
+
     }
 
     .number{
+
         font-size:9px;
+
     }
 
     .cell{
+
         font-size:10px;
+
     }
 
     .current-number{
+
         font-size:28px;
+
     }
 
     button{
+
         font-size:11px;
+
         padding:9px 4px;
+
     }
+
 }
-</style></head><body><div class="header">
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
     <h1>🎯 GADAA BINGO</h1>
+
     <p>Play • Win • Enjoy</p>
-</div><div class="container"><!-- GAME INFO -->
-
-<div class="game-info">
-
-    <div class="info-box">
-        <small>Game ID</small>
-        <strong id="gameId">----</strong>
-    </div>
-
-    <div class="info-box">
-        <small>Players</small>
-        <strong id="players">0</strong>
-    </div>
-
-    <div class="info-box">
-        <small>Stake</small>
-        <strong id="stake">0</strong>
-    </div>
-
-    <div class="info-box">
-        <small>Called</small>
-        <strong id="calledCount">0</strong>
-    </div>
 
 </div>
 
-<!-- STATUS -->
+<div class="container">
 
-<div class="status-box">
+    <div class="game-info">
 
-    <div id="status" class="status">
-        ⏳ Connecting...
-    </div>
+        <div class="info-box">
 
-    <div id="timer" class="timer"></div>
+            <small>Game ID</small>
 
-</div>
-
-<!-- BUY CARD -->
-
-<div id="cardBuyingBox" class="card-buying">
-
-    <h2>🎫 BUY CARD</h2>
-
-    <div id="buyTimer" class="timer">
-        ⏳ Waiting...
-    </div>
-
-    <div class="buy-buttons">
-
-        <button
-            id="buy10Button"
-            class="buy-btn"
-            onclick="buyCard('10')"
-            disabled
-        >
-            🎫 10 BIRR
-        </button>
-
-        <button
-            id="buy20Button"
-            class="buy-btn"
-            onclick="buyCard('20')"
-            disabled
-        >
-            🎫 20 BIRR
-        </button>
-
-    </div>
-
-</div>
-
-<!-- CURRENT CALL -->
-
-<div class="current-call">
-
-    <div class="current-label">
-        📢 CURRENT CALL
-    </div>
-
-    <div
-        id="currentNumber"
-        class="current-number"
-    >
-        -
-    </div>
-
-</div>
-
-<!-- GAME -->
-
-<div id="gameArea" style="display:none;">
-
-    <div class="game-layout">
-
-        <!-- LEFT: CALLED NUMBERS -->
-
-        <div class="called-board">
-
-            <h3>📢 CALLED NUMBERS</h3>
-
-            <div
-                id="bingoTable"
-                class="bingo-table"
-            ></div>
+            <strong id="gameId">----</strong>
 
         </div>
 
-        <!-- RIGHT: USER CARD -->
+        <div class="info-box">
 
-        <div class="card-area">
+            <small>Players</small>
 
-            <div
-                id="cardTitle"
-                class="card-title"
-            >
-                🎫 MY BINGO CARD
-            </div>
+            <strong id="players">0</strong>
 
-            <div class="card-header">
+        </div>
 
-                <div>B</div>
-                <div>I</div>
-                <div>N</div>
-                <div>G</div>
-                <div>O</div>
+        <div class="info-box">
 
-            </div>
+            <small>Stake</small>
 
-            <div
-                id="bingoCard"
-                class="bingo-card"
-            ></div>
+            <strong id="stake">0</strong>
+
+        </div>
+
+        <div class="info-box">
+
+            <small>Called</small>
+
+            <strong id="calledCount">0</strong>
 
         </div>
 
     </div>
 
-    <!-- CONTROLS -->
+    <div class="status-box">
 
-    <div class="controls">
+        <div id="status"
+             class="status">
 
-        <button
-            id="soundButton"
-            class="control-btn active"
-            onclick="toggleSound()"
-        >
-            🔊 Sound ON
-        </button>
+            ⏳ Connecting...
 
-        <button
-            id="autoButton"
-            class="control-btn active"
-            onclick="toggleAuto()"
-        >
-            ⚡ Auto ON
-        </button>
+        </div>
 
-        <button
-            class="control-btn"
-            onclick="loadGameState()"
-        >
-            🔄 Refresh
-        </button>
+        <div id="timer"
+             class="timer">
 
-        <button
-            class="control-btn"
-            onclick="leaveGame()"
-        >
-            🚪 Leave
-        </button>
+        </div>
 
     </div>
 
-    <!-- BINGO -->
+    <div id="winnerBox"
+         class="winner-box">
 
-    <button
-        id="bingoButton"
-        class="bingo-btn"
-        onclick="claimBingo()"
-        disabled
-    >
-        🏆 BINGO!
-    </button>
+        <h2>🏆 WINNER FOUND!</h2>
 
-    <div
-        id="message"
-        class="message"
-    ></div>
+        <p id="winnerText"></p>
+
+    </div>
+
+    <div id="cardBuyingBox"
+         class="card-buying">
+
+        <h2>🎫 BUY CARD</h2>
+
+        <div id="buyTimer"
+             class="timer">
+
+            ⏳ Waiting...
+
+        </div>
+
+        <div class="buy-buttons">
+
+            <button id="buy10Button"
+                    class="buy-btn"
+                    onclick="buyCard('10')"
+                    disabled>
+
+                🎫 10 BIRR
+
+            </button>
+
+            <button id="buy20Button"
+                    class="buy-btn"
+                    onclick="buyCard('20')"
+                    disabled>
+
+                🎫 20 BIRR
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="current-call">
+
+        <div class="current-label">
+
+            📢 CURRENT CALL
+
+        </div>
+
+        <div id="currentNumber"
+             class="current-number">
+
+            -
+
+        </div>
+
+    </div>
+
+    <div id="gameArea"
+         style="display:none;">
+
+        <div class="game-layout">
+
+            <div class="called-board">
+
+                <h3>📢 CALLED NUMBERS</h3>
+
+                <div id="bingoTable"
+                     class="bingo-table">
+
+                </div>
+
+            </div>
+
+            <div class="card-area">
+
+                <div id="cardTitle"
+                     class="card-title">
+
+                    🎫 MY BINGO CARD
+
+                </div>
+
+                <div class="card-header">
+
+                    <div>B</div>
+
+                    <div>I</div>
+
+                    <div>N</div>
+
+                    <div>G</div>
+
+                    <div>O</div>
+
+                </div>
+
+                <div id="bingoCard"
+                     class="bingo-card">
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="controls">
+
+            <button id="soundButton"
+                    class="control-btn active"
+                    onclick="toggleSound()">
+
+                🔊 Sound ON
+
+            </button>
+
+            <button id="autoButton"
+                    class="control-btn active"
+                    onclick="toggleAuto()">
+
+                ⚡ Auto ON
+
+            </button>
+
+            <button class="control-btn"
+                    onclick="loadGameState()">
+
+                🔄 Refresh
+
+            </button>
+
+            <button class="control-btn"
+                    onclick="leaveGame()">
+
+                🚪 Leave
+
+            </button>
+
+        </div>
+
+        <button id="bingoButton"
+                class="bingo-btn"
+                onclick="claimBingo()"
+                disabled>
+
+            🏆 BINGO!
+
+        </button>
+
+        <div id="message"
+             class="message">
+
+        </div>
+
+    </div>
 
 </div>
 
-</div><script>
+<script>
 
 /* TELEGRAM */
 
-const tg = window.Telegram.WebApp;
+const tg =
+window.Telegram.WebApp;
 
 tg.ready();
 
@@ -573,22 +910,35 @@ tg.expand();
 
 /* API */
 
-const API_BASE = window.location.origin;
+const API_BASE =
+window.location.origin;
 
 
 /* VARIABLES */
 
 let selectedCard = null;
+
 let selectedCardType = null;
+
 let currentGameId = 0;
+
 let calledNumbers = [];
+
 let gameStarted = false;
+
 let cardBuying = false;
+
 let cardBuyingEndTime = 0;
+
 let cardData = [];
+
 let lastCurrentNumber = null;
+
 let soundEnabled = true;
+
 let autoEnabled = true;
+
+let lastWinnerGameId = null;
 
 
 /* USER ID */
@@ -596,128 +946,305 @@ let autoEnabled = true;
 function getUserId(){
 
     if(
+
         tg &&
+
         tg.initDataUnsafe &&
+
         tg.initDataUnsafe.user
+
     ){
 
         return String(
+
             tg.initDataUnsafe.user.id
+
         );
 
     }
 
-    return localStorage.getItem("user_id");
+    return localStorage.getItem(
+
+        "user_id"
+
+    );
 
 }
 
 
 /* MESSAGE */
 
-function showMessage(text,type="info"){
+function showMessage(
+
+    text,
+
+    type="info"
+
+){
 
     const message =
-        document.getElementById("message");
+    document.getElementById(
+
+        "message"
+
+    );
 
     message.innerHTML = text;
 
     message.className =
-        "message " + type;
+    "message " + type;
 
 }
 
 
-/* GET LETTER */
+/* BINGO LETTER */
 
-function getLetter(number){
+function getLetter(
 
-    if(number >= 1 && number <= 15)
+    number
+
+){
+
+    if(
+
+        number >= 1 &&
+
+        number <= 15
+
+    ){
+
         return "B";
 
-    if(number >= 16 && number <= 30)
+    }
+
+    if(
+
+        number >= 16 &&
+
+        number <= 30
+
+    ){
+
         return "I";
 
-    if(number >= 31 && number <= 45)
+    }
+
+    if(
+
+        number >= 31 &&
+
+        number <= 45
+
+    ){
+
         return "N";
 
-    if(number >= 46 && number <= 60)
+    }
+
+    if(
+
+        number >= 46 &&
+
+        number <= 60
+
+    ){
+
         return "G";
 
-    if(number >= 61 && number <= 75)
+    }
+
+    if(
+
+        number >= 61 &&
+
+        number <= 75
+
+    ){
+
         return "O";
+
+    }
 
     return "";
 
 }
 
 
-/* FORMAT CALL */
+/* FORMAT NUMBER */
 
-function formatCall(number){
+function formatCall(
 
-    if(number === null || number === undefined)
+    number
+
+){
+
+    if(
+
+        number === null ||
+
+        number === undefined
+
+    ){
+
         return "-";
 
-    return getLetter(number) + "-" + number;
+    }
+
+    return (
+
+        getLetter(number)
+
+        + "-"
+
+        + number
+
+    );
 
 }
 
 
-/* CREATE BINGO TABLE */
+/* CREATE CALLED BOARD */
 
 function createBingoTable(){
 
     const table =
-        document.getElementById("bingoTable");
+    document.getElementById(
+
+        "bingoTable"
+
+    );
 
     table.innerHTML = "";
 
-    const letters =
-        ["B","I","N","G","O"];
+    const letters = [
 
-    letters.forEach(letter => {
+        "B",
 
-        const head =
-            document.createElement("div");
+        "I",
 
-        head.className = "bingo-head";
+        "N",
 
-        head.innerText = letter;
+        "G",
 
-        table.appendChild(head);
+        "O"
 
-    });
+    ];
 
-    for(let row = 0; row < 15; row++){
+    letters.forEach(
 
-        for(let col = 0; col < 5; col++){
+        function(letter){
+
+            const head =
+            document.createElement(
+
+                "div"
+
+            );
+
+            head.className =
+            "bingo-head";
+
+            head.innerText =
+            letter;
+
+            table.appendChild(
+
+                head
+
+            );
+
+        }
+
+    );
+
+    for(
+
+        let row = 0;
+
+        row < 15;
+
+        row++
+
+    ){
+
+        for(
+
+            let col = 0;
+
+            col < 5;
+
+            col++
+
+        ){
 
             const number =
-                (col * 15) + row + 1;
+            (
+
+                col * 15
+
+            )
+
+            + row
+
+            + 1;
 
             const item =
-                document.createElement("div");
+            document.createElement(
 
-            item.className = "number";
+                "div"
+
+            );
+
+            item.className =
+            "number";
 
             item.id =
-                "number-" + number;
+            "number-"
 
-            item.innerText = number;
+            + number;
 
-            if(calledNumbers.includes(number)){
+            item.innerText =
+            number;
 
-                item.classList.add("called");
+            if(
+
+                calledNumbers.includes(
+
+                    number
+
+                )
+
+            ){
+
+                item.classList.add(
+
+                    "called"
+
+                );
 
             }
 
-            if(number === lastCurrentNumber){
+            if(
 
-                item.classList.add("current");
+                number ===
+
+                lastCurrentNumber
+
+            ){
+
+                item.classList.add(
+
+                    "current"
+
+                );
 
             }
 
-            table.appendChild(item);
+            table.appendChild(
+
+                item
+
+            );
 
         }
 
@@ -726,80 +1253,166 @@ function createBingoTable(){
 }
 
 
-/* LOAD GAME */
+/* LOAD GAME STATE */
 
 async function loadGameState(){
 
     try{
 
         const response =
-            await fetch(
-                API_BASE + "/api/game-state"
-            );
+        await fetch(
+
+            API_BASE
+
+            + "/api/game-state"
+
+        );
 
         const data =
-            await response.json();
+        await response.json();
 
-        if(!data.success){
+        if(
+
+            !data.success
+
+        ){
 
             showMessage(
+
                 "❌ Game state error.",
+
                 "error"
+
             );
 
             return;
 
         }
 
+        const oldGameId =
+        currentGameId;
+
         currentGameId =
-            data.game_id;
+        data.game_id;
 
         calledNumbers =
-            data.called_numbers || [];
+        data.called_numbers || [];
 
         gameStarted =
-            data.started;
+        data.started;
 
         cardBuying =
-            data.card_buying;
+        data.card_buying;
 
         cardBuyingEndTime =
-            data.card_buying_end_time || 0;
+        data.card_buying_end_time || 0;
 
         lastCurrentNumber =
-            data.current_number;
+        data.current_number;
 
-        document.getElementById("gameId")
-            .innerText =
-            data.game_id || "----";
+        document.getElementById(
 
-        document.getElementById("calledCount")
-            .innerText =
-            calledNumbers.length;
+            "gameId"
 
-        document.getElementById("stake")
-            .innerText =
-            data.total_sales || 0;
+        ).innerText =
 
-        updateStatus(data);
+        data.game_id || "----";
+
+        document.getElementById(
+
+            "calledCount"
+
+        ).innerText =
+
+        calledNumbers.length;
+
+        document.getElementById(
+
+            "stake"
+
+        ).innerText =
+
+        data.total_sales || 0;
+
+        updateStatus(
+
+            data
+
+        );
 
         updateCardBuyingUI();
 
         updateCurrentNumber(
+
             data.current_number
+
         );
 
         createBingoTable();
 
-        if(selectedCard){
+        if(
 
-            document.getElementById("gameArea")
-                .style.display = "block";
+            data.winner
+
+        ){
+
+            showWinner(
+
+                data
+
+            );
+
+        }
+
+        else{
+
+            hideWinner();
+
+        }
+
+        if(
+
+            selectedCard &&
+
+            selectedCardType
+
+        ){
+
+            document.getElementById(
+
+                "gameArea"
+
+            ).style.display =
+
+            "block";
 
             renderCard();
 
-            document.getElementById("bingoButton")
-                .disabled = !gameStarted;
+            document.getElementById(
+
+                "bingoButton"
+
+            ).disabled =
+
+            !gameStarted;
+
+        }
+
+        if(
+
+            oldGameId !== 0 &&
+
+            oldGameId !== currentGameId
+
+        ){
+
+            showMessage(
+
+                "🎫 GAME HAARAA BANAME.",
+
+                "success"
+
+            );
 
         }
 
@@ -807,11 +1420,18 @@ async function loadGameState(){
 
     catch(error){
 
-        console.error(error);
+        console.error(
+
+            error
+
+        );
 
         showMessage(
+
             "❌ Server waliin qunnamtiin hin jiru.",
+
             "error"
+
         );
 
     }
@@ -821,125 +1441,262 @@ async function loadGameState(){
 
 /* STATUS */
 
-function updateStatus(data){
+function updateStatus(
+
+    data
+
+){
 
     const status =
-        document.getElementById("status");
+    document.getElementById(
+
+        "status"
+
+    );
 
     const timer =
-        document.getElementById("timer");
+    document.getElementById(
 
-    if(data.winner){
+        "timer"
+
+    );
+
+    if(
+
+        data.winner
+
+    ){
 
         status.innerText =
-            "🏆 WINNER FOUND";
+
+        "🏆 WINNER FOUND";
 
         timer.innerText =
-            "Game xumurame.";
+
+        "⏳ Game haaraan 8 seconds booda jalqaba.";
 
         return;
 
     }
 
-    if(data.card_buying){
+    if(
+
+        data.card_buying
+
+    ){
 
         status.innerText =
-            "🎫 CARD BUYING OPEN";
+
+        "🎫 CARD BUYING OPEN";
 
         const remaining =
-            Math.max(
-                0,
-                Math.ceil(
-                    data.card_buying_end_time -
-                    Date.now() / 1000
-                )
-            );
+        Math.max(
+
+            0,
+
+            Math.ceil(
+
+                data.card_buying_end_time
+
+                - Date.now() / 1000
+
+            )
+
+        );
 
         timer.innerText =
-            "⏳ Card bitachuuf: "
-            + remaining +
-            " seconds";
+
+        "⏳ Card bitachuuf: "
+
+        + remaining
+
+        + " seconds";
 
         return;
 
     }
 
-    if(data.started){
+    if(
+
+        data.started
+
+    ){
 
         status.innerText =
-            "🎮 GAME IS RUNNING";
+
+        "🎮 GAME IS RUNNING";
 
         timer.innerText =
-            "📢 Number waamamaa jira";
+
+        "📢 Number waamamaa jira";
 
         return;
 
     }
 
     status.innerText =
-        "⏸ WAITING FOR NEXT GAME";
+
+    "⏸ WAITING FOR NEXT GAME";
 
     timer.innerText =
-        "Game itti aanu eegi.";
+
+    "Game itti aanu eegi.";
 
 }
 
 
-/* CARD BUYING */
+/* WINNER */
+
+function showWinner(
+
+    data
+
+){
+
+    const box =
+    document.getElementById(
+
+        "winnerBox"
+
+    );
+
+    const text =
+    document.getElementById(
+
+        "winnerText"
+
+    );
+
+    box.style.display =
+
+    "block";
+
+    text.innerHTML =
+
+    "🏆 Winner User ID: "
+
+    + data.winner_user_id
+
+    + "<br>"
+
+    + "🎫 Card: "
+
+    + data.winner_card_number
+
+    + "<br>"
+
+    + "💰 Prize: "
+
+    + data.prize
+
+    + " Birr";
+
+}
+
+
+/* HIDE WINNER */
+
+function hideWinner(){
+
+    document.getElementById(
+
+        "winnerBox"
+
+    ).style.display =
+
+    "none";
+
+}
+
+
+/* CARD BUYING UI */
 
 function updateCardBuyingUI(){
 
     const box =
-        document.getElementById(
-            "cardBuyingBox"
-        );
+    document.getElementById(
+
+        "cardBuyingBox"
+
+    );
 
     const buy10 =
-        document.getElementById(
-            "buy10Button"
-        );
+    document.getElementById(
+
+        "buy10Button"
+
+    );
 
     const buy20 =
-        document.getElementById(
-            "buy20Button"
-        );
+    document.getElementById(
+
+        "buy20Button"
+
+    );
 
     const timer =
-        document.getElementById(
-            "buyTimer"
-        );
+    document.getElementById(
 
-    if(cardBuying){
+        "buyTimer"
 
-        box.style.display = "block";
+    );
+
+    if(
+
+        cardBuying
+
+    ){
+
+        box.style.display =
+
+        "block";
 
         const remaining =
-            Math.max(
-                0,
-                Math.ceil(
-                    cardBuyingEndTime -
-                    Date.now() / 1000
-                )
-            );
+        Math.max(
+
+            0,
+
+            Math.ceil(
+
+                cardBuyingEndTime
+
+                - Date.now() / 1000
+
+            )
+
+        );
 
         timer.innerText =
-            "⏳ Yeroo hafe: "
-            + remaining +
-            " seconds";
 
-        buy10.disabled = false;
+        "⏳ Yeroo hafe: "
 
-        buy20.disabled = false;
+        + remaining
+
+        + " seconds";
+
+        buy10.disabled =
+
+        false;
+
+        buy20.disabled =
+
+        false;
 
     }
 
     else{
 
-        box.style.display = "none";
+        box.style.display =
 
-        buy10.disabled = true;
+        "none";
 
-        buy20.disabled = true;
+        buy10.disabled =
+
+        true;
+
+        buy20.disabled =
+
+        true;
 
     }
 
@@ -948,16 +1705,27 @@ function updateCardBuyingUI(){
 
 /* BUY CARD */
 
-async function buyCard(cardType){
+async function buyCard(
+
+    cardType
+
+){
 
     const userId =
-        getUserId();
+    getUserId();
 
-    if(!userId){
+    if(
+
+        !userId
+
+    ){
 
         showMessage(
+
             "⚠️ Telegram keessatti qofa bani.",
+
             "error"
+
         );
 
         return;
@@ -965,107 +1733,174 @@ async function buyCard(cardType){
     }
 
     const buy10 =
-        document.getElementById(
-            "buy10Button"
-        );
+    document.getElementById(
+
+        "buy10Button"
+
+    );
 
     const buy20 =
-        document.getElementById(
-            "buy20Button"
-        );
+    document.getElementById(
 
-    buy10.disabled = true;
+        "buy20Button"
 
-    buy20.disabled = true;
+    );
+
+    buy10.disabled =
+
+    true;
+
+    buy20.disabled =
+
+    true;
 
     showMessage(
+
         "⏳ Card siif bitamaa jira...",
+
         "warning"
+
     );
 
     try{
 
         const response =
-            await fetch(
-                API_BASE + "/api/buy-card",
-                {
-                    method:"POST",
+        await fetch(
 
-                    headers:{
-                        "Content-Type":
-                        "application/json"
-                    },
+            API_BASE
 
-                    body:JSON.stringify({
+            + "/api/buy-card",
 
-                        user_id:userId,
+            {
 
-                        card_type:cardType
+                method:"POST",
 
-                    })
+                headers:{
 
-                }
-            );
+                    "Content-Type":
+
+                    "application/json"
+
+                },
+
+                body:JSON.stringify({
+
+                    user_id:userId,
+
+                    card_type:cardType
+
+                })
+
+            }
+
+        );
 
         const data =
-            await response.json();
+        await response.json();
 
-        if(!data.success){
+        if(
+
+            !data.success
+
+        ){
 
             showMessage(
-                "❌ " +
-                (
+
+                "❌ "
+
+                + (
+
                     data.message ||
+
                     "Card bituun hin milkoofne."
+
                 ),
+
                 "error"
+
             );
 
-            buy10.disabled = false;
+            buy10.disabled =
 
-            buy20.disabled = false;
+            false;
+
+            buy20.disabled =
+
+            false;
 
             return;
 
         }
 
         selectedCard =
-            data.card_number;
+        data.card_number;
 
         selectedCardType =
-            data.card_type;
+        data.card_type;
 
         cardData =
-            data.card || [];
+        data.card || [];
 
         localStorage.setItem(
+
             "selected_card",
+
             selectedCard
+
         );
 
         localStorage.setItem(
+
             "selected_card_type",
+
             selectedCardType
+
         );
 
-        document.getElementById("gameArea")
-            .style.display = "block";
+        localStorage.setItem(
 
-        document.getElementById("cardTitle")
-            .innerText =
-            "🎫 CARD " +
-            selectedCard +
-            " — " +
-            selectedCardType +
-            " BIRR";
+            "selected_game_id",
+
+            data.game_id
+
+        );
+
+        document.getElementById(
+
+            "gameArea"
+
+        ).style.display =
+
+        "block";
+
+        document.getElementById(
+
+            "cardTitle"
+
+        ).innerText =
+
+        "🎫 CARD "
+
+        + selectedCard
+
+        + " — "
+
+        + selectedCardType
+
+        + " BIRR";
 
         renderCard();
 
         showMessage(
-            "✅ Card " +
-            selectedCard +
-            " bitatte.",
+
+            "✅ Card "
+
+            + selectedCard
+
+            + " bitatte.",
+
             "success"
+
         );
 
         await loadGameState();
@@ -1074,16 +1909,27 @@ async function buyCard(cardType){
 
     catch(error){
 
-        console.error(error);
+        console.error(
 
-        showMessage(
-            "❌ Server error.",
-            "error"
+            error
+
         );
 
-        buy10.disabled = false;
+        showMessage(
 
-        buy20.disabled = false;
+            "❌ Server error.",
+
+            "error"
+
+        );
+
+        buy10.disabled =
+
+        false;
+
+        buy20.disabled =
+
+        false;
 
     }
 
@@ -1095,76 +1941,153 @@ async function buyCard(cardType){
 function renderCard(){
 
     const container =
-        document.getElementById(
-            "bingoCard"
-        );
+    document.getElementById(
+
+        "bingoCard"
+
+    );
 
     container.innerHTML = "";
 
-    if(!cardData.length)
+    if(
+
+        !cardData.length
+
+    ){
+
         return;
 
-    cardData.forEach(row => {
+    }
 
-        row.forEach(value => {
+    cardData.forEach(
 
-            const cell =
-                document.createElement("div");
+        function(row){
 
-            cell.className = "cell";
+            row.forEach(
 
-            cell.innerText = value;
+                function(value){
 
-            if(value === "FREE"){
+                    const cell =
+                    document.createElement(
 
-                cell.classList.add("free");
+                        "div"
 
-            }
+                    );
 
-            else if(
-                calledNumbers.includes(value)
-            ){
+                    cell.className =
 
-                cell.classList.add("called");
+                    "cell";
 
-            }
+                    cell.innerText =
 
-            container.appendChild(cell);
+                    value;
 
-        });
+                    if(
 
-    });
+                        value === "FREE"
+
+                    ){
+
+                        cell.classList.add(
+
+                            "free"
+
+                        );
+
+                    }
+
+                    else if(
+
+                        calledNumbers.includes(
+
+                            value
+
+                        )
+
+                    ){
+
+                        cell.classList.add(
+
+                            "called"
+
+                        );
+
+                    }
+
+                    container.appendChild(
+
+                        cell
+
+                    );
+
+                }
+
+            );
+
+        }
+
+    );
 
 }
 
 
 /* CURRENT NUMBER */
 
-function updateCurrentNumber(number){
+function updateCurrentNumber(
+
+    number
+
+){
 
     const element =
-        document.getElementById(
-            "currentNumber"
-        );
+    document.getElementById(
+
+        "currentNumber"
+
+    );
+
+    const previous =
+    lastCurrentNumber;
 
     element.innerText =
-        formatCall(number);
+
+    formatCall(
+
+        number
+
+    );
 
     if(
+
         number !== null &&
+
         number !== undefined &&
-        number !== lastCurrentNumber
+
+        number !== previous
+
     ){
 
-        if(soundEnabled){
+        if(
+
+            soundEnabled
+
+        ){
 
             playSound();
 
         }
 
-        if(navigator.vibrate){
+        if(
 
-            navigator.vibrate(200);
+            navigator.vibrate
+
+        ){
+
+            navigator.vibrate(
+
+                200
+
+            );
 
         }
 
@@ -1180,11 +2103,17 @@ function playSound(){
     try{
 
         const audio =
-            new Audio(
-                "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA="
-            );
+        new Audio(
 
-        audio.play().catch(() => {});
+            "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA="
+
+        );
+
+        audio.play().catch(
+
+            function(){}
+
+        );
 
     }
 
@@ -1193,81 +2122,122 @@ function playSound(){
 }
 
 
-/* TOGGLE SOUND */
+/* SOUND TOGGLE */
 
 function toggleSound(){
 
     soundEnabled =
-        !soundEnabled;
+
+    !soundEnabled;
 
     const button =
-        document.getElementById(
-            "soundButton"
-        );
+    document.getElementById(
 
-    if(soundEnabled){
+        "soundButton"
+
+    );
+
+    if(
+
+        soundEnabled
+
+    ){
 
         button.innerText =
-            "🔊 Sound ON";
 
-        button.classList.add("active");
+        "🔊 Sound ON";
+
+        button.classList.add(
+
+            "active"
+
+        );
 
     }
 
     else{
 
         button.innerText =
-            "🔇 Sound OFF";
 
-        button.classList.remove("active");
+        "🔇 Sound OFF";
+
+        button.classList.remove(
+
+            "active"
+
+        );
 
     }
 
 }
 
 
-/* TOGGLE AUTO */
+/* AUTO TOGGLE */
 
 function toggleAuto(){
 
     autoEnabled =
-        !autoEnabled;
+
+    !autoEnabled;
 
     const button =
-        document.getElementById(
-            "autoButton"
-        );
+    document.getElementById(
 
-    if(autoEnabled){
+        "autoButton"
+
+    );
+
+    if(
+
+        autoEnabled
+
+    ){
 
         button.innerText =
-            "⚡ Auto ON";
 
-        button.classList.add("active");
+        "⚡ Auto ON";
+
+        button.classList.add(
+
+            "active"
+
+        );
 
     }
 
     else{
 
         button.innerText =
-            "⚡ Auto OFF";
 
-        button.classList.remove("active");
+        "⚡ Auto OFF";
+
+        button.classList.remove(
+
+            "active"
+
+        );
 
     }
 
 }
 
 
-/* BINGO */
+/* CLAIM BINGO */
 
 async function claimBingo(){
 
-    if(!selectedCard){
+    if(
+
+        !selectedCard
+
+    ){
 
         showMessage(
+
             "⚠️ Card hin jiru.",
+
             "error"
+
         );
 
         return;
@@ -1275,13 +2245,20 @@ async function claimBingo(){
     }
 
     const userId =
-        getUserId();
+    getUserId();
 
-    if(!userId){
+    if(
+
+        !userId
+
+    ){
 
         showMessage(
+
             "⚠️ User ID hin argamne.",
+
             "error"
+
         );
 
         return;
@@ -1289,69 +2266,110 @@ async function claimBingo(){
     }
 
     const button =
-        document.getElementById(
-            "bingoButton"
-        );
+    document.getElementById(
 
-    button.disabled = true;
+        "bingoButton"
+
+    );
+
+    button.disabled =
+
+    true;
 
     showMessage(
+
         "⏳ Bingo mirkaneessaa jira...",
+
         "warning"
+
     );
 
     try{
 
         const response =
-            await fetch(
-                API_BASE + "/api/check-bingo",
-                {
-                    method:"POST",
+        await fetch(
 
-                    headers:{
-                        "Content-Type":
-                        "application/json"
-                    },
+            API_BASE
 
-                    body:JSON.stringify({
+            + "/api/check-bingo",
 
-                        user_id:userId,
+            {
 
-                        card_number:selectedCard,
+                method:"POST",
 
-                        card_type:selectedCardType
+                headers:{
 
-                    })
+                    "Content-Type":
 
-                }
-            );
+                    "application/json"
+
+                },
+
+                body:JSON.stringify({
+
+                    user_id:userId,
+
+                    card_number:selectedCard,
+
+                    card_type:selectedCardType
+
+                })
+
+            }
+
+        );
 
         const data =
-            await response.json();
+        await response.json();
 
-        if(data.success){
+        if(
+
+            data.success
+
+        ){
 
             showMessage(
-                "🏆 BINGO! ATI MO'ATTE!<br>" +
-                "💰 Prize: " +
-                data.prize +
-                " Birr",
+
+                "🏆 BINGO! ATI MO'ATTE!"
+
+                + "<br>"
+
+                + "💰 Prize: "
+
+                + data.prize
+
+                + " Birr",
+
                 "success"
+
             );
 
-            if(tg.showPopup){
+            if(
+
+                tg.showPopup
+
+            ){
 
                 tg.showPopup({
 
                     title:"🏆 BINGO!",
 
                     message:
+
                     "Ati mo'atte! Prize: "
+
                     + data.prize
+
                     + " Birr",
 
                     buttons:[
-                        {type:"ok"}
+
+                        {
+
+                            type:"ok"
+
+                        }
+
                     ]
 
                 });
@@ -1363,28 +2381,46 @@ async function claimBingo(){
         }
 
         showMessage(
-            "❌ " +
-            (
+
+            "❌ "
+
+            + (
+
                 data.message ||
+
                 "Bingo hin guunne."
+
             ),
+
             "error"
+
         );
 
-        button.disabled = false;
+        button.disabled =
+
+        false;
 
     }
 
     catch(error){
 
-        console.error(error);
+        console.error(
 
-        showMessage(
-            "❌ Server error.",
-            "error"
+            error
+
         );
 
-        button.disabled = false;
+        showMessage(
+
+            "❌ Server error.",
+
+            "error"
+
+        );
+
+        button.disabled =
+
+        false;
 
     }
 
@@ -1395,12 +2431,20 @@ async function claimBingo(){
 
 function leaveGame(){
 
-    document.getElementById("gameArea")
-        .style.display = "none";
+    document.getElementById(
+
+        "gameArea"
+
+    ).style.display =
+
+    "none";
 
     showMessage(
+
         "🚪 Game keessaa baate.",
+
         "warning"
+
     );
 
 }
@@ -1409,54 +2453,76 @@ function leaveGame(){
 /* LOAD SAVED CARD */
 
 window.addEventListener(
+
     "load",
-    () => {
+
+    function(){
 
         const savedCard =
-            localStorage.getItem(
-                "selected_card"
-            );
+        localStorage.getItem(
+
+            "selected_card"
+
+        );
 
         const savedCardType =
-            localStorage.getItem(
-                "selected_card_type"
-            );
+        localStorage.getItem(
 
-        if(savedCard){
+            "selected_card_type"
+
+        );
+
+        if(
+
+            savedCard &&
+
+            savedCardType
+
+        ){
 
             selectedCard =
-                parseInt(savedCard);
+
+            parseInt(
+
+                savedCard
+
+            );
 
             selectedCardType =
-                savedCardType || "10";
+
+            savedCardType;
+
+            cardData =
+
+            generateCardFromNumber(
+
+                selectedCard
+
+            );
 
             document.getElementById(
+
                 "gameArea"
-            ).style.display = "block";
 
-            fetch(
-                API_BASE +
-                "/api/game-state"
-            )
-            .then(
-                response => response.json()
-            )
-            .then(
-                data => {
+            ).style.display =
 
-                    if(data.success){
+            "block";
 
-                        cardData =
-                            generateCardFromNumber(
-                                selectedCard
-                            );
+            document.getElementById(
 
-                        renderCard();
+                "cardTitle"
 
-                    }
+            ).innerText =
 
-                }
-            );
+            "🎫 CARD "
+
+            + selectedCard
+
+            + " — "
+
+            + selectedCardType
+
+            + " BIRR";
 
         }
 
@@ -1465,47 +2531,111 @@ window.addEventListener(
         loadGameState();
 
     }
+
 );
 
 
 /* GENERATE SAME CARD AS PYTHON */
 
-function generateCardFromNumber(cardNumber){
+function generateCardFromNumber(
+
+    cardNumber
+
+){
 
     let seed =
-        parseInt(cardNumber);
 
-    function seededRandom(min,max){
+    parseInt(
+
+        cardNumber
+
+    );
+
+    function seededRandom(
+
+        min,
+
+        max
+
+    ){
 
         seed =
-            (
-                seed * 9301 +
-                49297
-            ) % 233280;
+
+        (
+
+            seed * 9301
+
+            + 49297
+
+        )
+
+        % 233280;
 
         const rnd =
-            seed / 233280;
+
+        seed / 233280;
 
         return Math.floor(
-            min +
-            rnd *
-            (max - min + 1)
+
+            min
+
+            + rnd
+
+            * (
+
+                max
+
+                - min
+
+                + 1
+
+            )
+
         );
 
     }
 
-    function generateColumn(min,max){
+    function generateColumn(
+
+        min,
+
+        max
+
+    ){
 
         const numbers = [];
 
-        while(numbers.length < 5){
+        while(
+
+            numbers.length < 5
+
+        ){
 
             const number =
-                seededRandom(min,max);
 
-            if(!numbers.includes(number)){
+            seededRandom(
 
-                numbers.push(number);
+                min,
+
+                max
+
+            );
+
+            if(
+
+                !numbers.includes(
+
+                    number
+
+                )
+
+            ){
+
+                numbers.push(
+
+                    number
+
+                );
 
             }
 
@@ -1517,43 +2647,105 @@ function generateCardFromNumber(cardNumber){
 
     const columns = [
 
-        generateColumn(1,15),
+        generateColumn(
 
-        generateColumn(16,30),
+            1,
 
-        generateColumn(31,45),
+            15
 
-        generateColumn(46,60),
+        ),
 
-        generateColumn(61,75)
+        generateColumn(
+
+            16,
+
+            30
+
+        ),
+
+        generateColumn(
+
+            31,
+
+            45
+
+        ),
+
+        generateColumn(
+
+            46,
+
+            60
+
+        ),
+
+        generateColumn(
+
+            61,
+
+            75
+
+        )
 
     ];
 
     const card = [];
 
-    for(let row = 0; row < 5; row++){
+    for(
+
+        let row = 0;
+
+        row < 5;
+
+        row++
+
+    ){
 
         const rowData = [];
 
-        for(let col = 0; col < 5; col++){
+        for(
 
-            if(row === 2 && col === 2){
+            let col = 0;
 
-                rowData.push("FREE");
+            col < 5;
+
+            col++
+
+        ){
+
+            if(
+
+                row === 2 &&
+
+                col === 2
+
+            ){
+
+                rowData.push(
+
+                    "FREE"
+
+                );
 
             }
 
             else{
 
                 rowData.push(
+
                     columns[col][row]
+
                 );
 
             }
 
         }
 
-        card.push(rowData);
+        card.push(
+
+            rowData
+
+        );
 
     }
 
@@ -1566,11 +2758,18 @@ function generateCardFromNumber(cardNumber){
 
 setInterval(
 
-    loadGameState,
+    function(){
+
+        loadGameState();
+
+    },
 
     1000
 
 );
 
-</script></body>
-</html>
+</script>
+
+</body>
+
+                </html>
