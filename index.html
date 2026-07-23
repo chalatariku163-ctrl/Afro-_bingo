@@ -1,18 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
-<head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
-<title>GADAA BINGO</title>
-
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-<style>
+<title>GADAA BINGO</title><script src="https://telegram.org/js/telegram-web-app.js"></script><style>
 
 *{
     box-sizing:border-box;
@@ -666,237 +655,223 @@ button:disabled{
 
 }
 
-</style>
+</style></head><body><div class="header"><h1>🎯 GADAA BINGO</h1>
 
-</head>
+<p>Play • Win • Enjoy</p>
 
-<body>
+</div><div class="container"><div class="game-info">
 
-<div class="header">
+    <div class="info-box">
 
-    <h1>🎯 GADAA BINGO</h1>
+        <small>Game ID</small>
 
-    <p>Play • Win • Enjoy</p>
+        <strong id="gameId">----</strong>
+
+    </div>
+
+    <div class="info-box">
+
+        <small>Players</small>
+
+        <strong id="players">0</strong>
+
+    </div>
+
+    <div class="info-box">
+
+        <small>Stake</small>
+
+        <strong id="stake">0</strong>
+
+    </div>
+
+    <div class="info-box">
+
+        <small>Called</small>
+
+        <strong id="calledCount">0</strong>
+
+    </div>
 
 </div>
 
-<div class="container">
+<div class="status-box">
 
-    <div class="game-info">
+    <div id="status"
+         class="status">
 
-        <div class="info-box">
-
-            <small>Game ID</small>
-
-            <strong id="gameId">----</strong>
-
-        </div>
-
-        <div class="info-box">
-
-            <small>Players</small>
-
-            <strong id="players">0</strong>
-
-        </div>
-
-        <div class="info-box">
-
-            <small>Stake</small>
-
-            <strong id="stake">0</strong>
-
-        </div>
-
-        <div class="info-box">
-
-            <small>Called</small>
-
-            <strong id="calledCount">0</strong>
-
-        </div>
+        ⏳ Connecting...
 
     </div>
 
-    <div class="status-box">
-
-        <div id="status"
-             class="status">
-
-            ⏳ Connecting...
-
-        </div>
-
-        <div id="timer"
-             class="timer">
-
-        </div>
+    <div id="timer"
+         class="timer">
 
     </div>
 
-    <div id="winnerBox"
-         class="winner-box">
+</div>
 
-        <h2>🏆 WINNER FOUND!</h2>
+<div id="winnerBox"
+     class="winner-box">
 
-        <p id="winnerText"></p>
+    <h2>🏆 WINNER FOUND!</h2>
 
-    </div>
+    <p id="winnerText"></p>
 
-    <div id="cardBuyingBox"
-         class="card-buying">
+</div>
 
-        <h2>🎫 BUY CARD</h2>
+<div id="cardBuyingBox"
+     class="card-buying">
 
-        <div id="buyTimer"
-             class="timer">
+    <h2>🎫 BUY CARD</h2>
 
-            ⏳ Waiting...
+    <div id="buyTimer"
+         class="timer">
 
-        </div>
-
-        <div class="buy-buttons">
-
-            <button id="buy10Button"
-                    class="buy-btn"
-                    onclick="buyCard('10')"
-                    disabled>
-
-                🎫 10 BIRR
-
-            </button>
-
-            <button id="buy20Button"
-                    class="buy-btn"
-                    onclick="buyCard('20')"
-                    disabled>
-
-                🎫 20 BIRR
-
-            </button>
-
-        </div>
+        ⏳ Waiting...
 
     </div>
 
-    <div class="current-call">
+    <div class="buy-buttons">
 
-        <div class="current-label">
-
-            📢 CURRENT CALL
-
-        </div>
-
-        <div id="currentNumber"
-             class="current-number">
-
-            -
-
-        </div>
-
-    </div>
-
-    <div id="gameArea"
-         style="display:none;">
-
-        <div class="game-layout">
-
-            <div class="called-board">
-
-                <h3>📢 CALLED NUMBERS</h3>
-
-                <div id="bingoTable"
-                     class="bingo-table">
-
-                </div>
-
-            </div>
-
-            <div class="card-area">
-
-                <div id="cardTitle"
-                     class="card-title">
-
-                    🎫 MY BINGO CARD
-
-                </div>
-
-                <div class="card-header">
-
-                    <div>B</div>
-
-                    <div>I</div>
-
-                    <div>N</div>
-
-                    <div>G</div>
-
-                    <div>O</div>
-
-                </div>
-
-                <div id="bingoCard"
-                     class="bingo-card">
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="controls">
-
-            <button id="soundButton"
-                    class="control-btn active"
-                    onclick="toggleSound()">
-
-                🔊 Sound ON
-
-            </button>
-
-            <button id="autoButton"
-                    class="control-btn active"
-                    onclick="toggleAuto()">
-
-                ⚡ Auto ON
-
-            </button>
-
-            <button class="control-btn"
-                    onclick="loadGameState()">
-
-                🔄 Refresh
-
-            </button>
-
-            <button class="control-btn"
-                    onclick="leaveGame()">
-
-                🚪 Leave
-
-            </button>
-
-        </div>
-
-        <button id="bingoButton"
-                class="bingo-btn"
-                onclick="claimBingo()"
+        <button id="buy10Button"
+                class="buy-btn"
+                onclick="buyCard('10')"
                 disabled>
 
-            🏆 BINGO!
+            🎫 10 BIRR
 
         </button>
 
-        <div id="message"
-             class="message">
+        <button id="buy20Button"
+                class="buy-btn"
+                onclick="buyCard('20')"
+                disabled>
 
-        </div>
+            🎫 20 BIRR
+
+        </button>
 
     </div>
 
 </div>
 
-<script>
+<div class="current-call">
+
+    <div class="current-label">
+
+        📢 CURRENT CALL
+
+    </div>
+
+    <div id="currentNumber"
+         class="current-number">
+
+        -
+
+    </div>
+
+</div>
+
+<div id="gameArea"
+     style="display:none;">
+
+    <div class="game-layout">
+
+        <div class="called-board">
+
+            <h3>📢 CALLED NUMBERS</h3>
+
+            <div id="bingoTable"
+                 class="bingo-table">
+
+            </div>
+
+        </div>
+
+        <div class="card-area">
+
+            <div id="cardTitle"
+                 class="card-title">
+
+                🎫 MY BINGO CARD
+
+            </div>
+
+            <div class="card-header">
+
+                <div>B</div>
+
+                <div>I</div>
+
+                <div>N</div>
+
+                <div>G</div>
+
+                <div>O</div>
+
+            </div>
+
+            <div id="bingoCard"
+                 class="bingo-card">
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="controls">
+
+        <button id="soundButton"
+                class="control-btn active"
+                onclick="toggleSound()">
+
+            🔊 Sound ON
+
+        </button>
+
+        <button id="autoButton"
+                class="control-btn active"
+                onclick="toggleAuto()">
+
+            ⚡ Auto ON
+
+        </button>
+
+        <button class="control-btn"
+                onclick="loadGameState()">
+
+            🔄 Refresh
+
+        </button>
+
+        <button class="control-btn"
+                onclick="leaveGame()">
+
+            🚪 Leave
+
+        </button>
+
+    </div>
+
+    <button id="bingoButton"
+            class="bingo-btn"
+            onclick="claimBingo()"
+            disabled>
+
+        🏆 BINGO!
+
+    </button>
+
+    <div id="message"
+         class="message">
+
+    </div>
+
+</div>
+
+</div><script>
 
 /* TELEGRAM */
 
@@ -937,8 +912,6 @@ let lastCurrentNumber = null;
 let soundEnabled = true;
 
 let autoEnabled = true;
-
-let lastWinnerGameId = null;
 
 
 /* USER ID */
@@ -1004,6 +977,8 @@ function getLetter(
     number
 
 ){
+
+    number = Number(number);
 
     if(
 
@@ -1114,6 +1089,8 @@ function createBingoTable(){
 
     );
 
+    if(!table) return;
+
     table.innerHTML = "";
 
     const letters = [
@@ -1208,7 +1185,11 @@ function createBingoTable(){
 
             if(
 
-                calledNumbers.includes(
+                calledNumbers
+
+                .map(Number)
+
+                .includes(
 
                     number
 
@@ -1226,9 +1207,9 @@ function createBingoTable(){
 
             if(
 
-                number ===
+                Number(number) ===
 
-                lastCurrentNumber
+                Number(lastCurrentNumber)
 
             ){
 
@@ -1289,23 +1270,36 @@ async function loadGameState(){
 
         }
 
-        const oldGameId =
-        currentGameId;
-
         currentGameId =
-        data.game_id;
+        data.game_id || 0;
 
         calledNumbers =
-        data.called_numbers || [];
+        (
+
+            data.called_numbers ||
+
+            []
+
+        ).map(Number);
 
         gameStarted =
-        data.started;
+        Boolean(
+
+            data.started
+
+        );
 
         cardBuying =
-        data.card_buying;
+        Boolean(
+
+            data.card_buying
+
+        );
 
         cardBuyingEndTime =
-        data.card_buying_end_time || 0;
+        data.card_buying_end_time ||
+
+        0;
 
         lastCurrentNumber =
         data.current_number;
@@ -1316,7 +1310,21 @@ async function loadGameState(){
 
         ).innerText =
 
-        data.game_id || "----";
+        data.game_id ||
+
+        "----";
+
+        document.getElementById(
+
+            "players"
+
+        ).innerText =
+
+        data.players ||
+
+        data.player_count ||
+
+        0;
 
         document.getElementById(
 
@@ -1332,7 +1340,9 @@ async function loadGameState(){
 
         ).innerText =
 
-        data.total_sales || 0;
+        data.total_sales ||
+
+        0;
 
         updateStatus(
 
@@ -1352,31 +1362,31 @@ async function loadGameState(){
 
         if(
 
-            data.winner
+            selectedCard
 
         ){
 
-            showWinner(
+            if(
 
-                data
+                !cardData ||
 
-            );
+                !cardData.length
 
-        }
+            ){
 
-        else{
+                cardData =
 
-            hideWinner();
+                generateCardFromNumber(
 
-        }
+                    Number(
 
-        if(
+                        selectedCard
 
-            selectedCard &&
+                    )
 
-            selectedCardType
+                );
 
-        ){
+            }
 
             document.getElementById(
 
@@ -1400,19 +1410,21 @@ async function loadGameState(){
 
         if(
 
-            oldGameId !== 0 &&
-
-            oldGameId !== currentGameId
+            data.winner
 
         ){
 
-            showMessage(
+            showWinner(
 
-                "🎫 GAME HAARAA BANAME.",
-
-                "success"
+                data
 
             );
+
+        }
+
+        else{
+
+            hideWinner();
 
         }
 
@@ -1498,7 +1510,9 @@ function updateStatus(
 
                 data.card_buying_end_time
 
-                - Date.now() / 1000
+                - Date.now()
+
+                / 1000
 
             )
 
@@ -1660,7 +1674,9 @@ function updateCardBuyingUI(){
 
                 cardBuyingEndTime
 
-                - Date.now() / 1000
+                - Date.now()
+
+                / 1000
 
             )
 
@@ -1833,13 +1849,42 @@ async function buyCard(
         }
 
         selectedCard =
-        data.card_number;
+
+        Number(
+
+            data.card_number
+
+        );
 
         selectedCardType =
+
         data.card_type;
 
-        cardData =
-        data.card || [];
+        if(
+
+            data.card &&
+
+            data.card.length
+
+        ){
+
+            cardData =
+
+            data.card;
+
+        }
+
+        else{
+
+            cardData =
+
+            generateCardFromNumber(
+
+                selectedCard
+
+            );
+
+        }
 
         localStorage.setItem(
 
@@ -1890,6 +1935,8 @@ async function buyCard(
         + " BIRR";
 
         renderCard();
+
+        createBingoTable();
 
         showMessage(
 
@@ -1947,15 +1994,47 @@ function renderCard(){
 
     );
 
+    if(!container) return;
+
     container.innerHTML = "";
 
     if(
+
+        !cardData ||
 
         !cardData.length
 
     ){
 
-        return;
+        if(
+
+            selectedCard
+
+        ){
+
+            cardData =
+
+            generateCardFromNumber(
+
+                Number(
+
+                    selectedCard
+
+                )
+
+            );
+
+        }
+
+        else{
+
+            container.innerHTML =
+
+            "<div style='grid-column:1/-1;text-align:center;color:#ffd700;padding:20px;'>🎫 Card hin jiru</div>";
+
+            return;
+
+        }
 
     }
 
@@ -1984,7 +2063,9 @@ function renderCard(){
 
                     if(
 
-                        value === "FREE"
+                        value ===
+
+                        "FREE"
 
                     ){
 
@@ -1998,9 +2079,17 @@ function renderCard(){
 
                     else if(
 
-                        calledNumbers.includes(
+                        calledNumbers
 
-                            value
+                        .map(Number)
+
+                        .includes(
+
+                            Number(
+
+                                value
+
+                            )
 
                         )
 
@@ -2482,7 +2571,7 @@ window.addEventListener(
 
             selectedCard =
 
-            parseInt(
+            Number(
 
                 savedCard
 
@@ -2523,6 +2612,8 @@ window.addEventListener(
             + selectedCardType
 
             + " BIRR";
+
+            renderCard();
 
         }
 
@@ -2768,8 +2859,4 @@ setInterval(
 
 );
 
-</script>
-
-</body>
-
-                </html>
+</script></body></html>
