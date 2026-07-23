@@ -1,18 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
-<head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
-<title>GADAA BINGO</title>
-
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-<style>
+<title>GADAA BINGO</title><script src="https://telegram.org/js/telegram-web-app.js"></script><style>
 
 *{
     box-sizing:border-box;
@@ -49,6 +38,75 @@ h1{
     margin:8px 0 15px;
 
 }
+
+
+/* ================================= */
+/* GAME INFORMATION */
+/* ================================= */
+
+.game-info{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(5,1fr);
+
+    gap:6px;
+
+    background:#1b2638;
+
+    border-radius:12px;
+
+    padding:8px;
+
+    margin-bottom:12px;
+
+    text-align:center;
+
+}
+
+.game-info-item{
+
+    background:#27364d;
+
+    border-radius:8px;
+
+    padding:8px 4px;
+
+    min-width:0;
+
+}
+
+.game-info-label{
+
+    display:block;
+
+    color:#9aa8bb;
+
+    font-size:10px;
+
+    margin-bottom:4px;
+
+}
+
+.game-info-value{
+
+    display:block;
+
+    color:#00e5ff;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+    white-space:nowrap;
+
+}
+
 
 .status-box{
 
@@ -654,136 +712,194 @@ button:disabled{
 
     }
 
+    .game-info{
+
+        gap:3px;
+
+        padding:5px;
+
+    }
+
+    .game-info-item{
+
+        padding:6px 2px;
+
+    }
+
+    .game-info-label{
+
+        font-size:8px;
+
+    }
+
+    .game-info-value{
+
+        font-size:10px;
+
+    }
+
 }
 
-</style>
+</style></head><body><div class="container"><h1>🎱 GADAA BINGO</h1><!-- ================================= --><!-- GAME INFORMATION --><!-- ================================= --><div class="game-info"><div class="game-info-item">
 
-</head>
+    <span class="game-info-label">
+        GAME ID
+    </span>
 
-
-<body>
-
-
-<div class="container">
-
-
-<h1>🎱 GADAA BINGO</h1>
-
-
-<div class="status-box">
-
-    <div id="gameStatus">
-
-        ⏳ WAITING FOR GAME
-
-    </div>
-
-    <div id="timer">
+    <span
+        class="game-info-value"
+        id="gameIdValue">
 
         --
 
-    </div>
+    </span>
 
 </div>
 
 
-<div class="current-number">
+<div class="game-info-item">
 
-    <h3>🎱 CURRENT NUMBER</h3>
+    <span class="game-info-label">
+        DERASH
+    </span>
 
-    <div id="currentNumber">
+    <span
+        class="game-info-value"
+        id="derashValue">
 
         --
 
-    </div>
+    </span>
 
 </div>
 
 
-<div class="buttons">
+<div class="game-info-item">
 
-    <button id="buy10Btn"
-            onclick="buyCard(10)">
+    <span class="game-info-label">
+        PLAYER
+    </span>
 
-        🎫 BUY 10 BIRR
+    <span
+        class="game-info-value"
+        id="playerValue">
 
-    </button>
+        0
 
-
-    <button id="buy20Btn"
-            onclick="buyCard(20)">
-
-        🎫 BUY 20 BIRR
-
-    </button>
+    </span>
 
 </div>
 
 
-<div id="buyMessage"
-     class="message">
+<div class="game-info-item">
+
+    <span class="game-info-label">
+        STAKE
+    </span>
+
+    <span
+        class="game-info-value"
+        id="stakeValue">
+
+        0 Birr
+
+    </span>
 
 </div>
 
 
-<!-- CARD ID TABLE -->
+<div class="game-info-item">
 
-<div id="cardIdPanel">
+    <span class="game-info-label">
+        CALLED
+    </span>
 
-    <h3>🎫 SELECT CARD ID 1 - 500</h3>
+    <span
+        class="game-info-value"
+        id="calledValue">
 
-    <div id="cardIdGrid">
+        0
 
-    </div>
+    </span>
 
 </div>
 
+</div><div class="status-box"><div id="gameStatus">
 
-<!-- CALLED NUMBERS LEFT / USER CARD RIGHT -->
+    ⏳ WAITING FOR GAME
 
-<div class="game-layout">
+</div>
+
+<div id="timer">
+
+    --
+
+</div>
+
+</div><div class="current-number"><h3>🎱 CURRENT NUMBER</h3>
+
+<div id="currentNumber">
+
+    --
+
+</div>
+
+</div><div class="buttons"><button id="buy10Btn"
+        onclick="buyCard(10)">
+
+    🎫 BUY 10 BIRR
+
+</button>
 
 
-    <!-- LEFT -->
+<button id="buy20Btn"
+        onclick="buyCard(20)">
 
-    <div class="left-side">
+    🎫 BUY 20 BIRR
 
-        <div class="called-box">
+</button>
 
-            <h3>📢 CALLED NUMBERS</h3>
+</div><div id="buyMessage"
+     class="message"></div><!-- CARD ID TABLE --><div id="cardIdPanel"><h3>🎫 SELECT CARD ID 1 - 500</h3>
 
-            <div id="calledNumbers">
+<div id="cardIdGrid">
 
-            </div>
+</div>
+
+</div><!-- CALLED NUMBERS LEFT / USER CARD RIGHT --><div class="game-layout"><!-- LEFT -->
+
+<div class="left-side">
+
+    <div class="called-box">
+
+        <h3>📢 CALLED NUMBERS</h3>
+
+        <div id="calledNumbers">
 
         </div>
 
     </div>
 
-
-    <!-- RIGHT -->
-
-    <div class="right-side">
-
-        <div id="bingoMessage"
-             class="message">
-
-        </div>
+</div>
 
 
-        <div id="myCardBox">
+<!-- RIGHT -->
 
-        </div>
+<div class="right-side">
+
+    <div id="bingoMessage"
+         class="message">
+
+    </div>
+
+
+    <div id="myCardBox">
 
     </div>
 
 </div>
 
-
-</div>
-
-
-<script>
+</div></div><script>
 
 
 // =====================================================
@@ -913,6 +1029,40 @@ const bingoMessage =
 const myCardBox =
     document.getElementById(
         "myCardBox"
+    );
+
+
+// =====================================================
+// GAME INFO ELEMENTS
+// =====================================================
+
+const gameIdValue =
+    document.getElementById(
+        "gameIdValue"
+    );
+
+
+const derashValue =
+    document.getElementById(
+        "derashValue"
+    );
+
+
+const playerValue =
+    document.getElementById(
+        "playerValue"
+    );
+
+
+const stakeValue =
+    document.getElementById(
+        "stakeValue"
+    );
+
+
+const calledValue =
+    document.getElementById(
+        "calledValue"
     );
 
 
@@ -1058,6 +1208,140 @@ function updateGameUI(data){
 
     gameState =
         data;
+
+
+    // =================================================
+    // GAME INFORMATION
+    // =================================================
+
+    gameIdValue.innerText =
+        data.game_id || "--";
+
+
+    const calledCount =
+        Array.isArray(
+            data.called_numbers
+        )
+
+        ?
+
+        data.called_numbers.length
+
+        :
+
+        0;
+
+
+    calledValue.innerText =
+        calledCount;
+
+
+    let playerCount =
+        0;
+
+
+    let stake =
+        0;
+
+
+    if(
+
+        Array.isArray(
+            data.players
+        )
+
+    ){
+
+        playerCount =
+            data.players.length;
+
+    }
+
+
+    if(
+
+        data.player_count !== undefined
+
+    ){
+
+        playerCount =
+            data.player_count;
+
+    }
+
+
+    if(
+
+        data.players_count !== undefined
+
+    ){
+
+        playerCount =
+            data.players_count;
+
+    }
+
+
+    if(
+
+        data.stake !== undefined
+
+    ){
+
+        stake =
+            data.stake;
+
+    }
+
+
+    if(
+
+        data.total_stake !== undefined
+
+    ){
+
+        stake =
+            data.total_stake;
+
+    }
+
+
+    playerValue.innerText =
+        playerCount;
+
+
+    stakeValue.innerText =
+        stake + " Birr";
+
+
+    if(
+
+        data.derash !== undefined
+
+    ){
+
+        derashValue.innerText =
+            data.derash;
+
+    }
+
+    else if(
+
+        data.draw !== undefined
+
+    ){
+
+        derashValue.innerText =
+            data.draw;
+
+    }
+
+    else{
+
+        derashValue.innerText =
+            "BINGO";
+
+    }
 
 
     // =================================================
@@ -1620,8 +1904,6 @@ function renderCalledNumbers(numbers){
     ];
 
 
-    // HEADER
-
     columns.forEach(
 
         function(column){
@@ -1648,8 +1930,6 @@ function renderCalledNumbers(numbers){
 
     );
 
-
-    // NUMBERS 1 - 75
 
     for(
 
@@ -1745,8 +2025,6 @@ function autoMarkCalledNumbers(userCard){
 
     }
 
-
-    // FREE SPACE
 
     if(
 
@@ -2321,8 +2599,6 @@ function renderMyCards(){
                 );
 
 
-            // 5 x 5 CARD
-
             for(
 
                 let row = 0;
@@ -2367,8 +2643,6 @@ function renderMyCards(){
                         row + "-" + col;
 
 
-                    // FREE
-
                     if(
 
                         value === "FREE"
@@ -2386,8 +2660,6 @@ function renderMyCards(){
 
                     }
 
-
-                    // CALLED NUMBER
 
                     else if(
 
@@ -2413,8 +2685,6 @@ function renderMyCards(){
 
                     }
 
-
-                    // MANUAL / SAVED MARK
 
                     if(
 
@@ -2660,9 +2930,7 @@ function checkLocalBingo(userCard){
     }
 
 
-    // =================================
-    // HORIZONTAL LINES
-    // =================================
+    // HORIZONTAL
 
     for(
 
@@ -2717,9 +2985,7 @@ function checkLocalBingo(userCard){
     }
 
 
-    // =================================
-    // VERTICAL LINES
-    // =================================
+    // VERTICAL
 
     for(
 
@@ -2774,9 +3040,7 @@ function checkLocalBingo(userCard){
     }
 
 
-    // =================================
-    // DIAGONAL \
-    // =================================
+    // DIAGONAL 1
 
     let diagonal1 =
         true;
@@ -2819,9 +3083,7 @@ function checkLocalBingo(userCard){
     }
 
 
-    // =================================
-    // DIAGONAL /
-    // =================================
+    // DIAGONAL 2
 
     let diagonal2 =
         true;
@@ -2867,9 +3129,7 @@ function checkLocalBingo(userCard){
     }
 
 
-    // =================================
     // FOUR CORNERS
-    // =================================
 
     if(
 
@@ -2923,14 +3183,10 @@ async function claimBingo(
     }
 
 
-    // AUTO MARK BEFORE CHECKING
-
     autoMarkCalledNumbers(
         userCard
     );
 
-
-    // LOCAL BINGO CHECK
 
     if(
 
@@ -3163,9 +3419,4 @@ setInterval(
 loadGameState();
 
 
-</script>
-
-
-</body>
-
-      </html>
+</script></body></html>
