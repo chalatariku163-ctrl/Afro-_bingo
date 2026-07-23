@@ -396,7 +396,7 @@ button:disabled{
 
 #myCardBox{
 
-    display:block;
+    display:none;
 
 }
 
@@ -523,16 +523,105 @@ button:disabled{
 }
 
 
+/* ================================= */
+/* MOBILE: CALLED LEFT / CARD RIGHT */
+/* ================================= */
+
 @media(max-width:700px){
 
     .game-layout{
 
-        grid-template-columns:1fr;
+        grid-template-columns:
+            minmax(0,1fr)
+            minmax(0,1fr);
+
+        gap:8px;
+
+    }
+
+    .called-box{
+
+        padding:6px;
+
+    }
+
+    .called-box h3{
+
+        font-size:12px;
+
+    }
+
+    .called-number{
+
+        font-size:10px;
+
+        min-height:27px;
+
+        padding:5px 1px;
+
+    }
+
+    .called-number.header{
+
+        font-size:12px;
+
+    }
+
+    .user-card-panel{
+
+        padding:6px;
+
+    }
+
+    .card-header{
+
+        display:block;
+
+        text-align:center;
+
+        padding:7px;
+
+    }
+
+    .card-number{
+
+        font-size:13px;
+
+    }
+
+    .card-type{
+
+        font-size:11px;
+
+        margin-top:5px;
+
+    }
+
+    .bingo-card th{
+
+        padding:5px;
+
+        font-size:13px;
+
+    }
+
+    .bingo-card td{
+
+        height:38px;
+
+        font-size:11px;
+
+    }
+
+    .btn-bingo{
+
+        font-size:11px;
+
+        padding:8px 3px;
 
     }
 
 }
-
 
 @media(max-width:600px){
 
@@ -551,20 +640,6 @@ button:disabled{
     #currentNumber{
 
         font-size:35px;
-
-    }
-
-    .bingo-card td{
-
-        height:45px;
-
-        font-size:14px;
-
-    }
-
-    .bingo-card th{
-
-        padding:7px;
 
     }
 
@@ -658,9 +733,7 @@ button:disabled{
 <div class="game-layout">
 
 
-    <!-- ============================= -->
-    <!-- LEFT SIDE: CALLED NUMBERS -->
-    <!-- ============================= -->
+    <!-- LEFT -->
 
     <div class="left-side">
 
@@ -677,9 +750,7 @@ button:disabled{
     </div>
 
 
-    <!-- ============================= -->
-    <!-- RIGHT SIDE: USER CARD -->
-    <!-- ============================= -->
+    <!-- RIGHT -->
 
     <div class="right-side">
 
@@ -711,9 +782,7 @@ button:disabled{
 const tg =
     window.Telegram.WebApp;
 
-
 tg.ready();
-
 
 tg.expand();
 
@@ -752,19 +821,13 @@ let gameState =
     null;
 
 
-// USER CARDS
-
 let myCards =
     [];
 
 
-// SELECTED CARD ID
-
 let selectedCardNumber =
     null;
 
-
-// WINNER CARD TIMER
 
 let winnerCardTimeout =
     null;
@@ -912,7 +975,6 @@ async function loadGameState(){
             gameStatus.innerText =
                 "⚠️ GAME STATE ERROR";
 
-
             return;
 
         }
@@ -945,9 +1007,9 @@ function updateGameUI(data){
         Date.now() / 1000;
 
 
-    // =========================================
+    // =================================================
     // NEW GAME
-    // =========================================
+    // =================================================
 
     if(
 
@@ -956,9 +1018,6 @@ function updateGameUI(data){
         currentGameId !== data.game_id
 
     ){
-
-        // IMPORTANT:
-        // CARD USER BITATE HIN HAQAMNE
 
         selectedCardNumber =
             null;
@@ -970,9 +1029,30 @@ function updateGameUI(data){
                 winnerCardTimeout
             );
 
-
             winnerCardTimeout =
                 null;
+
+        }
+
+
+        /*
+        CARD DURAA HIN HAQAMNE.
+
+        Garuu game haaraa keessatti
+        backend card haaraa yoo erge,
+        card haaraa qofa fudhanna.
+        */
+
+        if(
+
+            Array.isArray(
+                data.user_cards
+            )
+
+        ){
+
+            myCards =
+                data.user_cards;
 
         }
 
@@ -987,9 +1067,9 @@ function updateGameUI(data){
         data;
 
 
-    // =========================================
+    // =================================================
     // CARD BUYING
-    // =========================================
+    // =================================================
 
     if(data.card_buying){
 
@@ -1026,7 +1106,9 @@ function updateGameUI(data){
             + " SEC";
 
 
-        // CARD ID TABLE MUL'ATA
+        /*
+        CARD ID MUL'ATA
+        */
 
         cardIdPanel.style.display =
             "block";
@@ -1035,7 +1117,9 @@ function updateGameUI(data){
         renderCardIds();
 
 
-        // USER CARD MIRGAA IRRATTI MULA'ATA
+        /*
+        USER CARD MIRGA MUL'ATA
+        */
 
         if(
 
@@ -1051,9 +1135,9 @@ function updateGameUI(data){
     }
 
 
-    // =========================================
+    // =================================================
     // GAME RUNNING
-    // =========================================
+    // =================================================
 
     else if(data.started){
 
@@ -1073,13 +1157,17 @@ function updateGameUI(data){
             "🎱 NUMBERS ARE BEING CALLED";
 
 
-        // CARD ID TABLE DHOKATA
+        /*
+        CARD ID DHOKATA
+        */
 
         cardIdPanel.style.display =
             "none";
 
 
-        // USER CARD MIRGAA
+        /*
+        USER CARD MIRGA MUL'ATA
+        */
 
         if(
 
@@ -1095,9 +1183,9 @@ function updateGameUI(data){
     }
 
 
-    // =========================================
+    // =================================================
     // WINNER
-    // =========================================
+    // =================================================
 
     else if(data.winner){
 
@@ -1117,13 +1205,13 @@ function updateGameUI(data){
             true;
 
 
-        // CARD ID TABLE DHOKATA
-
         cardIdPanel.style.display =
             "none";
 
 
-        // USER CARD MUL'ATA
+        /*
+        CARD 40 SEC MUL'ATA
+        */
 
         if(
 
@@ -1136,8 +1224,6 @@ function updateGameUI(data){
 
         }
 
-
-        // 40 SEC BOODA CARD DHOKATA
 
         if(
 
@@ -1169,9 +1255,9 @@ function updateGameUI(data){
     }
 
 
-    // =========================================
+    // =================================================
     // WAITING
-    // =========================================
+    // =================================================
 
     else{
 
@@ -1187,14 +1273,14 @@ function updateGameUI(data){
             true;
 
 
-        // CARD ID TABLE DHOKATA
-
         cardIdPanel.style.display =
             "none";
 
 
-        // USER CARD YOO JIRAATE
-        // HARKA MIRGAA IRRATTI MUL'ATA
+        /*
+        USER CARD YOO JIRAATE
+        HARKA MIRGAA IRRATTI MULA'ATA
+        */
 
         if(
 
@@ -1210,9 +1296,9 @@ function updateGameUI(data){
     }
 
 
-    // =========================================
+    // =================================================
     // CURRENT NUMBER
-    // =========================================
+    // =================================================
 
     if(
 
@@ -1237,9 +1323,9 @@ function updateGameUI(data){
     }
 
 
-    // =========================================
+    // =================================================
     // CALLED NUMBERS
-    // =========================================
+    // =================================================
 
     renderCalledNumbers(
 
@@ -1248,9 +1334,9 @@ function updateGameUI(data){
     );
 
 
-    // =========================================
+    // =================================================
     // USER CARDS
-    // =========================================
+    // =================================================
 
     renderMyCards();
 
@@ -1258,7 +1344,7 @@ function updateGameUI(data){
 
 
 // =====================================================
-// CARD ID TABLE 1 - 500
+// CARD ID TABLE
 // =====================================================
 
 function renderCardIds(){
@@ -1295,8 +1381,6 @@ function renderCardIds(){
             "card-id-" + i;
 
 
-        // USER CARD BITATEE
-
         const alreadyBought =
             myCards.some(
 
@@ -1321,8 +1405,6 @@ function renderCardIds(){
 
         }
 
-
-        // SELECTED CARD
 
         if(
 
@@ -1428,75 +1510,25 @@ function renderCardIds(){
 
 
 // =====================================================
-// FORMAT CALL NUMBER
+// FORMAT CALL
 // =====================================================
 
 function formatCall(number){
 
-    if(
-
-        number >= 1 &&
-
-        number <= 15
-
-    ){
-
+    if(number >= 1 && number <= 15)
         return "B-" + number;
 
-    }
-
-
-    if(
-
-        number >= 16 &&
-
-        number <= 30
-
-    ){
-
+    if(number >= 16 && number <= 30)
         return "I-" + number;
 
-    }
-
-
-    if(
-
-        number >= 31 &&
-
-        number <= 45
-
-    ){
-
+    if(number >= 31 && number <= 45)
         return "N-" + number;
 
-    }
-
-
-    if(
-
-        number >= 46 &&
-
-        number <= 60
-
-    ){
-
+    if(number >= 46 && number <= 60)
         return "G-" + number;
 
-    }
-
-
-    if(
-
-        number >= 61 &&
-
-        number <= 75
-
-    ){
-
+    if(number >= 61 && number <= 75)
         return "O-" + number;
-
-    }
-
 
     return number;
 
@@ -1504,9 +1536,7 @@ function formatCall(number){
 
 
 // =====================================================
-// CALLED NUMBERS TABLE
-// B I N G O
-// EACH NUMBER UNDER ITS COLUMN
+// CALLED NUMBERS
 // =====================================================
 
 function renderCalledNumbers(numbers){
@@ -1528,59 +1558,32 @@ function renderCalledNumbers(numbers){
     const columns = [
 
         {
-
-            letter:
-                "B",
-
-            start:
-                1
-
+            letter:"B",
+            start:1
         },
 
         {
-
-            letter:
-                "I",
-
-            start:
-                16
-
+            letter:"I",
+            start:16
         },
 
         {
-
-            letter:
-                "N",
-
-            start:
-                31
-
+            letter:"N",
+            start:31
         },
 
         {
-
-            letter:
-                "G",
-
-            start:
-                46
-
+            letter:"G",
+            start:46
         },
 
         {
-
-            letter:
-                "O",
-
-            start:
-                61
-
+            letter:"O",
+            start:61
         }
 
     ];
 
-
-    // HEADER
 
     columns.forEach(
 
@@ -1608,8 +1611,6 @@ function renderCalledNumbers(numbers){
 
     );
 
-
-    // NUMBERS 1 - 75
 
     for(
 
@@ -1755,14 +1756,12 @@ async function buyCard(type){
                     method:
                         "POST",
 
-
                     headers:{
 
                         "Content-Type":
                             "application/json"
 
                     },
-
 
                     body:
 
@@ -1771,10 +1770,8 @@ async function buyCard(type){
                             user_id:
                                 userId,
 
-
                             card_type:
                                 type,
-
 
                             card_number:
                                 selectedCardNumber
@@ -1810,28 +1807,21 @@ async function buyCard(type){
         }
 
 
-        // CARD HAARAA
-
         const newCard = {
 
             game_id:
                 data.game_id,
 
-
             card_number:
                 data.card_number,
-
 
             card_type:
                 data.card_type,
 
-
             card:
                 data.card,
 
-
             markedCells:
-
                 [
 
                     "2-2"
@@ -1841,19 +1831,41 @@ async function buyCard(type){
         };
 
 
-        // USER CARD LIST KEESSATTI DABALI
+        /*
+        DUPLICATE CARD AKKA HIN UUMAMNE
+        */
 
-        myCards.push(
-            newCard
-        );
+        const exists =
+            myCards.some(
+
+                function(card){
+
+                    return (
+
+                        Number(
+                            card.card_number
+                        ) === Number(
+                            newCard.card_number
+                        )
+
+                    );
+
+                }
+
+            );
 
 
-        // CARD ID TABLE UPDATE
+        if(!exists){
+
+            myCards.push(
+                newCard
+            );
+
+        }
+
 
         renderCardIds();
 
-
-        // CARD GARA MIRGAA MUL'ISIISI
 
         myCardBox.style.display =
             "block";
@@ -1874,8 +1886,6 @@ async function buyCard(type){
 
         );
 
-
-        // SELECTION CLEAR
 
         selectedCardNumber =
             null;
@@ -1947,7 +1957,7 @@ async function buyCard(type){
 
 
 // =====================================================
-// RENDER ALL USER CARDS
+// RENDER USER CARDS
 // =====================================================
 
 function renderMyCards(){
@@ -1986,6 +1996,21 @@ function renderMyCards(){
 
         function(userCard,index){
 
+            if(
+
+                !userCard.card ||
+
+                !Array.isArray(
+                    userCard.card
+                )
+
+            ){
+
+                return;
+
+            }
+
+
             const cardPanel =
                 document.createElement(
                     "div"
@@ -1994,6 +2019,24 @@ function renderMyCards(){
 
             cardPanel.className =
                 "user-card-panel";
+
+
+            if(
+
+                !Array.isArray(
+                    userCard.markedCells
+                )
+
+            ){
+
+                userCard.markedCells =
+                    [
+
+                        "2-2"
+
+                    ];
+
+            }
 
 
             cardPanel.innerHTML = `
@@ -2052,8 +2095,6 @@ function renderMyCards(){
 
                     class="btn-bingo"
 
-                    data-index="${index}"
-
                 >
 
                     🏆 BINGO CARD #
@@ -2077,8 +2118,6 @@ function renderMyCards(){
                     "tbody"
                 );
 
-
-            // 5 x 5 CARD
 
             for(
 
@@ -2143,7 +2182,6 @@ function renderMyCards(){
                         if(
 
                             !userCard.markedCells
-
                                 .includes(
                                     key
                                 )
@@ -2162,7 +2200,6 @@ function renderMyCards(){
                     if(
 
                         userCard.markedCells
-
                             .includes(
                                 key
                             )
@@ -2421,14 +2458,12 @@ async function claimBingo(
                     method:
                         "POST",
 
-
                     headers:{
 
                         "Content-Type":
                             "application/json"
 
                     },
-
 
                     body:
 
@@ -2437,10 +2472,8 @@ async function claimBingo(
                             user_id:
                                 userId,
 
-
                             card_number:
                                 userCard.card_number,
-
 
                             card_type:
                                 userCard.card_type
@@ -2530,7 +2563,7 @@ async function claimBingo(
 
 
 // =====================================================
-// AUTO REFRESH GAME STATE
+// AUTO REFRESH
 // =====================================================
 
 setInterval(
@@ -2547,7 +2580,7 @@ setInterval(
 
 
 // =====================================================
-// TIMER UPDATE
+// TIMER
 // =====================================================
 
 setInterval(
