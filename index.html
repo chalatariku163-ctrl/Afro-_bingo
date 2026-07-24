@@ -1,7 +1,18 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html lang="en">
 
-<title>GADAA BINGO</title><script src="https://telegram.org/js/telegram-web-app.js"></script><style>
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>GADAA BINGO</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
 
 *{
     box-sizing:border-box;
@@ -551,173 +562,212 @@ button:disabled{
 
 }
 
-</style></head><body><div class="container"><h1>🎱 GADAA BINGO</h1><!-- GAME INFORMATION --><div class="game-info"><div class="game-info-item">
-    <span class="game-info-label">BALANCE</span>
-    <span class="game-info-value" id="balanceValue">
-        0 Birr
-    </span>
-</div>
+</style>
 
-<div class="game-info-item">
-    <span class="game-info-label">GAME ID</span>
-    <span class="game-info-value" id="gameIdValue">
-        --
-    </span>
-</div>
+</head>
 
-<div class="game-info-item">
-    <span class="game-info-label">DERASH</span>
-    <span class="game-info-value" id="derashValue">
-        --
-    </span>
-</div>
+<body>
 
-<div class="game-info-item">
-    <span class="game-info-label">PLAYER</span>
-    <span class="game-info-value" id="playerValue">
-        0
-    </span>
-</div>
+<div class="container">
 
-<div class="game-info-item">
-    <span class="game-info-label">STAKE</span>
-    <span class="game-info-value" id="stakeValue">
-        0 Birr
-    </span>
-</div>
+<h1>🎱 GADAA BINGO</h1>
 
-<div class="game-info-item">
-    <span class="game-info-label">CALLED</span>
-    <span class="game-info-value" id="calledValue">
-        0
-    </span>
-</div>
+<!-- GAME INFORMATION -->
 
-</div><!-- FIRST SCREEN --><div id="gameEntryPanel"><h2>🎮 PLAY GAME</h2>
+<div class="game-info">
 
-<p>Card gosa filadhu</p>
-
-<button class="entry-btn buy10" onclick="enterGame(10)">
-    🎫 BUY CARD 10 BIRR
-</button>
-
-<button class="entry-btn buy20" onclick="enterGame(20)">
-    🎫 BUY CARD 20 BIRR
-</button>
-
-</div><!-- GAME SCREEN --><div id="gameScreen"><div class="status-box">
-
-    <div id="gameStatus">
-        ⏳ WAITING FOR GAME
+    <div class="game-info-item">
+        <span class="game-info-label">BALANCE</span>
+        <span class="game-info-value"
+              id="balanceValue">
+            0 Birr
+        </span>
     </div>
 
-    <div id="timer">
-        --
+    <div class="game-info-item">
+        <span class="game-info-label">GAME ID</span>
+        <span class="game-info-value"
+              id="gameIdValue">
+            --
+        </span>
     </div>
 
-</div>
+    <div class="game-info-item">
+        <span class="game-info-label">DERASH 70%</span>
+        <span class="game-info-value"
+              id="derashValue">
+            0 Birr
+        </span>
+    </div>
 
-<!-- AUTO ON / OFF -->
+    <div class="game-info-item">
+        <span class="game-info-label">PLAYER</span>
+        <span class="game-info-value"
+              id="playerValue">
+            0
+        </span>
+    </div>
 
-<div class="auto-panel">
+    <div class="game-info-item">
+        <span class="game-info-label">STAKE</span>
+        <span class="game-info-value"
+              id="stakeValue">
+            0 Birr
+        </span>
+    </div>
 
-    <span>AUTO MARK:</span>
-
-    <button id="autoOnBtn"
-            class="auto-btn active"
-            onclick="setAutoMode(true)">
-        AUTO ON
-    </button>
-
-    <button id="autoOffBtn"
-            class="auto-btn"
-            onclick="setAutoMode(false)">
-        AUTO OFF
-    </button>
-
-</div>
-
-<!-- WINNER SCREEN -->
-
-<div id="winnerScreen"></div>
-
-<!-- CURRENT NUMBER -->
-
-<div class="current-number">
-
-    <h3>🎱 CURRENT NUMBER</h3>
-
-    <div id="currentNumber">
-        --
+    <div class="game-info-item">
+        <span class="game-info-label">CALLED</span>
+        <span class="game-info-value"
+              id="calledValue">
+            0
+        </span>
     </div>
 
 </div>
 
-<!-- BUY BUTTONS -->
+<!-- FIRST SCREEN -->
 
-<div class="buttons">
+<div id="gameEntryPanel">
 
-    <button id="buy10Btn"
-            onclick="buyCard(10)">
-        🎫 BUY 10 BIRR
+    <h2>🎮 PLAY GAME</h2>
+
+    <p>Card gosa filadhu</p>
+
+    <button class="entry-btn buy10"
+            onclick="enterGame(10)">
+        🎫 BUY CARD 10 BIRR
     </button>
 
-    <button id="buy20Btn"
-            onclick="buyCard(20)">
-        🎫 BUY 20 BIRR
+    <button class="entry-btn buy20"
+            onclick="enterGame(20)">
+        🎫 BUY CARD 20 BIRR
     </button>
 
 </div>
 
-<div id="buyMessage"
-     class="message">
-</div>
+<!-- GAME SCREEN -->
 
-<!-- CARD ID TABLE -->
+<div id="gameScreen">
 
-<div id="cardIdPanel">
+    <div class="status-box">
 
-    <h3>🎫 SELECT CARD ID 1 - 500</h3>
+        <div id="gameStatus">
+            ⏳ WAITING FOR GAME
+        </div>
 
-    <div id="cardIdGrid"></div>
+        <div id="timer">
+            --
+        </div>
 
-</div>
+    </div>
 
-<!-- GAME -->
+    <!-- AUTO MODE -->
 
-<div class="game-layout">
+    <div class="auto-panel">
 
-    <div class="left-side">
+        <span>AUTO MARK:</span>
 
-        <div class="called-box">
+        <button id="autoOnBtn"
+                class="auto-btn active"
+                onclick="setAutoMode(true)">
+            AUTO ON
+        </button>
 
-            <h3>📢 CALLED NUMBERS</h3>
+        <button id="autoOffBtn"
+                class="auto-btn"
+                onclick="setAutoMode(false)">
+            AUTO OFF
+        </button>
 
-            <div id="calledNumbers"></div>
+    </div>
+
+    <!-- WINNER SCREEN -->
+
+    <div id="winnerScreen"></div>
+
+    <!-- CURRENT NUMBER -->
+
+    <div class="current-number">
+
+        <h3>🎱 CURRENT NUMBER</h3>
+
+        <div id="currentNumber">
+            --
+        </div>
+
+    </div>
+
+    <!-- BUY BUTTONS -->
+
+    <div class="buttons">
+
+        <button id="buy10Btn"
+                onclick="buyCard(10)">
+            🎫 BUY 10 BIRR
+        </button>
+
+        <button id="buy20Btn"
+                onclick="buyCard(20)">
+            🎫 BUY 20 BIRR
+        </button>
+
+    </div>
+
+    <div id="buyMessage"
+         class="message">
+    </div>
+
+    <!-- CARD ID TABLE -->
+
+    <div id="cardIdPanel">
+
+        <h3>🎫 SELECT CARD ID 1 - 500</h3>
+
+        <div id="cardIdGrid"></div>
+
+    </div>
+
+    <!-- GAME -->
+
+    <div class="game-layout">
+
+        <div class="left-side">
+
+            <div class="called-box">
+
+                <h3>📢 CALLED NUMBERS</h3>
+
+                <div id="calledNumbers"></div>
+
+            </div>
+
+        </div>
+
+        <div class="right-side">
+
+            <div id="bingoMessage"
+                 class="message">
+            </div>
+
+            <div id="myCardBox"></div>
 
         </div>
 
     </div>
 
-    <div class="right-side">
-
-        <div id="bingoMessage"
-             class="message">
-        </div>
-
-        <div id="myCardBox"></div>
-
-    </div>
+</div>
 
 </div>
 
-</div></div><script>
+<script>
 
 // =====================================================
 // TELEGRAM
 // =====================================================
 
-const tg = window.Telegram.WebApp;
+const tg =
+    window.Telegram.WebApp;
 
 tg.ready();
 tg.expand();
@@ -758,7 +808,8 @@ let gameEntered = false;
 
 let autoMode = true;
 
-let bingoSubmittedCards = new Set();
+let bingoSubmittedCards =
+    new Set();
 
 
 // =====================================================
@@ -766,64 +817,104 @@ let bingoSubmittedCards = new Set();
 // =====================================================
 
 const gameEntryPanel =
-    document.getElementById("gameEntryPanel");
+    document.getElementById(
+        "gameEntryPanel"
+    );
 
 const gameScreen =
-    document.getElementById("gameScreen");
+    document.getElementById(
+        "gameScreen"
+    );
 
 const gameStatus =
-    document.getElementById("gameStatus");
+    document.getElementById(
+        "gameStatus"
+    );
 
 const timer =
-    document.getElementById("timer");
+    document.getElementById(
+        "timer"
+    );
 
 const currentNumber =
-    document.getElementById("currentNumber");
+    document.getElementById(
+        "currentNumber"
+    );
 
 const calledNumbers =
-    document.getElementById("calledNumbers");
+    document.getElementById(
+        "calledNumbers"
+    );
 
 const buy10Btn =
-    document.getElementById("buy10Btn");
+    document.getElementById(
+        "buy10Btn"
+    );
 
 const buy20Btn =
-    document.getElementById("buy20Btn");
+    document.getElementById(
+        "buy20Btn"
+    );
 
 const cardIdGrid =
-    document.getElementById("cardIdGrid");
+    document.getElementById(
+        "cardIdGrid"
+    );
 
 const cardIdPanel =
-    document.getElementById("cardIdPanel");
+    document.getElementById(
+        "cardIdPanel"
+    );
 
 const buyMessage =
-    document.getElementById("buyMessage");
+    document.getElementById(
+        "buyMessage"
+    );
 
 const bingoMessage =
-    document.getElementById("bingoMessage");
+    document.getElementById(
+        "bingoMessage"
+    );
 
 const myCardBox =
-    document.getElementById("myCardBox");
+    document.getElementById(
+        "myCardBox"
+    );
 
 const balanceValue =
-    document.getElementById("balanceValue");
+    document.getElementById(
+        "balanceValue"
+    );
 
 const gameIdValue =
-    document.getElementById("gameIdValue");
+    document.getElementById(
+        "gameIdValue"
+    );
 
 const derashValue =
-    document.getElementById("derashValue");
+    document.getElementById(
+        "derashValue"
+    );
 
 const playerValue =
-    document.getElementById("playerValue");
+    document.getElementById(
+        "playerValue"
+    );
 
 const stakeValue =
-    document.getElementById("stakeValue");
+    document.getElementById(
+        "stakeValue"
+    );
 
 const calledValue =
-    document.getElementById("calledValue");
+    document.getElementById(
+        "calledValue"
+    );
 
 const winnerScreen =
-    document.getElementById("winnerScreen");
+    document.getElementById(
+        "winnerScreen"
+    );
 
 
 // =====================================================
@@ -855,7 +946,11 @@ function enterGame(cardType){
 // MESSAGE
 // =====================================================
 
-function showMessage(element,text,type){
+function showMessage(
+    element,
+    text,
+    type
+){
 
     if(!element){
         return;
@@ -890,22 +985,32 @@ function setAutoMode(value){
         Boolean(value);
 
     const onBtn =
-        document.getElementById("autoOnBtn");
+        document.getElementById(
+            "autoOnBtn"
+        );
 
     const offBtn =
-        document.getElementById("autoOffBtn");
+        document.getElementById(
+            "autoOffBtn"
+        );
 
 
     if(autoMode){
 
-        onBtn.classList.add("active");
+        onBtn.classList.add(
+            "active"
+        );
 
-        offBtn.classList.remove("active");
+        offBtn.classList.remove(
+            "active"
+        );
 
 
         myCards.forEach(function(card){
 
-            autoMarkCalledNumbers(card);
+            autoMarkCalledNumbers(
+                card
+            );
 
         });
 
@@ -918,9 +1023,13 @@ function setAutoMode(value){
 
     else{
 
-        onBtn.classList.remove("active");
+        onBtn.classList.remove(
+            "active"
+        );
 
-        offBtn.classList.add("active");
+        offBtn.classList.add(
+            "active"
+        );
 
     }
 
@@ -939,7 +1048,9 @@ async function loadGameState(){
             await fetch(
                 "/api/game-state?user_id="
                 +
-                encodeURIComponent(userId)
+                encodeURIComponent(
+                    userId
+                )
             );
 
         const data =
@@ -956,13 +1067,17 @@ async function loadGameState(){
         }
 
 
-        updateGameUI(data);
+        updateGameUI(
+            data
+        );
 
     }
 
     catch(error){
 
-        console.error(error);
+        console.error(
+            error
+        );
 
         gameStatus.innerText =
             "❌ SERVER CONNECTION ERROR";
@@ -991,7 +1106,9 @@ function updateBuyButtons(){
     }
 
 
-    if(selectedCardType === 10){
+    if(
+        selectedCardType === 10
+    ){
 
         buy10Btn.style.display =
             "block";
@@ -1001,7 +1118,9 @@ function updateBuyButtons(){
 
     }
 
-    else if(selectedCardType === 20){
+    else if(
+        selectedCardType === 20
+    ){
 
         buy10Btn.style.display =
             "none";
@@ -1034,7 +1153,9 @@ function updateGameUI(data){
     ){
 
         balanceValue.innerText =
-            Number(data.balance).toLocaleString()
+            Number(
+                data.balance
+            ).toLocaleString()
             + " Birr";
 
     }
@@ -1068,7 +1189,9 @@ function updateGameUI(data){
         bingoSubmittedCards =
             new Set();
 
-        winnerScreen.classList.remove("show");
+        winnerScreen.classList.remove(
+            "show"
+        );
 
         winnerScreen.innerHTML =
             "";
@@ -1092,22 +1215,20 @@ function updateGameUI(data){
 
 
     // =================================================
-    // CALLED
+    // TOTAL CARD SALES
     // =================================================
 
-    const calledCount =
-        Array.isArray(data.called_numbers)
-        ?
-        data.called_numbers.length
-        :
-        0;
-
-    calledValue.innerText =
-        calledCount;
+    let totalSales =
+        Number(
+            data.total_sales ||
+            data.total_stake ||
+            data.stake ||
+            0
+        );
 
 
     // =================================================
-    // PLAYER
+    // PLAYER = TOTAL CARDS SOLD
     // =================================================
 
     let playerCount =
@@ -1115,7 +1236,57 @@ function updateGameUI(data){
 
 
     if(
-        Array.isArray(data.players)
+        data.total_cards_sold !== undefined &&
+        data.total_cards_sold !== null
+    ){
+
+        playerCount =
+            Number(
+                data.total_cards_sold
+            );
+
+    }
+
+    else if(
+        data.cards_sold !== undefined &&
+        data.cards_sold !== null
+    ){
+
+        playerCount =
+            Number(
+                data.cards_sold
+            );
+
+    }
+
+    else if(
+        data.player_count !== undefined &&
+        data.player_count !== null
+    ){
+
+        playerCount =
+            Number(
+                data.player_count
+            );
+
+    }
+
+    else if(
+        data.players_count !== undefined &&
+        data.players_count !== null
+    ){
+
+        playerCount =
+            Number(
+                data.players_count
+            );
+
+    }
+
+    else if(
+        Array.isArray(
+            data.players
+        )
     ){
 
         playerCount =
@@ -1124,108 +1295,54 @@ function updateGameUI(data){
     }
 
 
-    if(
-        data.player_count !== undefined
-    ){
-
-        playerCount =
-            data.player_count;
-
-    }
-
-
-    if(
-        data.players_count !== undefined
-    ){
-
-        playerCount =
-            data.players_count;
-
-    }
-
-
     playerValue.innerText =
-        playerCount;
+        Number(
+            playerCount
+        ).toLocaleString();
 
 
     // =================================================
-    // DERASH
+    // STAKE = TOTAL CARD SALES
+    // =================================================
+
+    stakeValue.innerText =
+        Number(
+            totalSales
+        ).toLocaleString()
+        + " Birr";
+
+
+    // =================================================
+    // DERASH = 70% OF TOTAL SALES
     // =================================================
 
     let derash =
-        data.derash;
-
-
-    if(
-        derash === undefined ||
-        derash === null
-    ){
-
-        derash =
-            data.draw;
-
-    }
-
-
-    if(
-        derash === undefined ||
-        derash === null
-    ){
-
-        derash =
-            "BINGO";
-
-    }
+        totalSales * 0.70;
 
 
     derashValue.innerText =
-        derash;
-
-
-    // =================================================
-    // STAKE
-    // =================================================
-
-    let stake =
-        data.stake;
-
-
-    if(
-        stake === undefined ||
-        stake === null
-    ){
-
-        stake =
-            data.total_stake;
-
-    }
-
-
-    if(
-        stake === undefined ||
-        stake === null
-    ){
-
-        stake =
-            data.total_sales;
-
-    }
-
-
-    if(
-        stake === undefined ||
-        stake === null
-    ){
-
-        stake =
-            0;
-
-    }
-
-
-    stakeValue.innerText =
-        Number(stake).toLocaleString()
+        Number(
+            derash
+        ).toLocaleString()
         + " Birr";
+
+
+    // =================================================
+    // CALLED
+    // =================================================
+
+    const calledCount =
+        Array.isArray(
+            data.called_numbers
+        )
+        ?
+        data.called_numbers.length
+        :
+        0;
+
+
+    calledValue.innerText =
+        calledCount;
 
 
     // =================================================
@@ -1233,53 +1350,65 @@ function updateGameUI(data){
     // =================================================
 
     if(
-        Array.isArray(data.my_cards)
+        Array.isArray(
+            data.my_cards
+        )
     ){
 
-        data.my_cards.forEach(function(serverCard){
+        data.my_cards.forEach(
+            function(serverCard){
 
-            const exists =
-                myCards.some(function(card){
+                const exists =
+                    myCards.some(
+                        function(card){
 
-                    return Number(card.card_number)
-                    ===
-                    Number(serverCard.card_number);
+                            return Number(
+                                card.card_number
+                            )
+                            ===
+                            Number(
+                                serverCard.card_number
+                            );
 
-                });
+                        }
+                    );
 
 
-            if(!exists){
+                if(!exists){
 
-                myCards.push({
+                    myCards.push({
 
-                    game_id:
-                        serverCard.game_id
-                        ||
-                        data.game_id,
+                        game_id:
+                            serverCard.game_id
+                            ||
+                            data.game_id,
 
-                    card_number:
-                        serverCard.card_number,
+                        card_number:
+                            serverCard.card_number,
 
-                    card_type:
-                        serverCard.card_type,
+                        card_type:
+                            serverCard.card_type,
 
-                    card:
-                        serverCard.card,
+                        card:
+                            serverCard.card,
 
-                    markedCells:
-                        Array.isArray(
+                        markedCells:
+                            Array.isArray(
+                                serverCard.markedCells
+                            )
+                            ?
                             serverCard.markedCells
-                        )
-                        ?
-                        serverCard.markedCells
-                        :
-                        ["2-2"]
+                            :
+                            [
+                                "2-2"
+                            ]
 
-                });
+                    });
+
+                }
 
             }
-
-        });
+        );
 
     }
 
@@ -1288,7 +1417,9 @@ function updateGameUI(data){
     // WINNER
     // =================================================
 
-    if(data.winner){
+    if(
+        data.winner
+    ){
 
         showWinnerForEveryone(
             data.winner
@@ -1301,7 +1432,9 @@ function updateGameUI(data){
     // CARD BUYING
     // =================================================
 
-    if(data.card_buying){
+    if(
+        data.card_buying
+    ){
 
         gameStatus.innerText =
             "🟢 CARD BUYING IS OPEN";
@@ -1311,15 +1444,19 @@ function updateGameUI(data){
             Math.max(
                 0,
                 Math.ceil(
-                    data.card_buying_end_time - now
+                    data.card_buying_end_time
+                    -
+                    now
                 )
             );
 
 
         timer.innerText =
             "⏱️ CARD BUYING: "
-            + remaining
-            + " SEC";
+            +
+            remaining
+            +
+            " SEC";
 
 
         updateBuyButtons();
@@ -1345,7 +1482,9 @@ function updateGameUI(data){
     // GAME RUNNING
     // =================================================
 
-    else if(data.started){
+    else if(
+        data.started
+    ){
 
         gameStatus.innerText =
             "🎮 GAME IS RUNNING";
@@ -1373,7 +1512,9 @@ function updateGameUI(data){
             "none";
 
 
-        if(myCards.length > 0){
+        if(
+            myCards.length > 0
+        ){
 
             myCardBox.style.display =
                 "block";
@@ -1387,7 +1528,9 @@ function updateGameUI(data){
     // GAME FINISHED
     // =================================================
 
-    else if(data.winner){
+    else if(
+        data.winner
+    ){
 
         gameStatus.innerText =
             "🏆 GAME FINISHED";
@@ -1473,13 +1616,19 @@ function updateGameUI(data){
     // AUTO MARK
     // =================================================
 
-    if(autoMode){
+    if(
+        autoMode
+    ){
 
-        myCards.forEach(function(card){
+        myCards.forEach(
+            function(card){
 
-            autoMarkCalledNumbers(card);
+                autoMarkCalledNumbers(
+                    card
+                );
 
-        });
+            }
+        );
 
     }
 
@@ -1492,9 +1641,13 @@ function updateGameUI(data){
     // =================================================
 
     if(
+
         autoMode &&
+
         data.started &&
+
         !data.winner
+
     ){
 
         autoCheckAllCards();
@@ -1508,7 +1661,9 @@ function updateGameUI(data){
 // SHOW WINNER
 // =====================================================
 
-function showWinnerForEveryone(winner){
+function showWinnerForEveryone(
+    winner
+){
 
     if(!winner){
         return;
@@ -1567,10 +1722,14 @@ function showWinnerForEveryone(winner){
     `;
 
 
-    winnerScreen.classList.add("show");
+    winnerScreen.classList.add(
+        "show"
+    );
 
 
-    highlightWinnerCard(cardNumber);
+    highlightWinnerCard(
+        cardNumber
+    );
 
 }
 
@@ -1579,44 +1738,54 @@ function showWinnerForEveryone(winner){
 // HIGHLIGHT WINNER CARD
 // =====================================================
 
-function highlightWinnerCard(cardNumber){
+function highlightWinnerCard(
+    cardNumber
+){
 
     const tables =
-        document.querySelectorAll(".bingo-card");
+        document.querySelectorAll(
+            ".bingo-card"
+        );
 
 
-    tables.forEach(function(table){
+    tables.forEach(
+        function(table){
 
-        const panel =
-            table.closest(".user-card-panel");
+            const panel =
+                table.closest(
+                    ".user-card-panel"
+                );
 
 
-        if(!panel){
-            return;
+            if(!panel){
+                return;
+            }
+
+
+            const numberElement =
+                panel.querySelector(
+                    ".card-number"
+                );
+
+
+            if(
+
+                numberElement &&
+
+                numberElement.innerText.includes(
+                    String(cardNumber)
+                )
+
+            ){
+
+                table.classList.add(
+                    "winner-card-table"
+                );
+
+            }
+
         }
-
-
-        const numberElement =
-            panel.querySelector(".card-number");
-
-
-        if(
-
-            numberElement &&
-
-            numberElement.innerText.includes(
-                String(cardNumber)
-            )
-
-        ){
-
-            table.classList.add(
-                "winner-card-table"
-            );
-
-        }
-
-    });
+    );
 
 }
 
@@ -1638,7 +1807,9 @@ function renderCardIds(){
     ){
 
         const div =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
 
         div.className =
@@ -1650,16 +1821,22 @@ function renderCardIds(){
 
 
         const alreadyBought =
-            myCards.some(function(card){
+            myCards.some(
+                function(card){
 
-                return Number(
-                    card.card_number
-                ) === i;
+                    return Number(
+                        card.card_number
+                    )
+                    ===
+                    i;
 
-            });
+                }
+            );
 
 
-        if(alreadyBought){
+        if(
+            alreadyBought
+        ){
 
             div.classList.add(
                 "my-card"
@@ -1668,7 +1845,9 @@ function renderCardIds(){
         }
 
 
-        if(selectedCardNumber === i){
+        if(
+            selectedCardNumber === i
+        ){
 
             div.classList.add(
                 "selected"
@@ -1681,8 +1860,11 @@ function renderCardIds(){
             function(){
 
                 if(
+
                     !gameState ||
+
                     !gameState.card_buying
+
                 ){
 
                     return;
@@ -1690,15 +1872,19 @@ function renderCardIds(){
                 }
 
 
-                if(alreadyBought){
+                if(
+                    alreadyBought
+                ){
 
                     showMessage(
 
                         buyMessage,
 
                         "⚠️ CARD #"
-                        + i
-                        + " DURSEE BITAMEERA.",
+                        +
+                        i
+                        +
+                        " DURSEE BITAMEERA.",
 
                         "error"
 
@@ -1710,14 +1896,18 @@ function renderCardIds(){
 
 
                 document
-                    .querySelectorAll(".card-id")
-                    .forEach(function(item){
+                    .querySelectorAll(
+                        ".card-id"
+                    )
+                    .forEach(
+                        function(item){
 
-                        item.classList.remove(
-                            "selected"
-                        );
+                            item.classList.remove(
+                                "selected"
+                            );
 
-                    });
+                        }
+                    );
 
 
                 div.classList.add(
@@ -1734,8 +1924,10 @@ function renderCardIds(){
                     buyMessage,
 
                     "🎫 CARD #"
-                    + i
-                    + " FILATAMEERA.",
+                    +
+                    i
+                    +
+                    " FILATAMEERA.",
 
                     "success"
 
@@ -1757,27 +1949,59 @@ function renderCardIds(){
 // FORMAT NUMBER
 // =====================================================
 
-function formatCall(number){
+function formatCall(
+    number
+){
 
-    if(number >= 1 && number <= 15){
+    if(
+        number >= 1 &&
+        number <= 15
+    ){
+
         return "B-" + number;
+
     }
 
-    if(number >= 16 && number <= 30){
+
+    if(
+        number >= 16 &&
+        number <= 30
+    ){
+
         return "I-" + number;
+
     }
 
-    if(number >= 31 && number <= 45){
+
+    if(
+        number >= 31 &&
+        number <= 45
+    ){
+
         return "N-" + number;
+
     }
 
-    if(number >= 46 && number <= 60){
+
+    if(
+        number >= 46 &&
+        number <= 60
+    ){
+
         return "G-" + number;
+
     }
 
-    if(number >= 61 && number <= 75){
+
+    if(
+        number >= 61 &&
+        number <= 75
+    ){
+
         return "O-" + number;
+
     }
+
 
     return number;
 
@@ -1788,7 +2012,9 @@ function formatCall(number){
 // CALLED NUMBERS
 // =====================================================
 
-function renderCalledNumbers(numbers){
+function renderCalledNumbers(
+    numbers
+){
 
     calledNumbers.innerHTML =
         "";
@@ -1796,7 +2022,9 @@ function renderCalledNumbers(numbers){
 
     const calledSet =
         new Set(
-            numbers.map(Number)
+            numbers.map(
+                Number
+            )
         );
 
 
@@ -1830,25 +2058,29 @@ function renderCalledNumbers(numbers){
     ];
 
 
-    columns.forEach(function(column){
+    columns.forEach(
+        function(column){
 
-        const header =
-            document.createElement("div");
-
-
-        header.className =
-            "called-number header";
-
-
-        header.innerText =
-            column.letter;
+            const header =
+                document.createElement(
+                    "div"
+                );
 
 
-        calledNumbers.appendChild(
-            header
-        );
+            header.className =
+                "called-number header";
 
-    });
+
+            header.innerText =
+                column.letter;
+
+
+            calledNumbers.appendChild(
+                header
+            );
+
+        }
+    );
 
 
     for(
@@ -1857,40 +2089,48 @@ function renderCalledNumbers(numbers){
         row++
     ){
 
-        columns.forEach(function(column){
+        columns.forEach(
+            function(column){
 
-            const number =
-                column.start + row;
-
-
-            const div =
-                document.createElement("div");
-
-
-            div.className =
-                "called-number";
+                const number =
+                    column.start
+                    +
+                    row;
 
 
-            div.innerText =
-                number;
+                const div =
+                    document.createElement(
+                        "div"
+                    );
 
 
-            if(
-                calledSet.has(number)
-            ){
+                div.className =
+                    "called-number";
 
-                div.classList.add(
-                    "active"
+
+                div.innerText =
+                    number;
+
+
+                if(
+                    calledSet.has(
+                        number
+                    )
+                ){
+
+                    div.classList.add(
+                        "active"
+                    );
+
+                }
+
+
+                calledNumbers.appendChild(
+                    div
                 );
 
             }
-
-
-            calledNumbers.appendChild(
-                div
-            );
-
-        });
+        );
 
     }
 
@@ -1901,11 +2141,18 @@ function renderCalledNumbers(numbers){
 // AUTO MARK
 // =====================================================
 
-function autoMarkCalledNumbers(userCard){
+function autoMarkCalledNumbers(
+    userCard
+){
 
     if(
+
         !userCard ||
-        !Array.isArray(userCard.card)
+
+        !Array.isArray(
+            userCard.card
+        )
+
     ){
 
         return;
@@ -1914,7 +2161,11 @@ function autoMarkCalledNumbers(userCard){
 
 
     if(
-        !Array.isArray(userCard.markedCells)
+
+        !Array.isArray(
+            userCard.markedCells
+        )
+
     ){
 
         userCard.markedCells =
@@ -1924,17 +2175,28 @@ function autoMarkCalledNumbers(userCard){
 
 
     if(
-        !userCard.markedCells.includes("2-2")
+
+        !userCard.markedCells.includes(
+            "2-2"
+        )
+
     ){
 
-        userCard.markedCells.push("2-2");
+        userCard.markedCells.push(
+            "2-2"
+        );
 
     }
 
 
     if(
+
         !gameState ||
-        !Array.isArray(gameState.called_numbers)
+
+        !Array.isArray(
+            gameState.called_numbers
+        )
+
     ){
 
         return;
@@ -1944,7 +2206,9 @@ function autoMarkCalledNumbers(userCard){
 
     const calledSet =
         new Set(
-            gameState.called_numbers.map(Number)
+            gameState.called_numbers.map(
+                Number
+            )
         );
 
 
@@ -1964,8 +2228,12 @@ function autoMarkCalledNumbers(userCard){
                 userCard.card[row][col];
 
 
-            if(value === "FREE"){
+            if(
+                value === "FREE"
+            ){
+
                 continue;
+
             }
 
 
@@ -1976,13 +2244,19 @@ function autoMarkCalledNumbers(userCard){
             ){
 
                 const key =
-                    row + "-" + col;
+                    row
+                    +
+                    "-"
+                    +
+                    col;
 
 
                 if(
+
                     !userCard.markedCells.includes(
                         key
                     )
+
                 ){
 
                     userCard.markedCells.push(
@@ -2004,7 +2278,9 @@ function autoMarkCalledNumbers(userCard){
 // BUY CARD
 // =====================================================
 
-async function buyCard(type){
+async function buyCard(
+    type
+){
 
     if(!userId){
 
@@ -2024,8 +2300,11 @@ async function buyCard(type){
 
 
     if(
-        Number(type) !==
+
+        Number(type)
+        !==
         Number(selectedCardType)
+
     ){
 
         showMessage(
@@ -2043,7 +2322,9 @@ async function buyCard(type){
     }
 
 
-    if(!selectedCardNumber){
+    if(
+        !selectedCardNumber
+    ){
 
         showMessage(
 
@@ -2061,8 +2342,11 @@ async function buyCard(type){
 
 
     if(
+
         !gameState ||
+
         !gameState.card_buying
+
     ){
 
         showMessage(
@@ -2096,11 +2380,14 @@ async function buyCard(type){
 
                 {
 
-                    method:"POST",
+                    method:
+                        "POST",
 
                     headers:{
+
                         "Content-Type":
                             "application/json"
+
                     },
 
                     body:
@@ -2127,7 +2414,9 @@ async function buyCard(type){
             await response.json();
 
 
-        if(!data.success){
+        if(
+            !data.success
+        ){
 
             showMessage(
 
@@ -2167,20 +2456,24 @@ async function buyCard(type){
 
 
         const exists =
-            myCards.some(function(card){
+            myCards.some(
+                function(card){
 
-                return Number(
-                    card.card_number
-                )
-                ===
-                Number(
-                    newCard.card_number
-                );
+                    return Number(
+                        card.card_number
+                    )
+                    ===
+                    Number(
+                        newCard.card_number
+                    );
 
-            });
+                }
+            );
 
 
-        if(!exists){
+        if(
+            !exists
+        ){
 
             myCards.push(
                 newCard
@@ -2219,17 +2512,20 @@ async function buyCard(type){
 
 
         document
-            .querySelectorAll(".card-id")
-            .forEach(function(item){
+            .querySelectorAll(
+                ".card-id"
+            )
+            .forEach(
+                function(item){
 
-                item.classList.remove(
-                    "selected"
-                );
+                    item.classList.remove(
+                        "selected"
+                    );
 
-            });
+                }
+            );
 
 
-        // GAME STATE HAARAA FE'II
         loadGameState();
 
     }
@@ -2237,7 +2533,9 @@ async function buyCard(type){
 
     catch(error){
 
-        console.error(error);
+        console.error(
+            error
+        );
 
 
         showMessage(
@@ -2256,8 +2554,11 @@ async function buyCard(type){
     finally{
 
         if(
+
             gameState &&
+
             gameState.card_buying
+
         ){
 
             updateBuyButtons();
@@ -2288,7 +2589,9 @@ function renderMyCards(){
     }
 
 
-    if(myCards.length === 0){
+    if(
+        myCards.length === 0
+    ){
 
         myCardBox.style.display =
             "none";
@@ -2306,253 +2609,288 @@ function renderMyCards(){
         "";
 
 
-    myCards.forEach(function(userCard){
+    myCards.forEach(
+        function(userCard){
 
-        if(
-            !userCard.card ||
-            !Array.isArray(userCard.card)
-        ){
+            if(
 
-            return;
+                !userCard.card ||
 
-        }
+                !Array.isArray(
+                    userCard.card
+                )
 
-
-        if(autoMode){
-
-            autoMarkCalledNumbers(
-                userCard
-            );
-
-        }
-
-
-        const cardPanel =
-            document.createElement(
-                "div"
-            );
-
-
-        cardPanel.className =
-            "user-card-panel";
-
-
-        if(
-            !Array.isArray(
-                userCard.markedCells
-            )
-        ){
-
-            userCard.markedCells =
-                ["2-2"];
-
-        }
-
-
-        cardPanel.innerHTML = `
-
-            <div class="card-header">
-
-                <div class="card-number">
-
-                    🎫 CARD #
-                    ${userCard.card_number}
-
-                </div>
-
-                <div class="card-type">
-
-                    ${userCard.card_type}
-                    BIRR
-
-                </div>
-
-            </div>
-
-            <table class="bingo-card">
-
-                <thead>
-
-                    <tr>
-
-                        <th>B</th>
-                        <th>I</th>
-                        <th>N</th>
-                        <th>G</th>
-                        <th>O</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody></tbody>
-
-            </table>
-
-            <button class="btn-bingo">
-
-                🏆 BINGO CARD #
-                ${userCard.card_number}
-
-            </button>
-
-            <div class="message bingo-card-message"></div>
-
-        `;
-
-
-        const table =
-            cardPanel.querySelector(
-                "tbody"
-            );
-
-
-        for(
-            let row = 0;
-            row < 5;
-            row++
-        ){
-
-            const tr =
-                document.createElement(
-                    "tr"
-                );
-
-
-            for(
-                let col = 0;
-                col < 5;
-                col++
             ){
 
-                const td =
-                    document.createElement(
-                        "td"
-                    );
+                return;
+
+            }
 
 
-                const value =
-                    userCard.card[row][col];
+            if(
+                autoMode
+            ){
 
-
-                td.innerText =
-                    value;
-
-
-                const key =
-                    row + "-" + col;
-
-
-                if(value === "FREE"){
-
-                    td.classList.add(
-                        "free"
-                    );
-
-                    td.classList.add(
-                        "marked"
-                    );
-
-                }
-
-
-                else if(
-
-                    gameState &&
-
-                    Array.isArray(
-                        gameState.called_numbers
-                    ) &&
-
-                    gameState.called_numbers
-                        .map(Number)
-                        .includes(
-                            Number(value)
-                        )
-
-                ){
-
-                    td.classList.add(
-                        "marked"
-                    );
-
-                }
-
-
-                if(
-                    userCard.markedCells.includes(
-                        key
-                    )
-                ){
-
-                    td.classList.add(
-                        "marked"
-                    );
-
-                }
-
-
-                td.onclick =
-                    function(){
-
-                        toggleCardCell(
-
-                            userCard,
-                            td,
-                            value,
-                            row,
-                            col
-
-                        );
-
-                    };
-
-
-                tr.appendChild(
-                    td
+                autoMarkCalledNumbers(
+                    userCard
                 );
 
             }
 
 
-            table.appendChild(
-                tr
+            const cardPanel =
+                document.createElement(
+                    "div"
+                );
+
+
+            cardPanel.className =
+                "user-card-panel";
+
+
+            if(
+
+                !Array.isArray(
+                    userCard.markedCells
+                )
+
+            ){
+
+                userCard.markedCells =
+                    [
+                        "2-2"
+                    ];
+
+            }
+
+
+            cardPanel.innerHTML = `
+
+                <div class="card-header">
+
+                    <div class="card-number">
+
+                        🎫 CARD #
+                        ${userCard.card_number}
+
+                    </div>
+
+                    <div class="card-type">
+
+                        ${userCard.card_type}
+                        BIRR
+
+                    </div>
+
+                </div>
+
+                <table class="bingo-card">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>B</th>
+                            <th>I</th>
+                            <th>N</th>
+                            <th>G</th>
+                            <th>O</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody></tbody>
+
+                </table>
+
+                <button class="btn-bingo">
+
+                    🏆 BINGO CARD #
+                    ${userCard.card_number}
+
+                </button>
+
+                <div class="message bingo-card-message"></div>
+
+            `;
+
+
+            const table =
+                cardPanel.querySelector(
+                    "tbody"
+                );
+
+
+            for(
+                let row = 0;
+                row < 5;
+                row++
+            ){
+
+                const tr =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                for(
+                    let col = 0;
+                    col < 5;
+                    col++
+                ){
+
+                    const td =
+                        document.createElement(
+                            "td"
+                        );
+
+
+                    const value =
+                        userCard.card[row][col];
+
+
+                    td.innerText =
+                        value;
+
+
+                    const key =
+                        row
+                        +
+                        "-"
+                        +
+                        col;
+
+
+                    if(
+                        value === "FREE"
+                    ){
+
+                        td.classList.add(
+                            "free"
+                        );
+
+                        td.classList.add(
+                            "marked"
+                        );
+
+                    }
+
+
+                    else if(
+
+                        gameState &&
+
+                        Array.isArray(
+                            gameState.called_numbers
+                        ) &&
+
+                        gameState.called_numbers
+                            .map(
+                                Number
+                            )
+                            .includes(
+                                Number(value)
+                            )
+
+                    ){
+
+                        td.classList.add(
+                            "marked"
+                        );
+
+                    }
+
+
+                    if(
+
+                        userCard.markedCells.includes(
+                            key
+                        )
+
+                    ){
+
+                        td.classList.add(
+                            "marked"
+                        );
+
+                    }
+
+
+                    td.onclick =
+                        function(){
+
+                            toggleCardCell(
+
+                                userCard,
+
+                                td,
+
+                                value,
+
+                                row,
+
+                                col
+
+                            );
+
+                        };
+
+
+                    tr.appendChild(
+                        td
+                    );
+
+                }
+
+
+                table.appendChild(
+                    tr
+                );
+
+            }
+
+
+            const bingoButton =
+                cardPanel.querySelector(
+                    ".btn-bingo"
+                );
+
+
+            bingoButton.onclick =
+                function(){
+
+                    claimBingo(
+
+                        userCard,
+
+                        cardPanel
+
+                    );
+
+                };
+
+
+            myCardBox.appendChild(
+                cardPanel
             );
 
         }
-
-
-        const bingoButton =
-            cardPanel.querySelector(
-                ".btn-bingo"
-            );
-
-
-        bingoButton.onclick =
-            function(){
-
-                claimBingo(
-                    userCard,
-                    cardPanel
-                );
-
-            };
-
-
-        myCardBox.appendChild(
-            cardPanel
-        );
-
-    });
+    );
 
 
     if(
+
         gameState &&
+
         gameState.winner
+
     ){
 
         highlightWinnerCard(
+
             gameState.winner.card_number
+
         );
 
     }
@@ -2567,28 +2905,43 @@ function renderMyCards(){
 function toggleCardCell(
 
     userCard,
+
     cell,
+
     value,
+
     row,
+
     col
 
 ){
 
-    if(autoMode){
-        return;
-    }
+    if(
+        autoMode
+    ){
 
-
-    if(value === "FREE"){
         return;
+
     }
 
 
     if(
+        value === "FREE"
+    ){
+
+        return;
+
+    }
+
+
+    if(
+
         !gameState ||
+
         !Array.isArray(
             gameState.called_numbers
         )
+
     ){
 
         return;
@@ -2597,13 +2950,21 @@ function toggleCardCell(
 
 
     const number =
-        Number(value);
+        Number(
+            value
+        );
 
 
     if(
+
         !gameState.called_numbers
-            .map(Number)
-            .includes(number)
+            .map(
+                Number
+            )
+            .includes(
+                number
+            )
+
     ){
 
         showMessage(
@@ -2622,7 +2983,11 @@ function toggleCardCell(
 
 
     const key =
-        row + "-" + col;
+        row
+        +
+        "-"
+        +
+        col;
 
 
     cell.classList.toggle(
@@ -2631,15 +2996,19 @@ function toggleCardCell(
 
 
     if(
+
         cell.classList.contains(
             "marked"
         )
+
     ){
 
         if(
+
             !userCard.markedCells.includes(
                 key
             )
+
         ){
 
             userCard.markedCells.push(
@@ -2670,11 +3039,18 @@ function toggleCardCell(
 // CHECK BINGO
 // =====================================================
 
-function checkLocalBingo(userCard){
+function checkLocalBingo(
+    userCard
+){
 
     if(
+
         !userCard ||
-        !Array.isArray(userCard.card)
+
+        !Array.isArray(
+            userCard.card
+        )
+
     ){
 
         return false;
@@ -2683,13 +3059,22 @@ function checkLocalBingo(userCard){
 
 
     const marked =
-        userCard.markedCells || [];
+        userCard.markedCells
+        ||
+        [];
 
 
-    function isMarked(row,col){
+    function isMarked(
+        row,
+        col
+    ){
 
         return marked.includes(
-            row + "-" + col
+            row
+            +
+            "-"
+            +
+            col
         );
 
     }
@@ -2709,12 +3094,15 @@ function checkLocalBingo(userCard){
 
         for(
             let col = 0;
-            col < 5;
-            col++
+        col < 5;
+        col++
         ){
 
             if(
-                !isMarked(row,col)
+                !isMarked(
+                    row,
+                    col
+                )
             ){
 
                 complete =
@@ -2727,8 +3115,12 @@ function checkLocalBingo(userCard){
         }
 
 
-        if(complete){
+        if(
+            complete
+        ){
+
             return true;
+
         }
 
     }
@@ -2753,7 +3145,10 @@ function checkLocalBingo(userCard){
         ){
 
             if(
-                !isMarked(row,col)
+                !isMarked(
+                    row,
+                    col
+                )
             ){
 
                 complete =
@@ -2766,8 +3161,12 @@ function checkLocalBingo(userCard){
         }
 
 
-        if(complete){
+        if(
+            complete
+        ){
+
             return true;
+
         }
 
     }
@@ -2786,7 +3185,10 @@ function checkLocalBingo(userCard){
     ){
 
         if(
-            !isMarked(i,i)
+            !isMarked(
+                i,
+                i
+            )
         ){
 
             diagonal1 =
@@ -2799,8 +3201,12 @@ function checkLocalBingo(userCard){
     }
 
 
-    if(diagonal1){
+    if(
+        diagonal1
+    ){
+
         return true;
+
     }
 
 
@@ -2817,7 +3223,12 @@ function checkLocalBingo(userCard){
     ){
 
         if(
-            !isMarked(i,4-i)
+
+            !isMarked(
+                i,
+                4 - i
+            )
+
         ){
 
             diagonal2 =
@@ -2830,8 +3241,12 @@ function checkLocalBingo(userCard){
     }
 
 
-    if(diagonal2){
+    if(
+        diagonal2
+    ){
+
         return true;
+
     }
 
 
@@ -2839,10 +3254,31 @@ function checkLocalBingo(userCard){
 
     if(
 
-        isMarked(0,0) &&
-        isMarked(0,4) &&
-        isMarked(4,0) &&
-        isMarked(4,4)
+        isMarked(
+            0,
+            0
+        )
+
+        &&
+
+        isMarked(
+            0,
+            4
+        )
+
+        &&
+
+        isMarked(
+            4,
+            0
+        )
+
+        &&
+
+        isMarked(
+            4,
+            4
+        )
 
     ){
 
@@ -2862,18 +3298,30 @@ function checkLocalBingo(userCard){
 
 async function autoCheckAllCards(){
 
-    if(!autoMode){
+    if(
+        !autoMode
+    ){
+
         return;
+
     }
 
 
-    if(!gameState){
+    if(
+        !gameState
+    ){
+
         return;
+
     }
 
 
-    if(gameState.winner){
+    if(
+        gameState.winner
+    ){
+
         return;
+
     }
 
 
@@ -2884,8 +3332,11 @@ async function autoCheckAllCards(){
     ){
 
         if(
+
             !userCard ||
+
             !userCard.card
+
         ){
 
             continue;
@@ -2899,9 +3350,11 @@ async function autoCheckAllCards(){
 
 
         if(
+
             !checkLocalBingo(
                 userCard
             )
+
         ){
 
             continue;
@@ -2916,9 +3369,11 @@ async function autoCheckAllCards(){
 
 
         if(
+
             bingoSubmittedCards.has(
                 cardKey
             )
+
         ){
 
             continue;
@@ -2944,7 +3399,9 @@ async function autoCheckAllCards(){
 // AUTO SUBMIT BINGO
 // =====================================================
 
-async function submitAutoBingo(userCard){
+async function submitAutoBingo(
+    userCard
+){
 
     try{
 
@@ -2955,11 +3412,14 @@ async function submitAutoBingo(userCard){
 
                 {
 
-                    method:"POST",
+                    method:
+                        "POST",
 
                     headers:{
+
                         "Content-Type":
                             "application/json"
+
                     },
 
                     body:
@@ -2986,7 +3446,9 @@ async function submitAutoBingo(userCard){
             await response.json();
 
 
-        if(data.success){
+        if(
+            data.success
+        ){
 
             showMessage(
 
@@ -3003,7 +3465,9 @@ async function submitAutoBingo(userCard){
             );
 
 
-            if(data.winner){
+            if(
+                data.winner
+            ){
 
                 showWinnerForEveryone(
                     data.winner
@@ -3014,7 +3478,9 @@ async function submitAutoBingo(userCard){
         }
 
 
-        else if(data.winner){
+        else if(
+            data.winner
+        ){
 
             showWinnerForEveryone(
                 data.winner
@@ -3043,11 +3509,14 @@ async function submitAutoBingo(userCard){
 async function claimBingo(
 
     userCard,
+
     cardPanel
 
 ){
 
-    if(autoMode){
+    if(
+        autoMode
+    ){
 
         showMessage(
 
@@ -3089,9 +3558,11 @@ async function claimBingo(
 
 
     if(
+
         !checkLocalBingo(
             userCard
         )
+
     ){
 
         showMessage(
@@ -3130,11 +3601,14 @@ async function claimBingo(
 
                 {
 
-                    method:"POST",
+                    method:
+                        "POST",
 
                     headers:{
+
                         "Content-Type":
                             "application/json"
+
                     },
 
                     body:
@@ -3167,7 +3641,9 @@ async function claimBingo(
             );
 
 
-        if(data.success){
+        if(
+            data.success
+        ){
 
             showMessage(
 
@@ -3184,7 +3660,9 @@ async function claimBingo(
             );
 
 
-            if(data.winner){
+            if(
+                data.winner
+            ){
 
                 showWinnerForEveryone(
                     data.winner
@@ -3208,7 +3686,9 @@ async function claimBingo(
             );
 
 
-            if(data.winner){
+            if(
+                data.winner
+            ){
 
                 showWinnerForEveryone(
                     data.winner
@@ -3222,7 +3702,9 @@ async function claimBingo(
 
     catch(error){
 
-        console.error(error);
+        console.error(
+            error
+        );
 
 
         showMessage(
@@ -3251,61 +3733,83 @@ async function claimBingo(
 // AUTO REFRESH
 // =====================================================
 
-setInterval(function(){
+setInterval(
 
-    if(gameEntered){
+    function(){
 
-        loadGameState();
+        if(
+            gameEntered
+        ){
 
-    }
+            loadGameState();
 
-},1000);
+        }
+
+    },
+
+    1000
+
+);
 
 
 // =====================================================
 // TIMER
 // =====================================================
 
-setInterval(function(){
+setInterval(
 
-    if(
+    function(){
 
-        gameState &&
-        gameState.card_buying &&
-        gameEntered
+        if(
 
-    ){
+            gameState &&
 
-        const now =
-            Date.now() / 1000;
+            gameState.card_buying &&
 
+            gameEntered
 
-        const remaining =
-            Math.max(
+        ){
 
-                0,
-
-                Math.ceil(
-
-                    gameState
-                        .card_buying_end_time
-                    -
-                    now
-
-                )
-
-            );
+            const now =
+                Date.now()
+                /
+                1000;
 
 
-        timer.innerText =
-            "⏱️ CARD BUYING: "
-            +
-            remaining
-            +
-            " SEC";
+            const remaining =
+                Math.max(
 
-    }
+                    0,
 
-},500);
+                    Math.ceil(
 
-</script></body></html>
+                        gameState
+                            .card_buying_end_time
+                        -
+                        now
+
+                    )
+
+                );
+
+
+            timer.innerText =
+                "⏱️ CARD BUYING: "
+                +
+                remaining
+                +
+                " SEC";
+
+        }
+
+    },
+
+    500
+
+);
+
+</script>
+
+</body>
+
+    </html>
