@@ -2872,7 +2872,43 @@ async def withdrawal_start(
 
             "💸 <b>WITHDRAWAL</b>\n\n"
 
-            "⚠️ Balance is empty.",
+            "⚠️ Balance kee duwwaa dha.",
+
+            parse_mode="HTML",
+
+            reply_markup=main_menu(
+
+                user_id
+
+            ),
+
+        )
+
+        return
+
+    # User tokko request tokko qofa qabaachuu danda'a
+
+    if user_id in pending_withdrawals:
+
+        current = pending_withdrawals[
+
+            user_id
+
+        ]
+
+        await query.edit_message_text(
+
+            "⏳ <b>WITHDRAWAL PENDING</b>\n\n"
+
+            f"💰 Amount: "
+
+            f"{current.get('amount', 'N/A')} Birr\n"
+
+            f"📱 Telebirr: "
+
+            f"{current.get('phone', 'N/A')}\n\n"
+
+            "⏳ Admin approval eeggachaa jira.",
 
             parse_mode="HTML",
 
@@ -2889,7 +2925,8 @@ async def withdrawal_start(
     pending_withdrawals[user_id] = {
 
         "status":
-            "waiting_info"
+
+            "waiting_info",
 
     }
 
@@ -2899,21 +2936,19 @@ async def withdrawal_start(
 
         "💸 <b>WITHDRAWAL</b>\n\n"
 
-        f"💰 Balance: {balance} Birr\n\n"
+        f"💰 Balance: "
 
-        "📱 Telebirr number fi amount ergi.\n\n"
+        f"<b>{balance} Birr</b>\n\n"
+
+        "📱 Lakkoofsa Telebirr fi amount ergi.\n\n"
 
         "Fakkeenya:\n"
 
-        "<code>0902640434 100</code>",
+        "<code>0902640434 100</code>\n\n"
+
+        "📌 Lakkoofsa fi amount gidduu space godhi.",
 
         parse_mode="HTML",
-
-        reply_markup=main_menu(
-
-            user_id
-
-        ),
 
     )
 
@@ -2932,7 +2967,11 @@ async def process_withdrawal(
 
         return False
 
-    withdrawal = pending_withdrawals[user_id]
+    withdrawal = pending_withdrawals[
+
+        user_id
+
+    ]
 
     if withdrawal.get(
 
@@ -2956,23 +2995,43 @@ async def process_withdrawal(
 
         await update.message.reply_text(
 
-            "⚠️ Sirrii miti.\n\n"
+            "⚠️ Format sirrii miti.\n\n"
+
+            "Fakkeenya:\n"
 
             "<code>0902640434 100</code>",
 
             parse_mode="HTML",
-
-            reply_markup=main_menu(
-
-                user_id
-
-            ),
 
         )
 
         return True
 
     phone = parts[0]
+
+    # Lakkoofsa Telebirr sirrii ta'uu mirkaneessi
+
+    if (
+
+        not phone.isdigit()
+
+        or len(phone) != 10
+
+    ):
+
+        await update.message.reply_text(
+
+            "⚠️ Lakkoofsa Telebirr sirrii galchi.\n\n"
+
+            "Fakkeenya:\n"
+
+            "<code>0902640434</code>",
+
+            parse_mode="HTML",
+
+        )
+
+        return True
 
     try:
 
@@ -3002,7 +3061,7 @@ async def process_withdrawal(
 
         await update.message.reply_text(
 
-            "⚠️ Amount sirrii galchi.",
+            "⚠️ Amount 0 caalaa ta'uu qaba.",
 
             reply_markup=main_menu(
 
@@ -3014,15 +3073,15 @@ async def process_withdrawal(
 
         return True
 
-    if get_balance(
+    if amount > get_balance(
 
         user_id
 
-    ) < amount:
+    ):
 
         await update.message.reply_text(
 
-            "⚠️ Balance gahaa miti.",
+            "⚠️ Balance kee withdrawal kanaaf gahaa miti.",
 
             reply_markup=main_menu(
 
@@ -3032,22 +3091,85 @@ async def process_withdrawal(
 
         )
 
-        del pending_withdrawals[user_id]
+        del pending_withdrawals[
+
+            user_id
+
+        ]
+
+        save_data()
+
+        return True
+
+    # ⭐ MAALLAQA YEROO REQUEST GODHAMU QABNA
+
+    if not remove_balance(
+
+        user_id,
+
+        amount,
+
+    ):
+
+        await update.message.reply_text(
+
+            "⚠️ Balance kee jijjiirameera. Irra deebi'i.",
+
+            reply_markup=main_menu(
+
+                user_id
+
+            ),
+
+        )
+
+        del pending_withdrawals[
+
+            user_id
+
+        ]
+
+        save_data()
 
         return True
 
     pending_withdrawals[user_id] = {
 
         "status":
+
             "pending_admin",
 
         "phone":
+
             phone,
 
         "amount":
+
             amount,
 
+        "user_id":
+
+            user_id,
+
+        "created_at":
+
+            time.time(),
+
     }
+
+    add_transaction(
+
+        user_id,
+
+        "withdrawal",
+
+        amount,
+
+        "pending",
+
+        f"Telebirr: {phone}",
+
+    )
 
     save_data()
 
@@ -3059,8 +3181,13 @@ async def process_withdrawal(
 
                 "✅ APPROVE",
 
-                callback_data=
-                    f"approve_withdrawal_{user_id}",
+                callback_data=(
+
+                    f"approve_withdrawal_"
+
+                    f"{user_id}"
+
+                ),
 
             ),
 
@@ -3068,8 +3195,13 @@ async def process_withdrawal(
 
                 "❌ REJECT",
 
-                callback_data=
-                    f"reject_withdrawal_{user_id}",
+                callback_data=(
+
+                    f"reject_withdrawal_"
+
+                    f"{user_id}"
+
+                ),
 
             ),
 
@@ -3083,13 +3215,23 @@ async def process_withdrawal(
 
         text=(
 
-            "💸 <b>NEW WITHDRAWAL</b>\n\n"
+            "💸 <b>NEW WITHDRAWAL REQUEST</b>\n\n"
 
-            f"👤 User ID: {user_id}\n"
+            f"👤 User ID: "
 
-            f"📱 Phone: {phone}\n"
+            f"<code>{user_id}</code>\n"
 
-            f"💰 Amount: {amount} Birr"
+            f"📱 Telebirr: "
+
+            f"<code>{phone}</code>\n"
+
+            f"💰 Amount: "
+
+            f"<b>{amount} Birr</b>\n\n"
+
+            "⚠️ Maallaqni balance user irraa qabameera.\n"
+
+            "👇 Kaffaltii ergiitii APPROVE godhi."
 
         ),
 
@@ -3101,7 +3243,15 @@ async def process_withdrawal(
 
     await update.message.reply_text(
 
-        "✅ Withdrawal request received.",
+        "✅ <b>WITHDRAWAL REQUEST SENT</b>\n\n"
+
+        f"💰 Amount: {amount} Birr\n"
+
+        f"📱 Telebirr: {phone}\n\n"
+
+        "⏳ Admin maallaqa ergee booda approve godha.",
+
+        parse_mode="HTML",
 
         reply_markup=main_menu(
 
@@ -3124,6 +3274,14 @@ async def approve_withdrawal(
 
     if query.from_user.id != ADMIN_ID:
 
+        await query.answer(
+
+            "⛔ Admin qofa.",
+
+            show_alert=True,
+
+        )
+
         return
 
     withdrawal = pending_withdrawals.get(
@@ -3134,21 +3292,43 @@ async def approve_withdrawal(
 
     if not withdrawal:
 
-        return
+        await query.answer(
 
-    amount = withdrawal["amount"]
+            "⚠️ Withdrawal request hin jiru.",
 
-    phone = withdrawal["phone"]
+            show_alert=True,
 
-    if not remove_balance(
-
-        user_id,
-
-        amount,
-
-    ):
+        )
 
         return
+
+    if withdrawal.get(
+
+        "status"
+
+    ) != "pending_admin":
+
+        await query.answer(
+
+            "⚠️ Request kun duraan xumurameera.",
+
+            show_alert=True,
+
+        )
+
+        return
+
+    amount = withdrawal[
+
+        "amount"
+
+    ]
+
+    phone = withdrawal[
+
+        "phone"
+
+    ]
 
     add_transaction(
 
@@ -3160,7 +3340,7 @@ async def approve_withdrawal(
 
         "approved",
 
-        phone,
+        f"Telebirr: {phone}",
 
     )
 
@@ -3176,11 +3356,17 @@ async def approve_withdrawal(
 
         "✅ <b>WITHDRAWAL APPROVED</b>\n\n"
 
-        f"👤 User: {user_id}\n"
+        f"👤 User ID: "
 
-        f"📱 Phone: {phone}\n"
+        f"{user_id}\n"
 
-        f"💰 Amount: {amount} Birr",
+        f"📱 Telebirr: "
+
+        f"{phone}\n"
+
+        f"💰 Amount: "
+
+        f"{amount} Birr",
 
         parse_mode="HTML",
 
@@ -3192,13 +3378,17 @@ async def approve_withdrawal(
 
         text=(
 
-            "✅ <b>WITHDRAWAL APPROVED!</b>\n\n"
+            "✅ <b>WITHDRAWAL COMPLETED!</b>\n\n"
 
-            f"💰 Amount: {amount} Birr\n"
+            f"💰 Amount: "
 
-            f"📱 Telebirr: {phone}\n\n"
+            f"{amount} Birr\n"
 
-            f"💳 Remaining: "
+            f"📱 Telebirr: "
+
+            f"{phone}\n\n"
+
+            f"💳 Remaining balance: "
 
             f"{get_balance(user_id)} Birr"
 
@@ -3225,19 +3415,107 @@ async def reject_withdrawal(
 
     if query.from_user.id != ADMIN_ID:
 
+        await query.answer(
+
+            "⛔ Admin qofa.",
+
+            show_alert=True,
+
+        )
+
         return
 
-    if user_id not in pending_withdrawals:
+    withdrawal = pending_withdrawals.get(
+
+        user_id
+
+    )
+
+    if not withdrawal:
+
+        await query.answer(
+
+            "⚠️ Withdrawal request hin jiru.",
+
+            show_alert=True,
+
+        )
 
         return
 
-    del pending_withdrawals[user_id]
+    if withdrawal.get(
+
+        "status"
+
+    ) != "pending_admin":
+
+        await query.answer(
+
+            "⚠️ Request kun duraan xumurameera.",
+
+            show_alert=True,
+
+        )
+
+        return
+
+    amount = withdrawal[
+
+        "amount"
+
+    ]
+
+    phone = withdrawal[
+
+        "phone"
+
+    ]
+
+    # ⭐ REJECT YOO TA'E MAALLAQNI DEEBI'A
+
+    add_balance(
+
+        user_id,
+
+        amount,
+
+    )
+
+    add_transaction(
+
+        user_id,
+
+        "withdrawal",
+
+        amount,
+
+        "rejected",
+
+        f"Refund - Telebirr: {phone}",
+
+    )
+
+    del pending_withdrawals[
+
+        user_id
+
+    ]
 
     save_data()
 
     await query.edit_message_text(
 
-        "❌ <b>WITHDRAWAL REJECTED</b>",
+        "❌ <b>WITHDRAWAL REJECTED</b>\n\n"
+
+        f"👤 User ID: "
+
+        f"{user_id}\n"
+
+        f"💰 Amount: "
+
+        f"{amount} Birr\n\n"
+
+        "💰 Maallaqni user balance isaatti deebifameera.",
 
         parse_mode="HTML",
 
@@ -3249,11 +3527,21 @@ async def reject_withdrawal(
 
         text=(
 
-            "❌ Withdrawal rejected.\n\n"
+            "❌ <b>WITHDRAWAL REJECTED</b>\n\n"
 
-            "Balance kee irraa hin hir'anne."
+            f"💰 Amount: "
+
+            f"{amount} Birr\n\n"
+
+            "Maallaqni kee balance kee irratti deebifameera.\n\n"
+
+            f"💳 Balance: "
+
+            f"{get_balance(user_id)} Birr"
 
         ),
+
+        parse_mode="HTML",
 
         reply_markup=main_menu(
 
