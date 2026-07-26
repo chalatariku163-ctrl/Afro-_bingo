@@ -127,7 +127,7 @@ bingo_game = {
     "player_count": STARTING_PLAYER_COUNT,
 
     # DERASH
-    "derash": 800 STARTING_DERASH,
+    "derash": STARTING_DERASH = 800
 
 }
 
