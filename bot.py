@@ -45,7 +45,7 @@ TELEBIRR_NUMBER = "0902640434"
 CARD_10_PRICE = 10
 CARD_20_PRICE = 20
 
-PRIZE_PERCENT = 70
+PRIZE_PERCENT = 80
 
 CARD_BUYING_SECONDS = 40
 
@@ -68,7 +68,7 @@ GADAA_BINGO_CARD_COUNT = 200
 # =========================================================
 
 # PLAYER HIN TUQAMNE
-STARTING_PLAYER_COUNT = 76
+STARTING_PLAYER_COUNT = 36
 
 # DERASH 800 IRRAA JALQABA
 STARTING_DERASH = 800
@@ -118,7 +118,7 @@ bingo_game = {
 
     "winners": [],
 
-    "prize": 500,
+    "prize": 0,
 
     # CUSTOMER CARD SALES ONLY
     "total_sales": 0,
