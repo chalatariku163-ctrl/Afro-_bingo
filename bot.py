@@ -51,8 +51,12 @@ CARD_BUYING_SECONDS = 40
 
 NUMBER_CALL_SECONDS = 5
 
-# ⭐ WINNER SHARE TIME = 3 SECONDS
 WINNER_SHARE_SECONDS = 3
+
+TOTAL_CARD_COUNT = 500
+
+# ⭐ GAME TOKKOON RANDOM HOUSE CARDS 200 QABA
+GADAA_BINGO_CARD_COUNT = 200
 
 DATA_FILE = "data.json"
 
@@ -94,9 +98,22 @@ bingo_game = {
 
     "prize": 0,
 
+    # ⭐ ONLY CUSTOMER CARD SALES
     "total_sales": 0,
 
 }
+
+
+# =========================================================
+# HIDDEN HOUSE CARDS
+# =========================================================
+
+# ⭐ GADAA BINGOO CARDS 200
+# ⭐ RANDOM FROM 1-500
+# ⭐ NOT CONSECUTIVE
+# ⭐ CUSTOMERS DO NOT SEE THIS SET
+
+gadaa_bingo_cards = set()
 
 
 # =========================================================
@@ -565,6 +582,63 @@ def mark_card_paid_for_game(
 
 
 # =========================================================
+# HOUSE CARDS
+# =========================================================
+
+def create_random_gadaa_bingo_cards():
+
+    global gadaa_bingo_cards
+
+    all_cards = list(
+
+        range(
+
+            1,
+
+            TOTAL_CARD_COUNT + 1
+
+        )
+
+    )
+
+    random.shuffle(
+        all_cards
+    )
+
+    gadaa_bingo_cards = set(
+
+        all_cards[
+
+            :GADAA_BINGO_CARD_COUNT
+
+        ]
+
+    )
+
+    print(
+
+        f"GADAA BINGO HOUSE CARDS: "
+        f"{len(gadaa_bingo_cards)}"
+
+    )
+
+
+def is_gadaa_bingo_card(
+    card_number
+):
+
+    try:
+
+        return int(
+            card_number
+        ) in gadaa_bingo_cards
+
+    except Exception:
+
+        return False
+
+
+# =========================================================
 # BINGO CARD GENERATOR
 # =========================================================
 
@@ -813,6 +887,168 @@ def check_bingo(
 
 
 # =========================================================
+# START WINNER WINDOW
+# =========================================================
+
+def start_winner_window_locked():
+
+    if bingo_game[
+        "winner_window_open"
+    ]:
+
+        return
+
+    now = time.time()
+
+    game_id = bingo_game[
+        "game_id"
+    ]
+
+    bingo_game[
+        "winner_window_open"
+    ] = True
+
+    bingo_game[
+        "winner_window_end_time"
+    ] = (
+
+        now
+
+        + WINNER_SHARE_SECONDS
+
+    )
+
+    bingo_game[
+        "winner"
+    ] = True
+
+    bingo_game[
+        "started"
+    ] = False
+
+    threading.Thread(
+
+        target=
+            finish_game_and_share_prize,
+
+        args=(
+            game_id,
+        ),
+
+        daemon=True,
+
+    ).start()
+
+
+# =========================================================
+# CHECK HIDDEN HOUSE CARDS
+# =========================================================
+
+def check_house_cards_for_bingo_locked():
+
+    if not gadaa_bingo_cards:
+
+        return
+
+    called_numbers = list(
+
+        bingo_game[
+            "called_numbers"
+        ]
+
+    )
+
+    game_id = bingo_game[
+        "game_id"
+    ]
+
+    for card_number in gadaa_bingo_cards:
+
+        already_winner = any(
+
+            winner.get(
+                "owner_type"
+            )
+
+            == "GADAA_BINGO"
+
+            and int(
+
+                winner.get(
+                    "card_number"
+                )
+
+            )
+
+            == int(
+                card_number
+            )
+
+            for winner in bingo_game[
+                "winners"
+            ]
+
+        )
+
+        if already_winner:
+
+            continue
+
+        card = generate_card(
+
+            card_number
+
+        )
+
+        if check_bingo(
+
+            card,
+
+            called_numbers,
+
+        ):
+
+            winner_data = {
+
+                "game_id":
+                    game_id,
+
+                "user_id":
+                    None,
+
+                "card_number":
+                    card_number,
+
+                "card_type":
+                    "HOUSE",
+
+                "owner_type":
+                    "GADAA_BINGO",
+
+                "time":
+                    time.time(),
+
+            }
+
+            bingo_game[
+                "winners"
+            ].append(
+
+                winner_data
+
+            )
+
+            print(
+
+                f"HOUSE CARD WON: "
+                f"{card_number}"
+
+            )
+
+            start_winner_window_locked()
+
+
+# =========================================================
 # HOME
 # =========================================================
 
@@ -868,13 +1104,19 @@ def game_state():
 
     with bingo_lock:
 
-        # ⭐ WINNER CARD USER HUNDAA BIRATTI MUL'ATU
+        # ⭐ HOUSE WINNERS CUSTOMERS HIN MUL'ATU
 
         visible_winners = []
 
         for winner in bingo_game[
             "winners"
         ]:
+
+            if winner.get(
+                "owner_type"
+            ) == "GADAA_BINGO":
+
+                continue
 
             visible_winners.append({
 
@@ -940,6 +1182,8 @@ def game_state():
                     "current_number"
                 ],
 
+            # ⭐ CUSTOMER SALES ONLY
+
             "total_sales":
                 bingo_game[
                     "total_sales"
@@ -960,7 +1204,7 @@ def game_state():
                     "winner_window_end_time"
                 ],
 
-            # ⭐ WINNER CARD HUNDAA
+            # ⭐ ONLY CUSTOMER WINNERS VISIBLE
 
             "winners":
                 visible_winners,
@@ -1093,7 +1337,7 @@ def buy_card_api():
 
         card_number < 1
 
-        or card_number > 500
+        or card_number > TOTAL_CARD_COUNT
 
     ):
 
@@ -1147,6 +1391,27 @@ def buy_card_api():
 
             }), 400
 
+        # =================================================
+        # HIDDEN HOUSE CARD
+        # =================================================
+
+        # ⭐ CUSTOMER HIN BEEKU
+        # ⭐ HOUSE CARD CUSTOMER BITACHUU HIN DANDA'U
+
+        if is_gadaa_bingo_card(
+            card_number
+        ):
+
+            return jsonify({
+
+                "success":
+                    False,
+
+                "message":
+                    "Card kun yeroo ammaa hin argamu.",
+
+            }), 400
+
         if card_number in cards:
 
             return jsonify({
@@ -1192,6 +1457,8 @@ def buy_card_api():
                 ],
 
         }
+
+        # ⭐ ONLY CUSTOMER MONEY ENTERS PRIZE POOL
 
         bingo_game[
             "total_sales"
@@ -1367,14 +1634,6 @@ def check_bingo_api():
             "winner_window_end_time"
         ]
 
-        current_winners = list(
-
-            bingo_game[
-                "winners"
-            ]
-
-        )
-
     if not started and not winner_window_open:
 
         return jsonify({
@@ -1465,105 +1724,63 @@ def check_bingo_api():
 
         }), 400
 
-    # =====================================================
-    # DUPLICATE WINNER CHECK
-    # =====================================================
-
-    for winner in current_winners:
-
-        if (
-
-            int(
-                winner[
-                    "user_id"
-                ]
-            )
-
-            == user_id
-
-            and int(
-
-                winner[
-                    "card_number"
-                ]
-
-            )
-
-            == card_number
-
-            and str(
-
-                winner[
-                    "card_type"
-                ]
-
-            )
-
-            == card_type
-
-        ):
-
-            return jsonify({
-
-                "success":
-                    False,
-
-                "message":
-                    "Card kun duraan winner ta'eera.",
-
-            }), 400
-
-    # =====================================================
-    # ADD WINNER
-    # =====================================================
-
     with bingo_lock:
 
-        now = time.time()
+        # ⭐ DUPLICATE WINNER CHECK
 
-        # ⭐ WINNER WINDOW JALQABAA
-
-        if not bingo_game[
-            "winner_window_open"
+        for winner in bingo_game[
+            "winners"
         ]:
 
-            bingo_game[
-                "winner_window_open"
-            ] = True
+            if (
 
-            bingo_game[
-                "winner_window_end_time"
-            ] = (
+                winner.get(
+                    "owner_type"
+                )
 
-                now
+                == "CUSTOMER"
 
-                + WINNER_SHARE_SECONDS
+                and int(
 
-            )
+                    winner.get(
+                        "user_id"
+                    )
 
-            bingo_game[
-                "winner"
-            ] = True
+                )
 
-            # ⭐ GAME CALLING DHAABA
-            # ⭐ GARUU 3 SEC KEESSA WINNER BIROO EEGA
+                == user_id
 
-            bingo_game[
-                "started"
-            ] = False
+                and int(
 
-            threading.Thread(
+                    winner.get(
+                        "card_number"
+                    )
 
-                target=
-                    finish_game_and_share_prize,
+                )
 
-                args=(
-                    game_id,
-                ),
+                == card_number
 
-                daemon=True,
+                and str(
 
-            ).start()
+                    winner.get(
+                        "card_type"
+                    )
+
+                )
+
+                == card_type
+
+            ):
+
+                return jsonify({
+
+                    "success":
+                        False,
+
+                    "message":
+                        "Card kun duraan winner ta'eera.",
+
+                }), 400
 
         winner_data = {
 
@@ -1579,6 +1796,9 @@ def check_bingo_api():
             "card_type":
                 card_type,
 
+            "owner_type":
+                "CUSTOMER",
+
             "time":
                 time.time(),
 
@@ -1592,15 +1812,25 @@ def check_bingo_api():
 
         )
 
-        winner_count = len(
+        start_winner_window_locked()
 
-            bingo_game[
+        visible_winners = [
+
+            winner
+
+            for winner in bingo_game[
                 "winners"
             ]
 
-        )
+            if winner.get(
+                "owner_type"
+            )
 
-        all_winners = list(
+            == "CUSTOMER"
+
+        ]
+
+        winner_count = len(
 
             bingo_game[
                 "winners"
@@ -1619,13 +1849,16 @@ def check_bingo_api():
         "game_id":
             game_id,
 
-        "winner_count":
-            winner_count,
+        # ⭐ INTERNAL TOTAL WINNERS
+        # ⭐ HOUSE WINNER HIN MUL'ATU
 
-        # ⭐ WINNER CARD HUNDAA USER HUNDAAF
+        "winner_count":
+            len(
+                visible_winners
+            ),
 
         "winners":
-            all_winners,
+            visible_winners,
 
         "message2":
             "Winneroota biroo waliin prize share ni ta'a.",
@@ -1642,8 +1875,6 @@ def finish_game_and_share_prize(
     game_id
 
 ):
-
-    # ⭐ 3 SECONDS WAIT
 
     time.sleep(
 
@@ -1676,6 +1907,8 @@ def finish_game_and_share_prize(
         if not winner_list:
 
             return
+
+        # ⭐ PRIZE = CUSTOMER CARD SALES ONLY
 
         total_sales = bingo_game[
             "total_sales"
@@ -1721,7 +1954,33 @@ def finish_game_and_share_prize(
             "winner"
         ] = True
 
+    # =====================================================
+    # PAY CUSTOMER WINNERS ONLY
+    # =====================================================
+
     for winner in winner_list:
+
+        owner_type = winner.get(
+
+            "owner_type"
+
+        )
+
+        # ⭐ HOUSE WINNER
+        # ⭐ SHARE GADAA BINGOO KEESSATTI HAFA
+
+        if owner_type == "GADAA_BINGO":
+
+            print(
+
+                "HOUSE WINNER - "
+                "SHARE RETAINED BY GADAA BINGO"
+
+            )
+
+            continue
+
+        # ⭐ CUSTOMER WINNER
 
         user_id = int(
 
@@ -1806,7 +2065,7 @@ def finish_game_and_share_prize(
 
     print(
 
-        f"WINNERS: {winner_count}"
+        f"TOTAL WINNERS: {winner_count}"
 
     )
 
@@ -1897,7 +2156,7 @@ def clear_cards_for_new_game():
 
     print(
 
-        "CARD 1-500 RESET FOR NEW GAME"
+        "CUSTOMER CARDS RESET FOR NEW GAME"
 
     )
 
@@ -1932,9 +2191,22 @@ def start_new_game():
 
     clear_cards_for_new_game()
 
+    # =====================================================
+    # ⭐ CREATE 200 RANDOM HIDDEN HOUSE CARDS
+    # =====================================================
+
+    create_random_gadaa_bingo_cards()
+
     print(
 
         f"GAME {game_id} STARTED"
+
+    )
+
+    print(
+
+        f"RANDOM HOUSE CARDS: "
+        f"{GADAA_BINGO_CARD_COUNT}"
 
     )
 
@@ -2107,6 +2379,9 @@ def automatic_number_caller(
                 "current_number"
             ] = number
 
+            # ⭐ CHECK HIDDEN HOUSE CARDS
+            check_house_cards_for_bingo_locked()
+
         print(
 
             f"GAME {game_id} "
@@ -2144,6 +2419,12 @@ def auto_next_game_after_finish(
 
         if bingo_game[
             "card_buying"
+        ]:
+
+            return
+
+        if bingo_game[
+            "winner_window_open"
         ]:
 
             return
@@ -2886,8 +3167,6 @@ async def withdrawal_start(
 
         return
 
-    # User tokko request tokko qofa qabaachuu danda'a
-
     if user_id in pending_withdrawals:
 
         current = pending_withdrawals[
@@ -3009,8 +3288,6 @@ async def process_withdrawal(
 
     phone = parts[0]
 
-    # Lakkoofsa Telebirr sirrii ta'uu mirkaneessi
-
     if (
 
         not phone.isdigit()
@@ -3100,8 +3377,6 @@ async def process_withdrawal(
         save_data()
 
         return True
-
-    # ⭐ MAALLAQA YEROO REQUEST GODHAMU QABNA
 
     if not remove_balance(
 
@@ -3471,8 +3746,6 @@ async def reject_withdrawal(
 
     ]
 
-    # ⭐ REJECT YOO TA'E MAALLAQNI DEEBI'A
-
     add_balance(
 
         user_id,
@@ -3769,7 +4042,7 @@ async def how_to_play(
 
         "Bingo yoo ta'an prize share ta'a.\n\n"
 
-        "💰 Prize = 70% total card sales."
+        "💰 Prize = 70% customer card sales."
 
     )
 
