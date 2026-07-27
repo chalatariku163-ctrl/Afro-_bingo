@@ -38,7 +38,8 @@ ADMIN_ID = 6376605934
 
 PORT = int(os.getenv("PORT", "10000"))
 
-WEB_APP_URL = "https://afro-bingo-6.onrender.com"
+# Render service kee isa amma jiru
+WEB_APP_URL = "https://afro-bingo-1.onrender.com"
 
 TELEBIRR_NUMBER = "0902640434"
 
@@ -64,19 +65,19 @@ GADAA_BINGO_CARD_COUNT = 200
 
 
 # =========================================================
-# PLAYER & DERASH STARTING VALUES
+# PLAYER & DERASH
 # =========================================================
 
-# PLAYER HIN TUQAMNE
+# GAME jalqabarratti player 76 irraa jalqaba
 STARTING_PLAYER_COUNT = 76
 
-# DERASH 800 IRRAA JALQABA
-STARTING_DERASH = 0
+# GAME jalqabarratti derash 800 irraa jalqaba
+STARTING_DERASH = 800
 
-
-# CARD TOKKOON
+# Card tokko yoo bitame
 PLAYER_PER_CARD = 1
 
+# Card tokko yoo bitame derash irratti +8
 DERASH_PER_CARD = 8
 
 
@@ -118,7 +119,7 @@ bingo_game = {
 
     "winners": [],
 
-    "prize": 500,
+    "prize": 0,
 
     # CUSTOMER CARD SALES ONLY
     "total_sales": 0,
@@ -228,28 +229,17 @@ def save_data():
 def load_data():
 
     global users
-
     global balances
-
     global transactions
-
     global cards_10
-
     global cards_20
-
     global pending_deposits
-
     global pending_withdrawals
-
     global winners
 
     if not os.path.exists(DATA_FILE):
 
-        print(
-
-            "NO DATA FILE FOUND"
-
-        )
+        print("NO DATA FILE FOUND")
 
         return
 
@@ -376,11 +366,7 @@ def load_data():
         )
 
 
-        print(
-
-            "DATA LOADED"
-
-        )
+        print("DATA LOADED")
 
 
     except Exception as error:
@@ -1154,11 +1140,7 @@ def check_bingo(
 
             if value == "FREE":
 
-                marked_row.append(
-
-                    True
-
-                )
+                marked_row.append(True)
 
             else:
 
@@ -2034,7 +2016,7 @@ def buy_card_api():
         }
 
 
-        # CUSTOMER SALES
+        # CUSTOMER SALES ONLY
 
         bingo_game[
 
@@ -4575,18 +4557,9 @@ async def approve_withdrawal(
         return
 
 
-    amount = withdrawal[
+    amount = withdrawal["amount"]
 
-        "amount"
-
-    ]
-
-
-    phone = withdrawal[
-
-        "phone"
-
-    ]
+    phone = withdrawal["phone"]
 
 
     add_transaction(
@@ -4604,11 +4577,7 @@ async def approve_withdrawal(
     )
 
 
-    del pending_withdrawals[
-
-        user_id
-
-    ]
+    del pending_withdrawals[user_id]
 
 
     save_data()
@@ -4692,25 +4661,16 @@ async def reject_withdrawal(
         return
 
 
-    amount = withdrawal[
+    amount = withdrawal["amount"]
 
-        "amount"
-
-    ]
-
-
-    phone = withdrawal[
-
-        "phone"
-
-    ]
+    phone = withdrawal["phone"]
 
 
     add_balance(
 
         user_id,
 
-        amount
+        amount,
 
     )
 
@@ -4730,11 +4690,7 @@ async def reject_withdrawal(
     )
 
 
-    del pending_withdrawals[
-
-        user_id
-
-    ]
+    del pending_withdrawals[user_id]
 
 
     save_data()
