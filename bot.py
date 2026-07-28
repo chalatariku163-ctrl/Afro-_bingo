@@ -72,7 +72,7 @@ GADAA_BINGO_CARD_COUNT = 200
 STARTING_PLAYER_COUNT = 76
 
 # GAME jalqabarratti derash 800 irraa jalqaba
-STARTING_DERASH = 800
+DERASH_START = 650
 
 # Card tokko yoo bitame
 PLAYER_PER_CARD = 1
