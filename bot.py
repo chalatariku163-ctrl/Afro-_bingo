@@ -38,46 +38,49 @@ ADMIN_ID = 6376605934
 
 PORT = int(os.getenv("PORT", "10000"))
 
-# Render service kee isa amma jiru
 WEB_APP_URL = "https://afro-bingo-1.onrender.com"
 
 TELEBIRR_NUMBER = "0902640434"
 
+
+# CARD PRICE
 CARD_10_PRICE = 10
 CARD_20_PRICE = 20
 
+
+# PRIZE
 PRIZE_PERCENT = 70
 
+
+# TIME
 CARD_BUYING_SECONDS = 40
-
 NUMBER_CALL_SECONDS = 5
-
 WINNER_SHARE_SECONDS = 3
 
+
+# TOTAL CUSTOMER CARD
 TOTAL_CARD_COUNT = 500
 
 
-# =========================================================
-# HOUSE CARDS
-# =========================================================
-
+# HOUSE CARD
 GADAA_BINGO_CARD_COUNT = 200
 
 
 # =========================================================
-# PLAYER & DERASH
+# PLAYER & DERASH SETTINGS
 # =========================================================
 
-# GAME jalqabarratti player 76 irraa jalqaba
+# Game jalqabarratti
 STARTING_PLAYER_COUNT = 76
 
-# GAME jalqabarratti derash 800 irraa jalqaba
+# Sirreeffame
 DERASH_START = 650
 
-# Card tokko yoo bitame
+
+# Card tokko bitamuun
 PLAYER_PER_CARD = 1
 
-# Card tokko yoo bitame derash irratti +8
+# Derash dabalu
 DERASH_PER_CARD = 8
 
 
@@ -121,27 +124,31 @@ bingo_game = {
 
     "prize": 0,
 
-    # CUSTOMER CARD SALES ONLY
+
+    # CUSTOMER SALES ONLY
     "total_sales": 0,
 
-    # PLAYER
+
+    # PLAYER COUNT
     "player_count": STARTING_PLAYER_COUNT,
 
+
     # DERASH
-    "derash": STARTING_DERASH,650
+    # Sirreeffame: STARTING_DERASH hin jiru
+    "derash": DERASH_START,
 
 }
 
 
 # =========================================================
-# HIDDEN HOUSE CARDS
+# HOUSE CARDS
 # =========================================================
 
 gadaa_bingo_cards = set()
 
 
 # =========================================================
-# DATA
+# DATA STORAGE
 # =========================================================
 
 users = {}
