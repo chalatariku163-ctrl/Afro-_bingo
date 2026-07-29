@@ -1515,6 +1515,11 @@ def health():
 )
 
 def game_state():
+    user_id = request.args.get("user_id", type=int)
+
+balance = 0
+if user_id:
+    balance = get_balance(user_id)
 
     with bingo_lock:
 
@@ -1582,26 +1587,12 @@ def game_state():
 
 
         return jsonify({
-
-            "success":
-
-                True,
-
-            "game_id":
-
-                bingo_game[
-
-                    "game_id"
-
-                ],
-
-            "started":
-
-                bingo_game[
-
-                    "started"
-
-                ],
+    "success": True,
+    "balance": balance,
+    "game_id": bingo_game["game_id"],
+    "started": bingo_game["started"],
+    ...
+})
 
             "card_buying":
 
