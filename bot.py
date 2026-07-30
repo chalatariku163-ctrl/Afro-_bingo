@@ -71,14 +71,14 @@ GADAA_BINGO_CARD_COUNT = 200
 # =========================================================
 
 # Game jalqabarratti
-STARTING_PLAYER_COUNT = 76
+STARTING_PLAYER_COUNT = 40
 
 # Game jalqabarratti
 DERASH_START = 650
 
 
 # Card tokko bitamuun
-PLAYER_PER_CARD = 1
+PLAYER_PER_user = 1
 
 # Derash dabalu
 DERASH_PER_CARD = 8
@@ -134,8 +134,8 @@ bingo_game = {
 
 
     # DERASH
-    # Sirreeffame: STARTING_DERASH hin jiru
-    "derash"=650: DERASH_START,
+    # Sirreeffame: STARTING_DERASH 650
+    "derash": DERASH_START =650,
 
 }
 
