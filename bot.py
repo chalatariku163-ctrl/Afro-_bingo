@@ -1863,11 +1863,9 @@ with bingo_lock:
 
          # DERASH +8
 
-        bingo_game[
-
-            "derash"
-
-        ] += DERASH_PER_CARD
+bingo_game[
+    "derash"
+] = DERASH_START
 
 
         add_transaction(
