@@ -1841,18 +1841,20 @@ if isinstance(value, int):
 
         # CUSTOMER SALES ONLY
 
-        bingo_game[
+# CUSTOMER SALES ONLY
 
-            "total_sales"
-
-        ] += price
+bingo_game[
+    "total_sales"
+] += price
 
 
         # PLAYER +1
 
-        with bingo_lock:
+with bingo_lock:
 
-    bingo_game["player_count"] = len(cards_10) + len(cards_20)
+    bingo_game[
+        "player_count"
+    ] = len(cards_10) + len(cards_20)
 
     bingo_game["derash"] = (
         DERASH_START +
