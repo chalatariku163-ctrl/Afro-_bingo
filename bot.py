@@ -1826,21 +1826,10 @@ def buy_card_api():
 
         # BALANCE USER HIR'ATA
 
-        balances[
-
-            user_id
-
-        ] = round(
-
-            get_balance(
-
-                user_id
-
-            ) - price,
-
-            2,
-
-        )
+    remove_balance(
+    user_id,
+    price
+)
 
 
         cards[
