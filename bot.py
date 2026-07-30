@@ -2815,7 +2815,7 @@ def start_new_game():
 
         f"DERASH: "
 
-        f"{bingo_game['derash'=650]}"
+        f"{bingo_game['derash']}"
 
     )
 
