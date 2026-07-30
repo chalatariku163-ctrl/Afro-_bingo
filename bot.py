@@ -71,7 +71,7 @@ GADAA_BINGO_CARD_COUNT = 200
 # =========================================================
 
 # Game jalqabarratti
-STARTING_PLAYER_COUNT = 40
+STARTING_PLAYER_COUNT = 76
 
 # Game jalqabarratti
 DERASH_START = 650
@@ -1858,14 +1858,14 @@ def buy_card_api():
 
         # DERASH
         bingo_game["derash"] = (
-            DERASH_START
-            +
-            (
-                bingo_game["player_count"]
-                *
-                DERASH_PER_CARD
-            )
-        )
+    DERASH_START
+    +
+    (
+        (bingo_game["player_count"] - STARTING_PLAYER_COUNT)
+        *
+        DERASH_PER_CARD
+    )
+)
 
 
         add_transaction(
