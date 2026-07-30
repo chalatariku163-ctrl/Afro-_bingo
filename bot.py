@@ -3324,118 +3324,69 @@ async def start(
 
     )
 
-
 # =========================================================
 # CONTACT REGISTRATION
 # =========================================================
 
 async def receive_contact(
-
     update,
-
     context,
-
 ):
-
     contact = update.message.contact
-
     user = update.effective_user
-
     user_id = user.id
 
-
     if user_id in users:
-
         await update.message.reply_text(
-
             "👋 Ati duraan register gooteetta.",
-
-            reply_markup=main_menu(
-
-                user_id
-
-            ),
-
+            reply_markup=main_menu(user_id),
         )
-
-
         return
-
 
     if contact.user_id != user_id:
-
         await update.message.reply_text(
-
             "⚠️ Mee button Register fayyadami."
-
         )
-
-
         return
 
-
     users[user_id] = {
-
-        "id":
-
-            user_id,
-
-        "name":
-
-            user.full_name,
-
-        "username":
-
-            user.username,
-
-        "phone":
-
-            contact.phone_number,
-
+        "id": user_id,
+        "name": user.full_name,
+        "username": user.username,
+        "phone": contact.phone_number,
     }
 
-
     # REGISTER BONUS
-REGISTER_BONUS = 50
+    REGISTER_BONUS = 50
 
-balances[user_id] = REGISTER_BONUS
+    balances[user_id] = balances.get(user_id, 0) + REGISTER_BONUS
 
-add_transaction(
-    user_id,
-    "register_bonus",
-    REGISTER_BONUS,
-    "completed",
-    "Welcome bonus",
-)
- save_data()
- await update.message.reply_text(
-
-        "✅ <b>REGISTRATION SUCCESSFUL!</b>\n\n"
-
-        f"🎉 Welcome {user.first_name}!",
-
-        parse_mode="HTML",
-
-        reply_markup=ReplyKeyboardRemove(),
-
+    add_transaction(
+        user_id,
+        "register_bonus",
+        REGISTER_BONUS,
+        "completed",
+        "Welcome bonus",
     )
 
+    save_data()
 
     await update.message.reply_text(
-
-        "🏠 <b>MAIN MENU</b>\n\n"
-
-        "👇 Wanta barbaadde filadhu:",
-
+        "✅ <b>REGISTRATION SUCCESSFUL!</b>\n\n"
+        f"🎉 Welcome {user.first_name}!\n"
+        f"🎁 Welcome Bonus: {REGISTER_BONUS} Birr\n\n"
+        "💰 Bonus gara balance keetti dabalameera.",
         parse_mode="HTML",
-
-        reply_markup=main_menu(
-
-            user_id
-
-        ),
-
+        reply_markup=ReplyKeyboardRemove(),
     )
+
+    await update.message.reply_text(
+        "🏠 <b>MAIN MENU</b>\n\n"
+        "👇 Wanta barbaadde filadhu:",
+        parse_mode="HTML",
+        reply_markup=main_menu(user_id),
+    )
+
 
 
 # =========================================================
