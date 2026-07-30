@@ -2699,100 +2699,48 @@ def finish_game_and_share_prize(
 
 def reset_game_state():
 
-    bingo_game[
+    bingo_game["started"] = False
 
-        "started"
+    bingo_game["card_buying"] = False
 
-    ] = False
-
-
-    bingo_game[
-
-        "card_buying"
-
-    ] = False
+    bingo_game["card_buying_end_time"] = 0
 
 
-    bingo_game[
+    bingo_game["called_numbers"] = []
 
-        "card_buying_end_time"
-
-    ] = 0
+    bingo_game["current_number"] = None
 
 
-    bingo_game[
+    bingo_game["winner"] = False
 
-        "called_numbers"
+    bingo_game["winner_window_open"] = False
 
-    ] = []
-
-
-    bingo_game[
-
-        "current_number"
-
-    ] = None
+    bingo_game["winner_window_end_time"] = 0
 
 
-    bingo_game[
+    bingo_game["winners"] = []
 
-        "winner"
-
-    ] = False
+    bingo_game["prize"] = 0
 
 
-    bingo_game[
-
-        "winner_window_open"
-
-    ] = False
+    # CUSTOMER SALES HAAROMSA
+    bingo_game["total_sales"] = 0
 
 
-    bingo_game[
+    # PLAYER FI DERASH RESET
+    bingo_game["player_count"] = STARTING_PLAYER_COUNT
 
-        "winner_window_end_time"
-
-    ] = 0
-
-
-    bingo_game[
-
-        "winners"
-
-    ] = []
+    bingo_game["derash"] = DERASH_START
 
 
-    bingo_game[
-
-        "prize"
-
-    ] = 0
-
-
-    bingo_game[
-
-        "total_sales"
-
-    ] = 0
-bingo_game["player_count"] = STARTING_PLAYER_COUNT
-bingo_game["derash"] = 650
-
-    # PLAYER FI DERASH HIN RESET TA'AN
-
-
-def clear_cards_for_new_game():
-
-    cards_10.clear()
-
-    cards_20.clear()
-
-    save_data()
-
+    print("GAME STATE RESET")
 
     print(
+        f"PLAYER: {bingo_game['player_count']}"
+    )
 
-        "CUSTOMER CARDS RESET FOR NEW GAME"
-
+    print(
+        f"DERASH: {bingo_game['derash']}"
     )
 
 
