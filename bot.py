@@ -3395,13 +3395,18 @@ async def receive_contact(
     }
 
 
-    balances.setdefault(
+    # REGISTER BONUS
+REGISTER_BONUS = 50
 
-        user_id,
+balances[user_id] = REGISTER_BONUS
 
-        0.0,
-
-    )
+add_transaction(
+    user_id,
+    "register_bonus",
+    REGISTER_BONUS,
+    "completed",
+    "Welcome bonus",
+)
 
 
     save_data()
