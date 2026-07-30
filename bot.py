@@ -2775,7 +2775,7 @@ def reset_game_state():
 
     ] = 0
 bingo_game["player_count"] = STARTING_PLAYER_COUNT
-bingo_game["derash"] = DERASH_START
+bingo_game["derash"] = 650
 
     # PLAYER FI DERASH HIN RESET TA'AN
 
