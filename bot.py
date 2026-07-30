@@ -1976,7 +1976,62 @@ def buy_card_api():
                 ),
 
         })
+        
+# =========================================================
+# USER CARDS API
+# =========================================================
 
+@web_app.route(
+    "/api/my-cards",
+    methods=["GET"],
+)
+def my_cards():
+
+    user_id = request.args.get(
+        "user_id",
+        type=int
+    )
+
+    if not user_id:
+        return jsonify({
+            "success": False,
+            "message": "User ID hin jiru."
+        }), 400
+
+
+    my_cards = []
+
+
+    with bingo_lock:
+
+        for card_number, card_data in cards_10.items():
+
+            owner = card_data.get("owner")
+
+            if int(owner) == user_id:
+                my_cards.append({
+                    "card_number": card_number,
+                    "card_type": "10",
+                    "card": generate_card(card_number)
+                })
+
+
+        for card_number, card_data in cards_20.items():
+
+            owner = card_data.get("owner")
+
+            if int(owner) == user_id:
+                my_cards.append({
+                    "card_number": card_number,
+                    "card_type": "20",
+                    "card": generate_card(card_number)
+                })
+
+
+    return jsonify({
+        "success": True,
+        "cards": my_cards
+    })
 
 # =========================================================
 # CHECK BINGO API
