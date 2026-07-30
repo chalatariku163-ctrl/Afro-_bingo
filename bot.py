@@ -1832,24 +1832,11 @@ def buy_card_api():
 )
 
 
-        cards[
-
-            card_number
-
-        ] = {
-
-            "owner":
-
-                user_id,
-
-            "paid_games":
-
-                [
-
-                    game_id
-
-                ],
-
+                        cards[card_number] = {
+            "owner": user_id,
+            "paid_games": [
+                game_id
+            ],
         }
 
 
