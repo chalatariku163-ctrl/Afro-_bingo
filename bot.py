@@ -1868,19 +1868,19 @@ bingo_game[
 ] = DERASH_START
 
 
-        add_transaction(
+add_transaction(
 
-            user_id,
+    user_id,
 
-            "card_purchase",
+    "card_purchase",
 
-            price,
+    price,
 
-            "completed",
+    "completed",
 
-            f"Game {game_id} Card {card_number}",
+    f"Game {game_id} Card {card_number}",
 
-        )
+)
 
 
         save_data()
