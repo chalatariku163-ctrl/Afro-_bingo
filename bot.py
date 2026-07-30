@@ -135,7 +135,7 @@ bingo_game = {
 
     # DERASH
     # Sirreeffame: STARTING_DERASH hin jiru
-    "derash": DERASH_START,
+    "derash"=650: DERASH_START,
 
 }
 
