@@ -3407,12 +3407,8 @@ add_transaction(
     "completed",
     "Welcome bonus",
 )
-
-
-    save_data()
-
-
-    await update.message.reply_text(
+ save_data()
+ await update.message.reply_text(
 
         "✅ <b>REGISTRATION SUCCESSFUL!</b>\n\n"
 
