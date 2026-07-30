@@ -2742,7 +2742,21 @@ def reset_game_state():
     print(
         f"DERASH: {bingo_game['derash']}"
     )
+# =========================================================
+# CLEAR CARDS FOR NEW GAME
+# =========================================================
 
+def clear_cards_for_new_game():
+
+    cards_10.clear()
+
+    cards_20.clear()
+
+    save_data()
+
+    print(
+        "CUSTOMER CARDS RESET FOR NEW GAME"
+    )
 
 # =========================================================
 # START NEW GAME
