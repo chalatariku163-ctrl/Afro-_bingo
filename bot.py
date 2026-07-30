@@ -1831,10 +1831,11 @@ def buy_card_api():
     price
 )
     
-def buy_card():
+if isinstance(value, int):
+
     cards[card_number] = {
-        "owner": user_id,
-        "paid_games": []
+        "owner": value,
+        "paid_games": [],
     }
 
 
