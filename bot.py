@@ -1,4 +1,4 @@
-import os
+⁸import os
 import json
 import time
 import random
@@ -1824,63 +1824,59 @@ def buy_card_api():
             }), 400
 
 
-        # BALANCE USER HIR'ATA
+                # BALANCE USER HIR'ATA
+        if not remove_balance(
+            user_id,
+            price
+        ):
+            return jsonify({
+                "success": False,
+                "message": "Balance hir'isuun hin danda'amne."
+            }), 400
 
-    remove_balance(
-    user_id,
-    price
-)
-    
-if isinstance(value, int):
 
-    cards[card_number] = {
-        "owner": value,
-        "paid_games": [],
-    }
+        # SAVE CARD OWNER
+        cards[card_number] = {
+            "owner": user_id,
+            "paid_games": [
+                game_id
+            ],
+        }
 
 
         # CUSTOMER SALES ONLY
-
-# CUSTOMER SALES ONLY
-
-bingo_game[
-    "total_sales"
-] += price
+        bingo_game[
+            "total_sales"
+        ] += price
 
 
-        # PLAYER +1
-
-with bingo_lock:
-
-    bingo_game[
-        "player_count"
-    ] = len(cards_10) + len(cards_20)
-
-    bingo_game["derash"] = (
-        DERASH_START +
-        (bingo_game["player_count"] * DERASH_PER_CARD)
-)
-
-         # DERASH +8
-
-bingo_game[
-    "derash"
-] = DERASH_START
+        # PLAYER COUNT UPDATE
+        bingo_game[
+            "player_count"
+        ] = len(cards_10) + len(cards_20)
 
 
-add_transaction(
+        # DERASH +8 PER CARD
+        bingo_game[
+            "derash"
+        ] = (
+            DERASH_START
+            +
+            (
+                bingo_game["player_count"]
+                *
+                DERASH_PER_CARD
+            )
+        )
 
-    user_id,
 
-    "card_purchase",
-
-    price,
-
-    "completed",
-
-    f"Game {game_id} Card {card_number}",
-
-)
+        add_transaction(
+            user_id,
+            "card_purchase",
+            price,
+            "completed",
+            f"Game {game_id} Card {card_number}",
+        )
 
 
         save_data()
