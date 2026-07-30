@@ -1824,7 +1824,7 @@ def buy_card_api():
             }), 400
 
 
-                # BALANCE USER HIR'ATA
+                        # BALANCE USER HIR'ATA
         if not remove_balance(
             user_id,
             price
@@ -1835,7 +1835,7 @@ def buy_card_api():
             }), 400
 
 
-        # SAVE CARD OWNER
+        # SAVE CARD
         cards[card_number] = {
             "owner": user_id,
             "paid_games": [
@@ -1845,21 +1845,19 @@ def buy_card_api():
 
 
         # CUSTOMER SALES ONLY
-        bingo_game[
-            "total_sales"
-        ] += price
+        bingo_game["total_sales"] += price
 
 
-        # PLAYER COUNT UPDATE
-        bingo_game[
-            "player_count"
-        ] = len(cards_10) + len(cards_20)
+        # PLAYER COUNT
+        bingo_game["player_count"] = (
+            len(cards_10)
+            +
+            len(cards_20)
+        )
 
 
-        # DERASH +8 PER CARD
-        bingo_game[
-            "derash"
-        ] = (
+        # DERASH
+        bingo_game["derash"] = (
             DERASH_START
             +
             (
