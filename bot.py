@@ -73,7 +73,7 @@ GADAA_BINGO_CARD_COUNT = 200
 # Game jalqabarratti
 STARTING_PLAYER_COUNT = 76
 
-# Sirreeffame
+# Game jalqabarratti
 DERASH_START = 650
 
 
