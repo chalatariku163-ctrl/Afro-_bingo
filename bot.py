@@ -1830,14 +1830,12 @@ def buy_card_api():
     user_id,
     price
 )
-
-
-                        cards[card_number] = {
-            "owner": user_id,
-            "paid_games": [
-                game_id
-            ],
-        }
+    
+def buy_card():
+    cards[card_number] = {
+        "owner": user_id,
+        "paid_games": []
+    }
 
 
         # CUSTOMER SALES ONLY
