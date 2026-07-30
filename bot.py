@@ -1,4 +1,4 @@
-⁸import os
+import os
 import json
 import time
 import random
@@ -1559,6 +1559,12 @@ def game_state():
 # BUY CARD API
 # =========================================================
 
+except Exception as e:
+    print("BUY CARD ERROR:", e)
+    return jsonify({
+        "success": False,
+        "message": str(e)
+    }), 500
 @web_app.route(
 
     "/api/buy-card",
