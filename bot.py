@@ -1850,14 +1850,16 @@ if isinstance(value, int):
 
         # PLAYER +1
 
-        bingo_game[
+        with bingo_lock:
 
-            "player_count"
+    bingo_game["player_count"] = len(cards_10) + len(cards_20)
 
-        ] += PLAYER_PER_CARD
+    bingo_game["derash"] = (
+        DERASH_START +
+        (bingo_game["player_count"] * DERASH_PER_CARD)
+)
 
-
-        # DERASH +8
+         # DERASH +8
 
         bingo_game[
 
