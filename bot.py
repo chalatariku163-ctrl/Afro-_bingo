@@ -1559,12 +1559,6 @@ def game_state():
 # BUY CARD API
 # =========================================================
 
-except Exception as e:
-    print("BUY CARD ERROR:", e)
-    return jsonify({
-        "success": False,
-        "message": str(e)
-    }), 500
 @web_app.route(
 
     "/api/buy-card",
@@ -1953,7 +1947,11 @@ def buy_card_api():
                 ),
 
         })
-        
+             print("BUY CARD ERROR:", e)
+        return jsonify({
+            "success": False,
+            "message": str(e)
+        }),
 # =========================================================
 # USER CARDS API
 # =========================================================
