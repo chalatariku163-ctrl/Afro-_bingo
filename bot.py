@@ -1879,75 +1879,20 @@ def buy_card_api():
 
         save_data()
 
+return jsonify({
+    "success": True,
+    "message": f"Card {card_number} milkaa'inaan bitame.",
+    "game_id": game_id,
+    "card_number": card_number,
+    "card_type": card_type,
+    "price": price,
+    "balance": get_balance(user_id),
+    "player": bingo_game["player_count"],
+    "player_count": bingo_game["player_count"],
+    "derash": bingo_game["derash"],
+    "card": generate_card(card_number),
+})
 
-        return jsonify({
-
-            "success":
-
-                True,
-
-            "message":
-
-                f"Card {card_number} milkaa'inaan bitame.",
-
-            "game_id":
-
-                game_id,
-
-            "card_number":
-
-                card_number,
-
-            "card_type":
-
-                card_type,
-
-            "price":
-
-                price,
-
-            "balance":
-
-                get_balance(
-
-                    user_id
-
-                ),
-
-            "player":
-
-                bingo_game[
-
-                    "player_count"
-
-                ],
-
-            "player_count":
-
-                bingo_game[
-
-                    "player_count"
-
-                ],
-
-            "derash":
-
-                bingo_game[
-
-                    "derash"
-
-                ],
-
-            "card":
-
-                generate_card(
-
-                    card_number
-
-                ),
-
-        })
-        
 except Exception as e:
     print("BUY CARD ERROR:", e)
     return jsonify({
