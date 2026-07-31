@@ -1514,6 +1514,7 @@ def game_state():
     user_id = request.args.get("user_id", type=int)
 
     balance = 0.0
+
     if user_id:
         balance = get_balance(user_id)
 
@@ -1534,27 +1535,73 @@ def game_state():
                 "time": winner.get("time"),
             })
 
-        return jsonify({
-            "success": True,
-            "balance": balance,
-            "game_id": bingo_game["game_id"],
-            "started": bingo_game["started"],
-            "card_buying": bingo_game["card_buying"],
-            "card_buying_end_time": bingo_game["card_buying_end_time"],
-            "called_numbers": bingo_game["called_numbers"],
-            "current_number": bingo_game["current_number"],
-            "player": bingo_game["player_count"],
-            "player_count": bingo_game["player_count"],
-            "derash": bingo_game["derash"],
-            "total_sales": bingo_game["total_sales"],
-            "winner": bingo_game["winner"],
-            "winner_window_open": bingo_game["winner_window_open"],
-            "winner_window_end_time": bingo_game["winner_window_end_time"],
-            "winners": visible_winners,
-            "winner_count": len(visible_winners),
-            "prize": bingo_game["prize"],
-        })
 
+        # ===============================
+        # DERASH START 650 + USER CARD SALES
+        # ===============================
+
+        user_sales = 0
+
+        for card in bingo_game.get("cards", []):
+
+            # GADAA card hin lakkaawamu
+            if card.get("owner_type") == "GADAA_BINGO":
+                continue
+
+            user_sales += float(
+                card.get("price", 0)
+            )
+
+
+        derash = 650 + user_sales
+
+
+        bingo_game["derash"] = derash
+
+
+        return jsonify({
+
+            "success": True,
+
+            "balance": balance,
+
+            "game_id": bingo_game["game_id"],
+
+            "started": bingo_game["started"],
+
+            "card_buying": bingo_game["card_buying"],
+
+            "card_buying_end_time": bingo_game["card_buying_end_time"],
+
+            "called_numbers": bingo_game["called_numbers"],
+
+            "current_number": bingo_game["current_number"],
+
+
+            "player": bingo_game["player_count"],
+
+            "player_count": bingo_game["player_count"],
+
+
+            "derash": derash,
+
+            "total_sales": bingo_game["total_sales"],
+
+
+            "winner": bingo_game["winner"],
+
+            "winner_window_open": bingo_game["winner_window_open"],
+
+            "winner_window_end_time": bingo_game["winner_window_end_time"],
+
+
+            "winners": visible_winners,
+
+            "winner_count": len(visible_winners),
+
+            "prize": bingo_game["prize"],
+
+        })
 # =========================================================
 # BUY CARD API
 # =========================================================
