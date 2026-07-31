@@ -1168,7 +1168,10 @@ function updateGameUI(data){
         + " Birr";
 
     let derash =
-        totalSales * 0.70;
+    Number(
+        data.derash ??
+        650
+    );
 
     derashValue.innerText =
         Number(
