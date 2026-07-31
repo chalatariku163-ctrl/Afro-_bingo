@@ -1560,282 +1560,120 @@ def game_state():
 # =========================================================
 
 @web_app.route(
-
     "/api/buy-card",
-
     methods=["POST"],
-
 )
-
 def buy_card_api():
 
     data = request.get_json(
-
         silent=True
-
     ) or {}
 
-
-    user_id = data.get(
-
-        "user_id"
-
-    )
-
+    user_id = data.get("user_id")
 
     card_type = str(
-
         data.get(
-
             "card_type",
-
             "",
-
         )
-
     )
-
 
     requested_card_number = data.get(
-
         "card_number"
-
     )
-
 
     if user_id is None:
-
         return jsonify({
-
-            "success":
-
-                False,
-
-            "message":
-
-                "User ID hin argamne.",
-
+            "success": False,
+            "message": "User ID hin argamne.",
         }), 400
-
 
     try:
-
-        user_id = int(
-
-            user_id
-
-        )
-
+        user_id = int(user_id)
     except Exception:
-
         return jsonify({
-
-            "success":
-
-                False,
-
-            "message":
-
-                "User ID sirrii miti.",
-
+            "success": False,
+            "message": "User ID sirrii miti.",
         }), 400
 
-
-    if card_type not in [
-
-        "10",
-
-        "20",
-
-    ]:
-
+    if card_type not in ["10", "20"]:
         return jsonify({
-
-            "success":
-
-                False,
-
-            "message":
-
-                "Card type sirrii miti.",
-
+            "success": False,
+            "message": "Card type sirrii miti.",
         }), 400
-
 
     if requested_card_number is None:
-
         return jsonify({
-
-            "success":
-
-                False,
-
-            "message":
-
-                "Card number filadhu.",
-
+            "success": False,
+            "message": "Card number filadhu.",
         }), 400
-
 
     try:
-
-        card_number = int(
-
-            requested_card_number
-
-        )
-
+        card_number = int(requested_card_number)
     except Exception:
-
         return jsonify({
-
-            "success":
-
-                False,
-
-            "message":
-
-                "Card number sirrii miti.",
-
+            "success": False,
+            "message": "Card number sirrii miti.",
         }), 400
 
-
-    if (
-
-        card_number < 1
-
-        or card_number > TOTAL_CARD_COUNT
-
-    ):
-
+    if card_number < 1 or card_number > TOTAL_CARD_COUNT:
         return jsonify({
-
-            "success":
-
-                False,
-
-            "message":
-
-                "Card number 1 hanga 500 ta'uu qaba.",
-
+            "success": False,
+            "message": "Card number 1 hanga 500 ta'uu qaba.",
         }), 400
-
 
     cards = (
-
         cards_10
-
         if card_type == "10"
-
         else cards_20
-
     )
-
 
     price = (
-
         CARD_10_PRICE
-
         if card_type == "10"
-
         else CARD_20_PRICE
-
     )
-
 
     with bingo_lock:
 
-        game_id = bingo_game[
+        game_id = bingo_game["game_id"]
 
-            "game_id"
-
-        ]
-
-
-        if not bingo_game[
-
-            "card_buying"
-
-        ]:
-
+        if not bingo_game["card_buying"]:
             return jsonify({
-
-                "success":
-
-                    False,
-
-                "message":
-
-                    "Yeroon card bitachuu xumurame.",
-
+                "success": False,
+                "message": "Yeroon card bitachuu xumurame.",
             }), 400
 
-
-        if is_gadaa_bingo_card(
-
-            card_number
-
-        ):
-
+        if is_gadaa_bingo_card(card_number):
             return jsonify({
-
-                "success":
-
-                    False,
-
-                "message":
-
-                    "Card kun yeroo ammaa hin argamu.",
-
+                "success": False,
+                "message": "Card kun yeroo ammaa hin argamu.",
             }), 400
-
 
         if card_number in cards:
-
             return jsonify({
-
-                "success":
-
-                    False,
-
-                "message":
-
-                    f"Card {card_number} dursee qabameera.",
-
+                "success": False,
+                "message": f"Card {card_number} dursee qabameera.",
             }), 400
 
-
-        if get_balance(
-
-            user_id
-
-        ) < price:
-
+        if get_balance(user_id) < price:
             return jsonify({
-
-                "success":
-
-                    False,
-
-                "message":
-
-                    f"Balance kee {price} Birr hin geenye.",
-
+                "success": False,
+                "message": f"Balance kee {price} Birr hin geenye.",
             }), 400
 
-
-                        # BALANCE USER HIR'ATA
+        # BALANCE HIR'ISUU
         if not remove_balance(
             user_id,
             price
         ):
             return jsonify({
                 "success": False,
-                "message": "Balance hir'isuun hin danda'amne."
+                "message": "Balance hir'isuun hin danda'amne.",
             }), 400
 
 
-        # SAVE CARD
+        # CARD SAVE
         cards[card_number] = {
             "owner": user_id,
             "paid_games": [
@@ -1856,16 +1694,20 @@ def buy_card_api():
         )
 
 
-        # DERASH
+        # DERASH UPDATE
         bingo_game["derash"] = (
-    DERASH_START
-    +
-    (
-        (bingo_game["player_count"] - STARTING_PLAYER_COUNT)
-        *
-        DERASH_PER_CARD
-    )
-)
+            DERASH_START
+            +
+            (
+                (
+                    bingo_game["player_count"]
+                    -
+                    STARTING_PLAYER_COUNT
+                )
+                *
+                DERASH_PER_CARD
+            )
+        )
 
 
         add_transaction(
@@ -1877,7 +1719,8 @@ def buy_card_api():
         )
 
 
-                save_data()
+        save_data()
+
 
         return jsonify({
             "success": True,
