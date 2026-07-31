@@ -1947,11 +1947,13 @@ def buy_card_api():
                 ),
 
         })
-             print("BUY CARD ERROR:", e)
-        return jsonify({
-            "success": False,
-            "message": str(e)
-        }),
+        
+except Exception as e:
+    print("BUY CARD ERROR:", e)
+    return jsonify({
+        "success": False,
+        "message": str(e)
+    }), 500
 # =========================================================
 # USER CARDS API
 # =========================================================
