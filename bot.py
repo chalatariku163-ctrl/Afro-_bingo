@@ -74,15 +74,16 @@ GADAA_BINGO_CARD_COUNT = 200
 STARTING_PLAYER_COUNT = 76
 
 # Game jalqabarratti
+STARTING_PLAYER_COUNT = 76
+
+# Game jalqabarratti
 DERASH_START = 650
 
-
 # Card tokko bitamuun
-PLAYER_PER_user = 1
+PLAYER_PER_CARD = 1
 
 # Derash dabalu
-DERASH_PER_CARD = 8
-
+DERASH_PER_CARD = 7
 
 DATA_FILE = "data.json"
 
@@ -1721,49 +1722,30 @@ def buy_card_api():
 
 
         # CARD SAVE
-        cards[card_number] = {
-            "owner": user_id,
-            "paid_games": [
-                game_id
-            ],
-        }
+cards[card_number] = {
+    "owner": user_id,
+    "paid_games": [
+        game_id
+    ],
+}
+
+# CUSTOMER SALES ONLY
+bingo_game["total_sales"] += price
+
+# PLAYER COUNT
+bingo_game["player_count"] += PLAYER_PER_CARD
+
+# DERASH UPDATE
+bingo_game["derash"] += DERASH_PER_CARD
 
 
-        # CUSTOMER SALES ONLY
-        bingo_game["total_sales"] += price
-
-
-        # PLAYER COUNT
-        bingo_game["player_count"] = (
-            len(cards_10)
-            +
-            len(cards_20)
-        )
-
-
-        # DERASH UPDATE
-        bingo_game["derash"] = (
-            DERASH_START
-            +
-            (
-                (
-                    bingo_game["player_count"]
-                    -
-                    STARTING_PLAYER_COUNT
-                )
-                *
-                DERASH_PER_CARD
-            )
-        )
-
-
-        add_transaction(
-            user_id,
-            "card_purchase",
-            price,
-            "completed",
-            f"Game {game_id} Card {card_number}",
-        )
+add_transaction(
+    user_id,
+    "card_purchase",
+    price,
+    "completed",
+    f"Game {game_id} Card {card_number}",
+)
 
 
         save_data()
