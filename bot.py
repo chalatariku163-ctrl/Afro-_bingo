@@ -70,7 +70,8 @@ GADAA_BINGO_CARD_COUNT = 200
 # PLAYER & DERASH SETTINGS
 # =========================================================
 
-
+# Game jalqabarratti
+STARTING_PLAYER_COUNT = 76
 # Game jalqabarratti
 STARTING_PLAYER_COUNT = 76
 
