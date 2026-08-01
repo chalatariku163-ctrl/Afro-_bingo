@@ -1498,7 +1498,6 @@ def health():
             "GADAA BINGO SERVER IS RUNNING",
 
     })
-
 # =========================================================
 # GAME STATE API
 # =========================================================
@@ -1509,86 +1508,140 @@ def health():
 )
 def game_state():
 
-    user_id = request.args.get("user_id", type=int)
+    user_id = request.args.get(
+        "user_id",
+        type=int
+    )
 
     balance = 0.0
 
     if user_id:
         balance = get_balance(user_id)
 
+
     with bingo_lock:
 
         visible_winners = []
 
+
         for winner in bingo_game["winners"]:
 
-            if winner.get("owner_type") == "GADAA_BINGO":
+            if winner.get(
+                "owner_type"
+            ) == "GADAA_BINGO":
+
                 continue
 
+
             visible_winners.append({
-                "game_id": winner.get("game_id"),
-                "user_id": winner.get("user_id"),
-                "card_number": winner.get("card_number"),
-                "card_type": winner.get("card_type"),
-                "time": winner.get("time"),
+
+                "game_id":
+                    winner.get("game_id"),
+
+                "user_id":
+                    winner.get("user_id"),
+
+                "card_number":
+                    winner.get("card_number"),
+
+                "card_type":
+                    winner.get("card_type"),
+
+                "time":
+                    winner.get("time"),
+
             })
-            
-# ===============================
-# DERASH UPDATE
-# ===============================
 
-derash = (
-    DERASH_START
-    + (
-        bingo_game["player_count"]
-        - STARTING_PLAYER_COUNT
-    ) * DERASH_PER_CARD
-)
 
-bingo_game["derash"] = derash
+        # ===============================
+        # DERASH UPDATE
+        # ===============================
+
+        derash = (
+            DERASH_START
+            + (
+                bingo_game["player_count"]
+                - STARTING_PLAYER_COUNT
+            )
+            * DERASH_PER_CARD
+        )
+
+
+        bingo_game["derash"] = derash
+
 
 
         return jsonify({
 
             "success": True,
 
-            "balance": balance,
 
-            "game_id": bingo_game["game_id"],
-
-            "started": bingo_game["started"],
-
-            "card_buying": bingo_game["card_buying"],
-
-            "card_buying_end_time": bingo_game["card_buying_end_time"],
-
-            "called_numbers": bingo_game["called_numbers"],
-
-            "current_number": bingo_game["current_number"],
+            "balance":
+                balance,
 
 
-            "player": bingo_game["player_count"],
-
-            "player_count": bingo_game["player_count"],
-
-
-            "derash": derash,
-
-            "total_sales": bingo_game["total_sales"],
+            "game_id":
+                bingo_game["game_id"],
 
 
-            "winner": bingo_game["winner"],
-
-            "winner_window_open": bingo_game["winner_window_open"],
-
-            "winner_window_end_time": bingo_game["winner_window_end_time"],
+            "started":
+                bingo_game["started"],
 
 
-            "winners": visible_winners,
+            "card_buying":
+                bingo_game["card_buying"],
 
-            "winner_count": len(visible_winners),
 
-            "prize": bingo_game["prize"],
+            "card_buying_end_time":
+                bingo_game["card_buying_end_time"],
+
+
+            "called_numbers":
+                bingo_game["called_numbers"],
+
+
+            "current_number":
+                bingo_game["current_number"],
+
+
+            "player":
+                bingo_game["player_count"],
+
+
+            "player_count":
+                bingo_game["player_count"],
+
+
+            "derash":
+                bingo_game["derash"],
+
+
+            "total_sales":
+                bingo_game["total_sales"],
+
+
+            "winner":
+                bingo_game["winner"],
+
+
+            "winner_window_open":
+                bingo_game["winner_window_open"],
+
+
+            "winner_window_end_time":
+                bingo_game["winner_window_end_time"],
+
+
+            "winners":
+                visible_winners,
+
+
+            "winner_count":
+                len(visible_winners),
+
+
+            "prize":
+                bingo_game["prize"],
 
         })
 # =========================================================
@@ -1605,165 +1658,319 @@ def buy_card_api():
         silent=True
     ) or {}
 
-    user_id = data.get("user_id")
+
+    user_id = data.get(
+        "user_id"
+    )
+
 
     card_type = str(
         data.get(
             "card_type",
-            "",
+            ""
         )
     )
+
 
     requested_card_number = data.get(
         "card_number"
     )
 
+
     if user_id is None:
+
         return jsonify({
+
             "success": False,
+
             "message": "User ID hin argamne.",
+
         }), 400
 
+
     try:
+
         user_id = int(user_id)
+
     except Exception:
+
         return jsonify({
+
             "success": False,
+
             "message": "User ID sirrii miti.",
+
         }), 400
+
+
 
     if card_type not in ["10", "20"]:
+
         return jsonify({
+
             "success": False,
+
             "message": "Card type sirrii miti.",
+
         }), 400
+
+
 
     if requested_card_number is None:
+
         return jsonify({
+
             "success": False,
+
             "message": "Card number filadhu.",
+
         }), 400
+
+
 
     try:
-        card_number = int(requested_card_number)
+
+        card_number = int(
+            requested_card_number
+        )
+
     except Exception:
+
         return jsonify({
+
             "success": False,
+
             "message": "Card number sirrii miti.",
+
         }), 400
+
+
 
     if card_number < 1 or card_number > TOTAL_CARD_COUNT:
+
         return jsonify({
+
             "success": False,
+
             "message": "Card number 1 hanga 500 ta'uu qaba.",
+
         }), 400
 
+
+
     cards = (
+
         cards_10
+
         if card_type == "10"
+
         else cards_20
+
     )
 
+
     price = (
+
         CARD_10_PRICE
+
         if card_type == "10"
+
         else CARD_20_PRICE
+
     )
+
+
 
     with bingo_lock:
 
+
         game_id = bingo_game["game_id"]
 
+
+
         if not bingo_game["card_buying"]:
+
             return jsonify({
+
                 "success": False,
+
                 "message": "Yeroon card bitachuu xumurame.",
+
             }), 400
+
+
 
         if is_gadaa_bingo_card(card_number):
+
             return jsonify({
+
                 "success": False,
-                "message": "Card kun yeroo ammaa hin argamu.",
+
+                "message": "Card kun hin argamu.",
+
             }), 400
+
+
 
         if card_number in cards:
+
             return jsonify({
+
                 "success": False,
+
                 "message": f"Card {card_number} dursee qabameera.",
+
             }), 400
+
+
 
         if get_balance(user_id) < price:
+
             return jsonify({
+
                 "success": False,
+
                 "message": f"Balance kee {price} Birr hin geenye.",
+
             }), 400
+
+
 
         # BALANCE HIR'ISUU
+
         if not remove_balance(
+
             user_id,
+
             price
+
         ):
+
             return jsonify({
+
                 "success": False,
+
                 "message": "Balance hir'isuun hin danda'amne.",
+
             }), 400
 
 
-                # CARD SAVE
+
+        # CARD SAVE
+
         cards[card_number] = {
-            "owner": user_id,
-            "paid_games": [
-                game_id
-            ],
+
+            "owner":
+
+                user_id,
+
+            "paid_games":
+
+                [
+
+                    game_id
+
+                ],
+
         }
 
 
-        # CUSTOMER SALES ONLY
+
+        # CUSTOMER SALES QOFA
+
         bingo_game["total_sales"] += price
 
 
+
         # PLAYER COUNT
+
         bingo_game["player_count"] += PLAYER_PER_CARD
 
 
-        # DERASH UPDATE
-        bingo_game["derash"] += DERASH_PER_CARD
-}
 
-# CUSTOMER SALES ONLY
-bingo_game["total_sales"] += price
+        # DERASH ASLIN UPDATE
 
-# PLAYER COUNT
-bingo_game["player_count"] += PLAYER_PER_CARD
+        bingo_game["derash"] = (
 
-# DERASH UPDATE
-bingo_game["derash"] += DERASH_PER_CARD
+            DERASH_START
+
+            + (
+
+                bingo_game["player_count"]
+
+                - STARTING_PLAYER_COUNT
+
+            )
+
+            * DERASH_PER_CARD
+
+        )
 
 
-add_transaction(
-    user_id,
-    "card_purchase",
-    price,
-    "completed",
-    f"Game {game_id} Card {card_number}",
-)
+
+        add_transaction(
+
+            user_id,
+
+            "card_purchase",
+
+            price,
+
+            "completed",
+
+            f"Game {game_id} Card {card_number}",
+
+        )
+
 
 
         save_data()
 
 
+
         return jsonify({
+
             "success": True,
-            "message": f"Card {card_number} milkaa'inaan bitame.",
-            "game_id": game_id,
-            "card_number": card_number,
-            "card_type": card_type,
-            "price": price,
-            "balance": get_balance(user_id),
-            "player": bingo_game["player_count"],
-            "player_count": bingo_game["player_count"],
-            "derash": bingo_game["derash"],
-            "card": generate_card(card_number),
+
+            "message":
+                f"Card {card_number} milkaa'inaan bitame.",
+
+
+            "game_id":
+                game_id,
+
+
+            "card_number":
+                card_number,
+
+
+            "card_type":
+                card_type,
+
+
+            "price":
+                price,
+
+
+            "balance":
+                get_balance(user_id),
+
+
+            "player":
+                bingo_game["player_count"],
+
+
+            "player_count":
+                bingo_game["player_count"],
+
+
+            "derash":
+                bingo_game["derash"],
+
+
+            "card":
+                generate_card(card_number),
+
         })
 # =========================================================
 # USER CARDS API
