@@ -1532,10 +1532,9 @@ def game_state():
                 "card_type": winner.get("card_type"),
                 "time": winner.get("time"),
             })
-
-
-        # ===============================
-# DERASH 650 + CARD BITAME TOKKO 7
+            
+# ===============================
+# DERASH UPDATE
 # ===============================
 
 derash = (
