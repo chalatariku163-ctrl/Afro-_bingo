@@ -1710,12 +1710,25 @@ def buy_card_api():
             }), 400
 
 
-        # CARD SAVE
-cards[card_number] = {
-    "owner": user_id,
-    "paid_games": [
-        game_id
-    ],
+                # CARD SAVE
+        cards[card_number] = {
+            "owner": user_id,
+            "paid_games": [
+                game_id
+            ],
+        }
+
+
+        # CUSTOMER SALES ONLY
+        bingo_game["total_sales"] += price
+
+
+        # PLAYER COUNT
+        bingo_game["player_count"] += PLAYER_PER_CARD
+
+
+        # DERASH UPDATE
+        bingo_game["derash"] += DERASH_PER_CARD
 }
 
 # CUSTOMER SALES ONLY
