@@ -1535,26 +1535,18 @@ def game_state():
 
 
         # ===============================
-        # DERASH START 650 + USER CARD SALES
-        # ===============================
+# DERASH 650 + CARD BITAME TOKKO 7
+# ===============================
 
-        user_sales = 0
+derash = (
+    DERASH_START
+    + (
+        bingo_game["player_count"]
+        - STARTING_PLAYER_COUNT
+    ) * DERASH_PER_CARD
+)
 
-        for card in bingo_game.get("cards", []):
-
-            # GADAA card hin lakkaawamu
-            if card.get("owner_type") == "GADAA_BINGO":
-                continue
-
-            user_sales += float(
-                card.get("price", 0)
-            )
-
-
-        derash = 650 + user_sales
-
-
-        bingo_game["derash"] = derash
+bingo_game["derash"] = derash
 
 
         return jsonify({
