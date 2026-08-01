@@ -72,8 +72,6 @@ GADAA_BINGO_CARD_COUNT = 200
 
 # Game jalqabarratti
 STARTING_PLAYER_COUNT = 76
-# Game jalqabarratti
-STARTING_PLAYER_COUNT = 76
 
 # Game jalqabarratti
 DERASH_START = 650
@@ -129,7 +127,7 @@ bingo_game = {
     "total_sales": 0,
 
 
-    # PLAYER COUNT
+    # PLAYER COUNT 76
     "player_count": STARTING_PLAYER_COUNT,
 
 
