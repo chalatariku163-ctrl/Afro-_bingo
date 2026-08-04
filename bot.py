@@ -1812,7 +1812,17 @@ def buy_card_api():
 
 
 
-        if card_number in cards:
+        if (
+    card_number in cards_10
+    or card_number in cards_20
+):
+    return jsonify({
+
+        "success": False,
+
+        "message": f"Card {card_number} dursee qabameera.",
+
+    }), 400
 
             return jsonify({
 
