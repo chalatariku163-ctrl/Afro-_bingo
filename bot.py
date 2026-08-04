@@ -1811,19 +1811,16 @@ def buy_card_api():
             }), 400
 
 
+if card_number < 1 or card_number > TOTAL_CARD_COUNT:
 
-        if card_number in cards:
-
-    return jsonify({
-        "success": False,
-    })
     return jsonify({
 
         "success": False,
 
-        "message": f"Card {card_number} dursee qabameera.",
+        "message": "Card number 1 hanga 500 ta'uu qaba.",
 
     }), 400
+        
 
             return jsonify({
 
