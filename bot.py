@@ -1809,17 +1809,16 @@ def buy_card_api():
                 "message": "Card kun hin argamu.",
 
             }), 400
+        
 
+    if card_number < 1 or card_number > 
+TOTAL_CARD_COUNT:
 
-if card_number < 1 or card_number > TOTAL_CARD_COUNT:
-
-    return jsonify({
-
-        "success": False,
-
-        "message": "Card number 1 hanga 500 ta'uu qaba.",
-
-    }), 400
+        return jsonify({
+            "success": False,
+            "message": "Card number 1
+hanga 500 ta'uu qaba.",
+        }), 400
         
 
             return jsonify({
