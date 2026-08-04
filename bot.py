@@ -1815,10 +1815,11 @@ def buy_card_api():
 TOTAL_CARD_COUNT:
 
         return jsonify({
-            "success": False,
-            "message": "Card number 1
-hanga 500 ta'uu qaba.",
-        }), 400
+    "success": False,
+    "message": "Card number 1 hanga 500 
+ta'uu qaba."
+    ),
+}), 400
         
 
             return jsonify({
