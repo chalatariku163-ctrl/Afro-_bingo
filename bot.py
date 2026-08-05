@@ -130,19 +130,16 @@ bingo_game = {
     # winner card number list
     "winner_cards": [],
 
-}
-
 
     # CUSTOMER SALES ONLY
     "total_sales": 0,
 
 
-    # PLAYER COUNT 76
+    # PLAYER COUNT
     "player_count": STARTING_PLAYER_COUNT,
 
 
     # DERASH
-    # Sirreeffame: STARTING_DERASH 650
     "derash": DERASH_START,
 
 }
