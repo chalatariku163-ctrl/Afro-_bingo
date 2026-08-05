@@ -1161,10 +1161,6 @@ function updateGameUI(data){
             playerCount
         ).toLocaleString();
 
-    stakeValue.innerText =
-    Number(data.total_sales || 0).toLocaleString() +
-    " Birr";
-
     let derash =
     Number(
         data.derash ??
