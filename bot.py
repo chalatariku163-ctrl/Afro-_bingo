@@ -118,9 +118,19 @@ bingo_game = {
 
     "winner_window_end_time": 0,
 
+    # winner info
     "winners": [],
 
+    # total prize
     "prize": 0,
+
+    # prize per winner
+    "winner_prize": 0,
+
+    # winner card number list
+    "winner_cards": [],
+
+}
 
 
     # CUSTOMER SALES ONLY
