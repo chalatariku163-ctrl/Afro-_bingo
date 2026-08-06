@@ -1646,9 +1646,7 @@ def game_state():
 
         bingo_game["derash"] = derash
 
-
-
-        return jsonify({
+return jsonify({
 
             "success": True,
 
