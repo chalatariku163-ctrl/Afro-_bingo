@@ -2457,9 +2457,6 @@ def start_new_game():
     clear_cards_for_new_game()
 
 
-    create_random_gadaa_bingo_cards()
-
-
     print(
         f"GAME {game_id} STARTED"
     )
