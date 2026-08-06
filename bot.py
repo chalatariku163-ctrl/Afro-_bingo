@@ -2593,45 +2593,21 @@ def clear_cards_for_new_game():
 # =========================================================
 # START NEW GAME
 # =========================================================
-
 def start_new_game():
 
     with bingo_lock:
 
-        bingo_game[
+        bingo_game["game_id"] += 1
 
-            "game_id"
-
-        ] += 1
-
-
-        game_id = bingo_game[
-
-            "game_id"
-
-        ]
-
+        game_id = bingo_game["game_id"]
 
         reset_game_state()
 
+        bingo_game["card_buying"] = True
 
-        bingo_game[
-
-            "card_buying"
-
-        ] = True
-
-
-        bingo_game[
-
-            "card_buying_end_time"
-
-        ] = (
-
+        bingo_game["card_buying_end_time"] = (
             time.time()
-
             + CARD_BUYING_SECONDS
-
         )
 
 
@@ -2642,54 +2618,28 @@ def start_new_game():
 
 
     print(
-
         f"GAME {game_id} STARTED"
-
     )
 
-
     print(
-
-        f"PLAYER: "
-
-        f"{bingo_game['player_count']}"
-
+        f"PLAYER: {bingo_game['player_count']}"
     )
 
-
     print(
-
-        f"DERASH: "
-
-        f"{bingo_game['derash']}"
-
+        f"DERASH: {bingo_game['derash']}"
     )
 
-
     print(
-
-        f"CARD BUYING OPEN FOR "
-
-        f"{CARD_BUYING_SECONDS} SECONDS"
-
+        f"CARD BUYING OPEN FOR {CARD_BUYING_SECONDS} SECONDS"
     )
 
 
     threading.Thread(
-
-        target=
-
-            card_buying_timer,
-
-        args=(
-
-            game_id,
-
-        ),
-
+        target=card_buying_timer,
+        args=(game_id,),
         daemon=True,
-
     ).start()
+
 
 
 # =========================================================
