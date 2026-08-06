@@ -1528,36 +1528,118 @@ def game_state():
 
     with bingo_lock:
 
+        # winners sirreessi
         visible_winners = []
 
-
-        for winner in bingo_game["winners"]:
-
-            if winner.get(
-                "owner_type"
-            ) == "GADAA_BINGO":
-
-                continue
-
+        for winner in bingo_game.get("winners", []):
 
             visible_winners.append({
+                "card_number": winner.get(
+                    "card_number",
+                    ""
+                ),
 
-                "game_id":
-                    winner.get("game_id"),
+                "owner_type": winner.get(
+                    "owner_type",
+                    "CUSTOMER"
+                ),
 
-                "user_id":
-                    winner.get("user_id"),
+                "user_id": winner.get(
+                    "user_id",
+                    None
+                ),
 
-                "card_number":
-                    winner.get("card_number"),
+                "username": winner.get(
+                    "username",
+                    ""
+                ),
 
-                "card_type":
-                    winner.get("card_type"),
+                "prize": winner.get(
+                    "prize",
+                    0
+                ),
 
-                "time":
-                    winner.get("time"),
-
+                "time": winner.get(
+                    "time",
+                    ""
+                )
             })
+
+
+        # derash haaromsiisi
+        player_count = bingo_game.get(
+            "player_count",
+            0
+        )
+
+        bingo_game["derash"] = (
+            DERASH_START +
+            max(
+                0,
+                player_count - STARTING_PLAYER_COUNT
+            ) * DERASH_PER_CARD
+        )
+
+
+        state = {
+
+            "status": bingo_game.get(
+                "status",
+                "waiting"
+            ),
+
+            "called_numbers": bingo_game.get(
+                "called_numbers",
+                []
+            ),
+
+            "current_number": bingo_game.get(
+                "current_number",
+                None
+            ),
+
+            "cards_sold": bingo_game.get(
+                "cards_sold",
+                []
+            ),
+
+            "player_count": player_count,
+
+
+            "total_sales": bingo_game.get(
+                "total_sales",
+                0
+            ),
+
+
+            "prize_pool": (
+                bingo_game.get(
+                    "total_sales",
+                    0
+                ) * PRIZE_PERCENT / 100
+            ),
+
+
+            "derash": bingo_game.get(
+                "derash",
+                DERASH_START
+            ),
+
+
+            "winners": visible_winners,
+
+
+            "balance": balance,
+
+
+            "game_time": bingo_game.get(
+                "game_time",
+                0
+            )
+        }
+
+
+    return jsonify(state)
 
 
         # ===============================
