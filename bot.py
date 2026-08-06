@@ -63,7 +63,7 @@ TOTAL_CARD_COUNT = 500
 
 # GADAA BINGO HOUSE CARDS
 TOTAL_CARD_COUNT = 500
-GADAA_BINGO_CARD_COUNT = 200
+GADAA_BINGO_CARD_COUNT = 0
 
 
 # =========================================================
