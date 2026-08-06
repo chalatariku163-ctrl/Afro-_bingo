@@ -1976,11 +1976,12 @@ def check_bingo_api():
         )
 
 
-        started = bingo_game[
+        "started": bingo_game["started"],
 
-            "started"
+        "status": bingo_game["status"],
 
-        ]
+        "card_buying": bingo_game["card_buying"],
+
 
 
         winner_window_open = bingo_game[
