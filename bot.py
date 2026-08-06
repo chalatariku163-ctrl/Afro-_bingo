@@ -1696,19 +1696,26 @@ def check_bingo_api():
 
         winner_data = {
 
-            "game_id": game_id,
+    "game_id": game_id,
 
-            "user_id": user_id,
+    "user_id": user_id,
 
-            "card_number": card_number,
+    "username": users.get(user_id, {}).get(
+        "username",
+        ""
+    ),
 
-            "card_type": card_type,
+    "card_number": card_number,
 
-            "owner_type": "CUSTOMER",
+    "card_type": card_type,
 
-            "time": time.time(),
+    "owner_type": "CUSTOMER",
 
-        }
+    "prize": 0,
+
+    "time": time.time(),
+
+}
 
 
         bingo_game["winners"].append(
