@@ -2204,7 +2204,7 @@ def buy_card():
         "balance":
             get_balance(user_id)
 
-    }
+    })
                   
     bingo_game["cards"].append(new_card)
 
