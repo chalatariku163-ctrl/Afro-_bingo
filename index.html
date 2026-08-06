@@ -1369,27 +1369,20 @@ function updateGameUI(data){
 
     }
 
-    if(
+    if (
+          
+      data.current_number !== null &&
+      data.current_number !== undefined
+) {
 
-        data.current_number !== null &&
+    currentNumber.innerText =
+        formatCall(data.current_number);
 
-        data.current_number !== undefined
+} else {
 
-    ){
+    currentNumber.innerText = "--";
 
-        currentNumber.innerText =
-            formatCall(
-                data.current_number
-            );
-
-    }
-
-    else{
-
-        currentNumber.innerText =
-            "--";
-
-    }
+}
 
     renderCalledNumbers(
         data.called_numbers || []
