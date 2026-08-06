@@ -2614,23 +2614,18 @@ def clear_cards_for_new_game():
 
 def start_new_game():
 
-    with bingo_lock:
+    bingo_game["status"] = "WAITING FOR GAME"
+    bingo_game["current_number"] = None
+    bingo_game["called_numbers"] = []
 
-        bingo_game[
+    bingo_game["player_count"] = 0
+    bingo_game["derash"] = 0
+    bingo_game["total_sales"] = 0
+    bingo_game["winners"] = []
 
-            "game_id"
+    create_random_gadaa_bingo_cards()
 
-        ] += 1
-
-
-        game_id = bingo_game[
-
-            "game_id"
-
-        ]
-
-
-        reset_game_state()
+    print("GAME STATE RESET")
 
 
         bingo_game[
