@@ -1833,164 +1833,75 @@ def my_cards():
 # =========================================================
 
 @web_app.route(
-
     "/api/check-bingo",
-
     methods=["POST"],
-
 )
-
 def check_bingo_api():
 
     data = request.get_json(
-
         silent=True
-
     ) or {}
 
-
-    user_id = data.get(
-
-        "user_id"
-
-    )
-
-
-    card_number = data.get(
-
-        "card_number"
-
-    )
-
-
+    user_id = data.get("user_id")
+    card_number = data.get("card_number")
     card_type = str(
-
-        data.get(
-
-            "card_type",
-
-            "",
-
-        )
-
+        data.get("card_type", "")
     )
-
 
     if user_id is None:
-
         return jsonify({
-
-            "success":
-
-                False,
-
-            "message":
-
-                "User ID hin argamne.",
-
+            "success": False,
+            "message": "User ID hin argamne.",
         }), 400
 
 
     if card_number is None:
-
         return jsonify({
-
-            "success":
-
-                False,
-
-            "message":
-
-                "Card number hin argamne.",
-
+            "success": False,
+            "message": "Card number hin argamne.",
         }), 400
 
 
     try:
-
-        user_id = int(
-
-            user_id
-
-        )
-
-        card_number = int(
-
-            card_number
-
-        )
+        user_id = int(user_id)
+        card_number = int(card_number)
 
     except Exception:
-
         return jsonify({
-
-            "success":
-
-                False,
-
-            "message":
-
-                "Data sirrii miti.",
-
+            "success": False,
+            "message": "Data sirrii miti.",
         }), 400
 
 
     if card_type not in [
-
         "10",
-
         "20",
-
     ]:
-
         return jsonify({
-    "success": True,
-    "balance": balance,
-    "game_id": bingo_game["game_id"],
-    "started": bingo_game["started"],
-    "status": bingo_game["status"],
-    "card_buying": bingo_game["card_buying"],
-    "card_buying_end_time": bingo_game["card_buying_end_time"],
-    "called_numbers": bingo_game["called_numbers"],
-    "current_number": bingo_game["current_number"],
-    # ...
-})
+            "success": False,
+            "message": "Card type sirrii miti.",
+        }), 400
 
 
-        "started": bingo_game["started"],
+    with bingo_lock:
 
-        "status": bingo_game["status"],
+        game_id = bingo_game["game_id"]
 
-        "card_buying": bingo_game["card_buying"],
+        started = bingo_game["started"]
 
+        winner_window_open = bingo_game["winner_window_open"]
 
+        winner_window_end_time = bingo_game["winner_window_end_time"]
 
-        winner_window_open = bingo_game[
-
-            "winner_window_open"
-
-        ]
-
-
-        winner_window_end_time = bingo_game[
-
-            "winner_window_end_time"
-
-        ]
+        called_numbers = list(
+            bingo_game["called_numbers"]
+        )
 
 
     if not started and not winner_window_open:
-
         return jsonify({
-
-            "success":
-
-                False,
-
-            "message":
-
-                "Game amma hin jalqabne.",
-
+            "success": False,
+            "message": "Game amma hin jalqabne.",
         }), 400
 
 
@@ -1999,197 +1910,85 @@ def check_bingo_api():
         if time.time() > winner_window_end_time:
 
             return jsonify({
-
-                "success":
-
-                    False,
-
-                "message":
-
-                    "Winner sharing time xumurame.",
-
+                "success": False,
+                "message": "Winner sharing time xumurame.",
             }), 400
 
 
     owner = get_card_owner(
-
         card_type,
-
         card_number,
-
     )
 
 
     if owner != user_id:
-
         return jsonify({
-
-            "success":
-
-                False,
-
-            "message":
-
-                "Card kun kan kee miti.",
-
+            "success": False,
+            "message": "Card kun kan kee miti.",
         }), 403
 
 
     if not card_was_paid_for_game(
-
         card_type,
-
         card_number,
-
         game_id,
-
     ):
-
         return jsonify({
-
-            "success":
-
-                False,
-
-            "message":
-
-                "Card kun game kanaaf hin kaffalamne.",
-
+            "success": False,
+            "message": "Card kun game kanaaf hin kaffalamne.",
         }), 403
 
 
     card = generate_card(
-
         card_number
-
     )
 
 
     if not check_bingo(
-
         card,
-
         called_numbers,
-
     ):
-
         return jsonify({
-
-            "success":
-
-                False,
-
-            "message":
-
-                "Bingo pattern hin guunne.",
-
+            "success": False,
+            "message": "Bingo pattern hin guunne.",
         }), 400
 
 
     with bingo_lock:
 
-        for winner in bingo_game[
-
-            "winners"
-
-        ]:
+        for winner in bingo_game["winners"]:
 
             if (
-
-                winner.get(
-
-                    "owner_type"
-
-                )
-
-                == "CUSTOMER"
-
-                and int(
-
-                    winner.get(
-
-                        "user_id"
-
-                    )
-
-                )
-
-                == user_id
-
-                and int(
-
-                    winner.get(
-
-                        "card_number"
-
-                    )
-
-                )
-
-                == card_number
-
-                and str(
-
-                    winner.get(
-
-                        "card_type"
-
-                    )
-
-                ) == card_type
-
+                winner.get("owner_type") == "CUSTOMER"
+                and int(winner.get("user_id")) == user_id
+                and int(winner.get("card_number")) == card_number
+                and str(winner.get("card_type")) == card_type
             ):
-
                 return jsonify({
-
-                    "success":
-
-                        False,
-
-                    "message":
-
-                        "Card kun duraan winner ta'eera.",
-
+                    "success": False,
+                    "message": "Card kun duraan winner ta'eera.",
                 }), 400
 
 
         winner_data = {
 
-            "game_id":
+            "game_id": game_id,
 
-                game_id,
+            "user_id": user_id,
 
-            "user_id":
+            "card_number": card_number,
 
-                user_id,
+            "card_type": card_type,
 
-            "card_number":
+            "owner_type": "CUSTOMER",
 
-                card_number,
-
-            "card_type":
-
-                card_type,
-
-            "owner_type":
-
-                "CUSTOMER",
-
-            "time":
-
-                time.time(),
+            "time": time.time(),
 
         }
 
 
-        bingo_game[
-
-            "winners"
-
-        ].append(
-
+        bingo_game["winners"].append(
             winner_data
-
         )
 
 
@@ -2200,51 +1999,30 @@ def check_bingo_api():
 
             winner
 
-            for winner in bingo_game[
+            for winner in bingo_game["winners"]
 
-                "winners"
-
-            ]
-
-            if winner.get(
-
-                "owner_type"
-
-            )
-
-            == "CUSTOMER"
+            if winner.get("owner_type") == "CUSTOMER"
 
         ]
 
 
     return jsonify({
 
-        "success":
+        "success": True,
 
-            True,
+        "message": "BINGO! Ati winner taate.",
 
-        "message":
+        "game_id": game_id,
 
-            "BINGO! Ati winner taate.",
+        "card_number": card_number,
 
-        "game_id":
+        "card_type": card_type,
 
-            game_id,
+        "winner_count": len(visible_winners),
 
-        "winner_count":
-
-            len(
-
-                visible_winners
-
-            ),
-
-        "winners":
-
-            visible_winners,
+        "winners": visible_winners,
 
         "message2":
-
             "Winneroota biroo waliin prize share ni ta'a.",
 
     })
