@@ -2713,6 +2713,12 @@ def start_new_game():
 # =========================================================
 # CARD BUYING TIMER
 # =========================================================
+def start_new_game():
+    bingo_game["player_count"] = 0
+    bingo_game["derash"] = 0
+    bingo_game["total_sales"] = 0
+    bingo_game["called_numbers"] = []
+    bingo_game["winners"] = []
 
 def card_buying_timer(
 
