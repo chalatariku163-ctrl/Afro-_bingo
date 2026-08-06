@@ -1627,9 +1627,6 @@ def game_state():
         }
 
 
-    return jsonify(state)
-
-
         # ===============================
         # DERASH UPDATE
         # ===============================
@@ -1643,16 +1640,12 @@ def game_state():
             * DERASH_PER_CARD
         )
 
-
         bingo_game["derash"] = derash
 
-return jsonify({
+        state["derash"] = derash
+        state["balance"] = balance
 
-            "success": True,
-
-
-            "balance":
-                balance,
+    return jsonify(state)
 
 
             "game_id":
