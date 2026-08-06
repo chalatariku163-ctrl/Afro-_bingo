@@ -2033,6 +2033,179 @@ def finish_game_and_share_prize(
 
     ).start()
 
+# =========================================================
+# BUY CARD API
+# =========================================================
+
+@web_app.route(
+    "/api/buy-card",
+    methods=["POST"],
+)
+def buy_card():
+
+    data = request.get_json(
+        silent=True
+    ) or {}
+
+    user_id = data.get("user_id")
+    card_number = data.get("card_number")
+    card_type = str(
+        data.get("card_type")
+    )
+
+
+    if not user_id or not card_number:
+        return jsonify({
+            "success": False,
+            "message": "Data guutuu miti."
+        }),400
+
+
+    try:
+        user_id = int(user_id)
+        card_number = int(card_number)
+
+    except:
+
+        return jsonify({
+            "success": False,
+            "message": "Data sirrii miti."
+        }),400
+
+
+
+    if card_type not in ["10","20"]:
+
+        return jsonify({
+            "success": False,
+            "message": "Card type dogoggora."
+        }),400
+
+
+
+    price = (
+        CARD_10_PRICE
+        if card_type == "10"
+        else CARD_20_PRICE
+    )
+
+
+    with bingo_lock:
+
+
+        cards = (
+            cards_10
+            if card_type == "10"
+            else cards_20
+        )
+
+
+        # card already bought
+        if card_number in cards:
+
+            owner = cards[card_number].get(
+                "owner"
+            )
+
+
+            return jsonify({
+
+                "success": False,
+
+                "message":
+                    "Card kana namni biraan biteera.",
+
+                "sold": True,
+
+                "owner":
+                    owner
+
+            }),400
+
+
+
+        # check balance
+
+        if get_balance(user_id) < price:
+
+            return jsonify({
+
+                "success":False,
+
+                "message":
+                    "Balance gahaa miti."
+
+            }),400
+
+
+
+        # remove money
+
+        remove_balance(
+            user_id,
+            price
+        )
+
+
+
+        # save card owner
+
+        cards[card_number] = {
+
+            "owner":
+                user_id,
+
+            "paid_games":
+                [
+                    bingo_game["game_id"]
+                ]
+
+        }
+
+
+
+        # sales update
+
+        bingo_game["total_sales"] += price
+
+
+        bingo_game["player_count"] = (
+
+            len(cards_10)
+
+            +
+
+            len(cards_20)
+
+        )
+
+
+
+        save_data()
+
+
+
+    return jsonify({
+
+        "success":True,
+
+        "message":
+            "Card bitameera.",
+
+        "card_number":
+            card_number,
+
+        "card_type":
+            card_type,
+
+        "price":
+            price,
+
+        "balance":
+            get_balance(user_id)
+
+    })
+
 
 # =========================================================
 # RESET GAME STATE
