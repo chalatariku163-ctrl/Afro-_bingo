@@ -60,6 +60,7 @@ WINNER_SHARE_SECONDS = 3
 
 # TOTAL CUSTOMER CARD
 TOTAL_CARD_COUNT = 500
+GADAA_BINGO_CARD_COUNT = 200
 
 
 # =========================================================
