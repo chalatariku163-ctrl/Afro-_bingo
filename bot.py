@@ -1944,36 +1944,17 @@ def check_bingo_api():
     ]:
 
         return jsonify({
-
-            "success":
-
-                False,
-
-            "message":
-
-                "Card type sirrii miti.",
-
-        }), 400
-
-
-    with bingo_lock:
-
-        game_id = bingo_game[
-
-            "game_id"
-
-        ]
-
-
-        called_numbers = list(
-
-            bingo_game[
-
-                "called_numbers"
-
-            ]
-
-        )
+    "success": True,
+    "balance": balance,
+    "game_id": bingo_game["game_id"],
+    "started": bingo_game["started"],
+    "status": bingo_game["status"],
+    "card_buying": bingo_game["card_buying"],
+    "card_buying_end_time": bingo_game["card_buying_end_time"],
+    "called_numbers": bingo_game["called_numbers"],
+    "current_number": bingo_game["current_number"],
+    # ...
+})
 
 
         "started": bingo_game["started"],
