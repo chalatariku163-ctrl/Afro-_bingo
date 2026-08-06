@@ -49,7 +49,7 @@ CARD_20_PRICE = 20
 STAKE_START = 10
 
 # PRIZE
-PRIZE_PERCENT = 70
+PRIZE_PERCENT = 80
 
 
 # TIME
@@ -62,25 +62,21 @@ WINNER_SHARE_SECONDS = 3
 TOTAL_CARD_COUNT = 500
 
 
-# HOUSE CARD
-GADAA_BINGO_CARD_COUNT = 200
-
-
 # =========================================================
 # PLAYER & DERASH SETTINGS
 # =========================================================
 
 # Game jalqabarratti
-STARTING_PLAYER_COUNT = 76
+STARTING_PLAYER_COUNT = 0
 
 # Game jalqabarratti
-DERASH_START = 650
+DERASH_START = 0
 
 # Card tokko bitamuun
 PLAYER_PER_CARD = 1
 
 # Derash dabalu
-DERASH_PER_CARD = 7
+DERASH_PER_CARD = 8
 
 DATA_FILE = "data.json"
 
