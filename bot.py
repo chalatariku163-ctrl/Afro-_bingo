@@ -1566,19 +1566,7 @@ def game_state():
             })
 
 
-        # derash haaromsiisi
-        player_count = bingo_game.get(
-            "player_count",
-            0
-        )
-
-        bingo_game["derash"] = (
-            DERASH_START +
-            max(
-                0,
-                player_count - STARTING_PLAYER_COUNT
-            ) * DERASH_PER_CARD
-        )
+        
 
 
         state = {
