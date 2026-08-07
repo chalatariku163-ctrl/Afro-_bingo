@@ -1523,33 +1523,105 @@ def my_cards():
 
     with bingo_lock:
 
+        # =========================
+        # 10 BIRR CARDS
+        # =========================
+
         for card_number, card_data in cards_10.items():
 
-            owner = card_data.get("owner")
+            if isinstance(card_data, dict):
 
-            if int(owner) == user_id:
+                owner = card_data.get(
+                    "owner"
+                )
+
+            else:
+
+                owner = card_data
+
+
+            try:
+
+                owner = int(owner)
+
+            except:
+
+                continue
+
+
+            if owner == user_id:
+
                 my_cards.append({
-                    "card_number": card_number,
-                    "card_type": "10",
-                    "card": generate_card(card_number)
+
+                    "card_number":
+                        int(card_number),
+
+                    "card_type":
+                        "10",
+
+                    "card":
+                        generate_card(
+                            int(card_number)
+                        )
+
                 })
 
 
+        # =========================
+        # 20 BIRR CARDS
+        # =========================
+
         for card_number, card_data in cards_20.items():
 
-            owner = card_data.get("owner")
+            if isinstance(card_data, dict):
 
-            if int(owner) == user_id:
+                owner = card_data.get(
+                    "owner"
+                )
+
+            else:
+
+                owner = card_data
+
+
+            try:
+
+                owner = int(owner)
+
+            except:
+
+                continue
+
+
+            if owner == user_id:
+
                 my_cards.append({
-                    "card_number": card_number,
-                    "card_type": "20",
-                    "card": generate_card(card_number)
+
+                    "card_number":
+                        int(card_number),
+
+                    "card_type":
+                        "20",
+
+                    "card":
+                        generate_card(
+                            int(card_number)
+                        )
+
                 })
 
 
     return jsonify({
-        "success": True,
-        "cards": my_cards
+
+        "success":
+            True,
+
+        "count":
+            len(my_cards),
+
+        "cards":
+            my_cards
+
     })
 
 # =========================================================
