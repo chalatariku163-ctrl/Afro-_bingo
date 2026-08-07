@@ -2256,40 +2256,36 @@ bingo_game["cards_sold"].append({
 })
 
 
-# =========================
-# UPDATE SALES
-# =========================
+        # sales update
+        bingo_game["total_sales"] += price
 
-bingo_game["total_sales"] += price
+        bingo_game["player_count"] = (
+            len(cards_10)
+            +
+            len(cards_20)
+        )
 
-
-bingo_game["player_count"] = (
-
-    len(cards_10)
-
-    +
-
-    len(cards_20)
-
-)
-
-
-    save_data()
+        save_data()
 
 
     return jsonify({
 
         "success": True,
 
-        "message": "Card bitameera.",
+        "message":
+            "Card bitameera.",
 
-        "card_number": card_number,
+        "card_number":
+            card_number,
 
-        "card_type": card_type,
+        "card_type":
+            card_type,
 
-        "price": price,
+        "price":
+            price,
 
-        "balance": get_balance(user_id)
+        "balance":
+            get_balance(user_id)
 
     })
                   
