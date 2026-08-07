@@ -2145,24 +2145,17 @@ def buy_card_api():
 
 
     # card price
-    if card_type == "10":
+    if card_type in ["10", "10 Birr", "CARD_10"]:
+    price = CARD_10_PRICE
 
-        price = CARD_10_PRICE
+elif card_type in ["20", "20 Birr", "CARD_20"]:
+    price = CARD_20_PRICE
 
-    elif card_type == "20":
-
-        price = CARD_20_PRICE
-
-    else:
-
-        return jsonify({
-
-            "success": False,
-
-            "message":
-                "Card type sirrii miti."
-
-        }), 400
+else:
+    return jsonify({
+        "success": False,
+        "message": "Card type sirrii miti."
+    })
 
 
 
