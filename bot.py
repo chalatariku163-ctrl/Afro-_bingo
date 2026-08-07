@@ -2334,14 +2334,13 @@ def reset_game_state():
 
 def clear_cards_for_new_game():
 
-    cards_10.clear()
-
-    cards_20.clear()
+    # Card ownership hin haqamu
+    # Sababni isaa user card isaa argu qaba
 
     save_data()
 
     print(
-        "CUSTOMER CARDS RESET FOR NEW GAME"
+        "CUSTOMER CARDS KEPT"
     )
 
 # =========================================================
