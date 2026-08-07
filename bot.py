@@ -38,7 +38,7 @@ ADMIN_ID = 6376605934
 
 PORT = int(os.getenv("PORT", "10000"))
 
-WEB_APP_URL = "https://afro-bingo-6.onrender.com"
+WEB_APP_URL = "https://afro-bingo-1.onrender.com"
 
 TELEBIRR_NUMBER = "0902640434"
 
