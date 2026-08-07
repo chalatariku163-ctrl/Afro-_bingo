@@ -2105,109 +2105,102 @@ def finish_game_and_share_prize(
 
     ).start()
 
-# =========================================================
+# =========================
 # BUY CARD API
-# =========================================================
+# =========================
 
 @web_app.route(
     "/api/buy-card",
-    methods=["POST"],
+    methods=["POST"]
 )
-def buy_card():
+def buy_card_api():
 
-    data = request.get_json(
-        silent=True
-    ) or {}
+    data = request.json
 
-    user_id = data.get("user_id")
-    card_number = data.get("card_number")
-    card_type = str(
-        data.get("card_type")
+
+    user_id = data.get(
+        "user_id"
+    )
+
+    card_number = data.get(
+        "card_number"
+    )
+
+    card_type = data.get(
+        "card_type"
     )
 
 
-    if not user_id or not card_number:
-        return jsonify({
-            "success": False,
-            "message": "Data guutuu miti."
-        }),400
-
-
-    try:
-        user_id = int(user_id)
-        card_number = int(card_number)
-
-    except:
+    if not user_id or not card_number or not card_type:
 
         return jsonify({
+
             "success": False,
-            "message": "Data sirrii miti."
-        }),400
+
+            "message":
+                "Odeeffannoo guutuu hin jiru."
+
+        }), 400
 
 
 
-    if card_type not in ["10","20"]:
+    # card price
+    if card_type == "10":
+
+        price = CARD_10_PRICE
+
+    elif card_type == "20":
+
+        price = CARD_20_PRICE
+
+    else:
 
         return jsonify({
+
             "success": False,
-            "message": "Card type dogoggora."
-        }),400
 
+            "message":
+                "Card type sirrii miti."
 
+        }), 400
 
-    price = (
-        CARD_10_PRICE
-        if card_type == "10"
-        else CARD_20_PRICE
-    )
 
 
     with bingo_lock:
 
 
-        cards = (
-            cards_10
-            if card_type == "10"
-            else cards_20
+        # check balance
+
+        balance = get_balance(
+            user_id
         )
 
 
-        # card already bought
-        if card_number in cards:
-
-            owner = cards[card_number].get(
-                "owner"
-            )
-
+        if balance < price:
 
             return jsonify({
 
                 "success": False,
 
                 "message":
-                    "Card kana namni biraan biteera.",
+                    "Baallansi gahaa miti."
 
-                "sold": True,
-
-                "owner":
-                    owner
-
-            }),400
+            }), 400
 
 
 
-        # check balance
+        # card already exists
 
-        if get_balance(user_id) < price:
+        if str(card_number) in cards:
 
             return jsonify({
 
-                "success":False,
+                "success": False,
 
                 "message":
-                    "Balance gahaa miti."
+                    "Card kun fudhatameera."
 
-            }),400
+            }), 400
 
 
 
@@ -2217,40 +2210,72 @@ def buy_card():
             user_id,
             price
         )
-        
-# =========================
-# SAVE USER CARD
-# =========================
-
-if "cards_sold" not in bingo_game:
-    bingo_game["cards_sold"] = []
 
 
-cards[card_number] = {
 
-    "owner": user_id,
+        # =========================
+        # SAVE USER CARD
+        # =========================
 
-    "paid_games": [
-        bingo_game["game_id"]
-    ],
+        if "cards_sold" not in bingo_game:
 
-    "card_data": generate_card(
-        card_number
-    )
+            bingo_game["cards_sold"] = []
 
-}
+
+
+        cards[str(card_number)] = {
+
+
+            "owner":
+                user_id,
+
+
+            "card_type":
+                card_type,
+
+
+            "price":
+                price,
+
+
+            "paid_games": [
+
+                bingo_game["game_id"]
+
+            ],
+
+
+            "card_data":
+                generate_card(
+                    card_number
+                )
+
+        }
+
+
+
+        bingo_game["cards_sold"].append(
+            card_number
+        )
+
 
 
         # sales update
+
         bingo_game["total_sales"] += price
 
-        bingo_game["player_count"] = (
-            len(cards_10)
-            +
-            len(cards_20)
+
+
+        # player count
+
+        bingo_game["player_count"] = len(
+            cards
         )
 
+
+
         save_data()
+
 
 
     return jsonify({
@@ -2260,19 +2285,25 @@ cards[card_number] = {
         "message":
             "Card bitameera.",
 
+
         "card_number":
             card_number,
+
 
         "card_type":
             card_type,
 
-        "price":
-            price,
+
+        "card_data":
+            cards[str(card_number)]["card_data"],
+
 
         "balance":
-            get_balance(user_id)
+            get_balance(
+                user_id
+            )
 
-    })  
+    }) 
                   
     
 # =========================================================
