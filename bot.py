@@ -2217,43 +2217,64 @@ def buy_card():
             user_id,
             price
         )
+        
+# =========================
+# SAVE USER CARD
+# =========================
+
+if "cards_sold" not in bingo_game:
+    bingo_game["cards_sold"] = []
 
 
+cards[str(card_number)] = {
 
-        # save card owner
+    "owner": user_id,
 
-        cards[card_number] = {
+    "paid_games": [
+        bingo_game["game_id"]
+    ],
 
-            "owner":
-                user_id,
+    "card_data": generate_card(
+        card_number
+    )
 
-            "paid_games":
-                [
-                    bingo_game["game_id"]
-                ]
-
-        }
-
+}
 
 
-        # sales update
+# =========================
+# SAVE SOLD CARD LIST
+# =========================
 
-        bingo_game["total_sales"] += price
+bingo_game["cards_sold"].append({
 
+    "card_number": card_number,
 
-        bingo_game["player_count"] = (
+    "card_type": card_type,
 
-            len(cards_10)
+    "user_id": user_id
 
-            +
-
-            len(cards_20)
-
-        )
-
+})
 
 
-        save_data()
+# =========================
+# UPDATE SALES
+# =========================
+
+bingo_game["total_sales"] += price
+
+
+bingo_game["player_count"] = (
+
+    len(cards_10)
+
+    +
+
+    len(cards_20)
+
+)
+
+
+save_data()
 
 
 
@@ -2389,8 +2410,7 @@ def start_new_game():
         args=(game_id,),
         daemon=True,
     ).start()
-
-
+ 
 
 # =========================================================
 # CARD BUYING TIMER
