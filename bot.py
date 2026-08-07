@@ -2226,7 +2226,7 @@ if "cards_sold" not in bingo_game:
     bingo_game["cards_sold"] = []
 
 
-cards[str(card_number)] = {
+cards[card_number] = {
 
     "owner": user_id,
 
@@ -2252,7 +2252,7 @@ bingo_game["player_count"] = (
 )
 
 
-    save_data()
+save_data()
 
 
 return jsonify({
