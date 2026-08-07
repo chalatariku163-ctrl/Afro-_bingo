@@ -2241,40 +2241,38 @@ cards[card_number] = {
 }
 
 
-# sales update
-bingo_game["total_sales"] += price
+        # sales update
+        bingo_game["total_sales"] += price
+
+        bingo_game["player_count"] = (
+            len(cards_10)
+            +
+            len(cards_20)
+        )
+
+        save_data()
 
 
-bingo_game["player_count"] = (
-    len(cards_10)
-    +
-    len(cards_20)
-)
+    return jsonify({
 
+        "success": True,
 
-save_data()
+        "message":
+            "Card bitameera.",
 
+        "card_number":
+            card_number,
 
-return jsonify({
+        "card_type":
+            card_type,
 
-    "success": True,
+        "price":
+            price,
 
-    "message":
-        "Card bitameera.",
+        "balance":
+            get_balance(user_id)
 
-    "card_number":
-        card_number,
-
-    "card_type":
-        card_type,
-
-    "price":
-        price,
-
-    "balance":
-        get_balance(user_id)
-
-})  
+    })  
                   
     
 # =========================================================
