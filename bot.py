@@ -2240,53 +2240,41 @@ cards[str(card_number)] = {
 
 }
 
-        # save card owner
-        cards[card_number] = {
 
-            "owner": user_id,
-
-            "paid_games": [
-                bingo_game["game_id"]
-            ]
-
-        }
+# sales update
+bingo_game["total_sales"] += price
 
 
-        # sales update
-        bingo_game["total_sales"] += price
+bingo_game["player_count"] = (
+    len(cards_10)
+    +
+    len(cards_20)
+)
 
 
-        bingo_game["player_count"] = (
-            len(cards_10)
-            +
-            len(cards_20)
-        )
+    save_data()
 
 
-        save_data()
+return jsonify({
 
+    "success": True,
 
+    "message":
+        "Card bitameera.",
 
-    return jsonify({
+    "card_number":
+        card_number,
 
-        "success": True,
+    "card_type":
+        card_type,
 
-        "message":
-            "Card bitameera.",
+    "price":
+        price,
 
-        "card_number":
-            card_number,
+    "balance":
+        get_balance(user_id)
 
-        "card_type":
-            card_type,
-
-        "price":
-            price,
-
-        "balance":
-            get_balance(user_id)
-
-    })
+})  
                   
     
 # =========================================================
