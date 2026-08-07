@@ -2240,24 +2240,21 @@ cards[str(card_number)] = {
 
 }
 
+        # save card owner
+        cards[card_number] = {
 
-# =========================
-# SAVE SOLD CARD LIST
-# =========================
+            "owner": user_id,
 
-bingo_game["cards_sold"].append({
+            "paid_games": [
+                bingo_game["game_id"]
+            ]
 
-    "card_number": card_number,
-
-    "card_type": card_type,
-
-    "user_id": user_id
-
-})
+        }
 
 
         # sales update
         bingo_game["total_sales"] += price
+
 
         bingo_game["player_count"] = (
             len(cards_10)
@@ -2265,7 +2262,9 @@ bingo_game["cards_sold"].append({
             len(cards_20)
         )
 
+
         save_data()
+
 
 
     return jsonify({
