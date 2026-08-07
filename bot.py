@@ -1527,7 +1527,7 @@ def my_cards():
         # 10 BIRR CARDS
         # =========================
 
-        for card_number, card_data in cards_10.items():
+        for card_number, card_data in list(cards_10.items()):
 
             if isinstance(card_data, dict):
 
@@ -1571,7 +1571,7 @@ def my_cards():
         # 20 BIRR CARDS
         # =========================
 
-        for card_number, card_data in cards_20.items():
+        for card_number, card_data in list(cards_20.items()):
 
             if isinstance(card_data, dict):
 
@@ -2274,28 +2274,22 @@ bingo_game["player_count"] = (
 )
 
 
-save_data()
-
+    save_data()
 
 
     return jsonify({
 
-        "success":True,
+        "success": True,
 
-        "message":
-            "Card bitameera.",
+        "message": "Card bitameera.",
 
-        "card_number":
-            card_number,
+        "card_number": card_number,
 
-        "card_type":
-            card_type,
+        "card_type": card_type,
 
-        "price":
-            price,
+        "price": price,
 
-        "balance":
-            get_balance(user_id)
+        "balance": get_balance(user_id)
 
     })
                   
