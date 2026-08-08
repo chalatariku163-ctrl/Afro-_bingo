@@ -2105,209 +2105,339 @@ def finish_game_and_share_prize(
 
     ).start()
 
-#=========================
-
-#BUY CARD API
-
-#=========================
+# =========================================================
+# BUY CARD API
+# =========================================================
 
 @web_app.route(
-"/api/buy-card",
-methods=["POST"]
+    "/api/buy-card",
+    methods=["POST"]
 )
 def buy_card_api():
 
-data = request.get_json(
-    silent=True
-) or {}
+    data = request.get_json(
+        silent=True
+    ) or {}
 
-user_id = data.get("user_id")
-card_number = data.get("card_number")
-card_type = str(
-    data.get("card_type", "")
-).strip()
+    user_id = data.get(
+        "user_id"
+    )
 
+    card_number = data.get(
+        "card_number"
+    )
 
-# =========================
-# VALIDATE USER
-# =========================
-
-if user_id is None:
-
-    return jsonify({
-        "success": False,
-        "message": "User ID hin jiru."
-    }), 400
+    card_type = str(
+        data.get(
+            "card_type",
+            ""
+        )
+    ).strip()
 
 
-# =========================
-# VALIDATE CARD NUMBER
-# =========================
+    # =====================================================
+    # VALIDATE USER
+    # =====================================================
 
-try:
+    if user_id is None:
 
-    user_id = int(user_id)
-    card_number = int(card_number)
-
-except (TypeError, ValueError):
-
-    return jsonify({
-        "success": False,
-        "message": "User ID ykn Card Number sirrii miti."
-    }), 400
+        return jsonify({
+            "success": False,
+            "message": "User ID hin jiru."
+        }), 400
 
 
-# =========================
-# NORMALIZE CARD TYPE
-# =========================
+    # =====================================================
+    # CONVERT DATA
+    # =====================================================
 
-if card_type in [
-    "10",
-    "10 Birr",
-    "CARD_10"
-]:
+    try:
 
-    card_type = "10"
-    price = CARD_10_PRICE
-    cards = cards_10
+        user_id = int(
+            user_id
+        )
 
+        card_number = int(
+            card_number
+        )
 
-elif card_type in [
-    "20",
-    "20 Birr",
-    "CARD_20"
-]:
-
-    card_type = "20"
-    price = CARD_20_PRICE
-    cards = cards_20
-
-
-else:
-
-    return jsonify({
-        "success": False,
-        "message": "Card type sirrii miti."
-    }), 400
-
-
-# =========================
-# CARD NUMBER RANGE
-# =========================
-
-if card_number < 1 or card_number > TOTAL_CARD_COUNT:
-
-    return jsonify({
-        "success": False,
-        "message": "Card number 1 hanga 500 ta'uu qaba."
-    }), 400
-
-
-# =========================
-# GAME BUYING CHECK
-# =========================
-
-with bingo_lock:
-
-    if not bingo_game.get(
-        "card_buying",
-        False
+    except (
+        TypeError,
+        ValueError
     ):
 
         return jsonify({
             "success": False,
-            "message": "Yeroo card bituu amma cufameera."
+            "message": "User ID ykn Card Number sirrii miti."
         }), 400
 
 
-    # =========================
-    # CHECK BALANCE
-    # =========================
+    # =====================================================
+    # CARD TYPE
+    # =====================================================
 
-    balance = get_balance(
-        user_id
-    )
+    if card_type in [
+        "10",
+        "10 Birr",
+        "CARD_10"
+    ]:
 
-    if balance < price:
+        card_type = "10"
+
+        price = CARD_10_PRICE
+
+        cards = cards_10
+
+
+    elif card_type in [
+        "20",
+        "20 Birr",
+        "CARD_20"
+    ]:
+
+        card_type = "20"
+
+        price = CARD_20_PRICE
+
+        cards = cards_20
+
+
+    else:
 
         return jsonify({
             "success": False,
-            "message": "Baallansi gahaa miti."
+            "message": "Card type sirrii miti."
         }), 400
 
 
-    # =========================
-    # CHECK CARD ALREADY SOLD
-    # =========================
+    # =====================================================
+    # CARD NUMBER
+    # =====================================================
 
-    if card_number in cards:
-
-        return jsonify({
-            "success": False,
-            "message": "Card kun duraan fudhatameera."
-        }), 400
-
-
-    # =========================
-    # REMOVE BALANCE
-    # =========================
-
-    if not remove_balance(
-        user_id,
-        price
+    if (
+        card_number < 1
+        or
+        card_number > TOTAL_CARD_COUNT
     ):
 
         return jsonify({
             "success": False,
-            "message": "Balance irraa maallaqa hir'isuun hin danda'amne."
+            "message": "Card number 1 hanga 500 ta'uu qaba."
         }), 400
 
 
-    # =========================
-    # GENERATE CARD
-    # =========================
+    # =====================================================
+    # LOCK
+    # =====================================================
 
-    card_data = generate_card(
-        card_number
-    )
+    with bingo_lock:
+
+        game_id = bingo_game.get(
+            "game_id",
+            0
+        )
 
 
-    # =========================
-    # SAVE USER CARD
-    # =========================
+        # =================================================
+        # CHECK CARD BUYING
+        # =================================================
 
-    cards[card_number] = {
+        if not bingo_game.get(
+            "card_buying",
+            False
+        ):
 
-        "owner":
+            return jsonify({
+                "success": False,
+                "message": "Yeroon card bituu cufameera."
+            }), 400
+
+
+        # =================================================
+        # CHECK BALANCE
+        # =================================================
+
+        balance = get_balance(
+            user_id
+        )
+
+
+        if balance < price:
+
+            return jsonify({
+                "success": False,
+                "message": "Balance kee gahaa miti."
+            }), 400
+
+
+        # =================================================
+        # CHECK CARD ALREADY SOLD
+        # =================================================
+
+        if card_number in cards:
+
+            return jsonify({
+                "success": False,
+                "message": "Card kun duraan fudhatameera."
+            }), 400
+
+
+        # =================================================
+        # GENERATE CARD
+        # =================================================
+
+        card_data = generate_card(
+            card_number
+        )
+
+
+        # =================================================
+        # REMOVE BALANCE
+        # =================================================
+
+        if not remove_balance(
             user_id,
+            price
+        ):
 
-        "card_type":
-            card_type,
-
-        "price":
-            price,
-
-        "paid_games": [
-
-            bingo_game["game_id"]
-
-        ],
-
-        "card_data":
-            card_data
-    }
+            return jsonify({
+                "success": False,
+                "message": "Balance irraa maallaqa hir'isuun hin danda'amne."
+            }), 400
 
 
-    # =========================
-    # CARDS SOLD
-    # =========================
+        # =================================================
+        # SAVE CARD
+        # =================================================
 
-    if "cards_sold" not in bingo_game:
+        cards[card_number] = {
 
-        bingo_game["cards_sold"] = []
+            "owner":
+                user_id,
+
+            "card_type":
+                card_type,
+
+            "price":
+                price,
+
+            "paid_games": [
+
+                game_id
+
+            ],
+
+            "card_data":
+                card_data
+
+        }
 
 
-    bingo_game["cards_sold"].append({
+        # =================================================
+        # CARDS SOLD
+        # =================================================
+
+        if "cards_sold" not in bingo_game:
+
+            bingo_game["cards_sold"] = []
+
+
+        bingo_game["cards_sold"].append({
+
+            "card_number":
+                card_number,
+
+            "card_type":
+                card_type,
+
+            "user_id":
+                user_id
+
+        })
+
+
+        # =================================================
+        # TOTAL SALES
+        # =================================================
+
+        bingo_game["total_sales"] = round(
+
+            bingo_game.get(
+                "total_sales",
+                0
+            )
+
+            + price,
+
+            2
+
+        )
+
+
+        # =================================================
+        # PLAYER COUNT
+        # =================================================
+
+        bingo_game["player_count"] = (
+
+            len(cards_10)
+
+            +
+
+            len(cards_20)
+
+        )
+
+
+        # =================================================
+        # DERASH
+        # =================================================
+
+        bingo_game["derash"] = (
+
+            DERASH_START
+
+            +
+
+            (
+                bingo_game["player_count"]
+                -
+                STARTING_PLAYER_COUNT
+            )
+
+            *
+
+            DERASH_PER_CARD
+
+        )
+
+
+        # =================================================
+        # SAVE
+        # =================================================
+
+        save_data()
+
+
+        new_balance = get_balance(
+            user_id
+        )
+
+
+    # =====================================================
+    # RESPONSE
+    # =====================================================
+
+    return jsonify({
+
+        "success":
+            True,
+
+        "message":
+            "Card bitameera.",
+
+        "user_id":
+            user_id,
 
         "card_number":
             card_number,
@@ -2315,107 +2445,37 @@ with bingo_lock:
         "card_type":
             card_type,
 
-        "user_id":
-            user_id
+        "price":
+            price,
+
+        "game_id":
+            game_id,
+
+        "card_data":
+            card_data,
+
+        "balance":
+            new_balance,
+
+        "player_count":
+            bingo_game.get(
+                "player_count",
+                0
+            ),
+
+        "total_sales":
+            bingo_game.get(
+                "total_sales",
+                0
+            ),
+
+        "derash":
+            bingo_game.get(
+                "derash",
+                0
+            )
+
     })
-
-
-    # =========================
-    # SALES
-    # =========================
-
-    bingo_game["total_sales"] = round(
-
-        bingo_game.get(
-            "total_sales",
-            0
-        ) + price,
-
-        2
-    )
-
-
-    # =========================
-    # PLAYER COUNT
-    # =========================
-
-    bingo_game["player_count"] = (
-
-        len(cards_10)
-
-        + len(cards_20)
-
-    )
-
-
-    # =========================
-    # DERASH
-    # =========================
-
-    bingo_game["derash"] = (
-
-        DERASH_START
-
-        + (
-
-            bingo_game["player_count"]
-
-            - STARTING_PLAYER_COUNT
-
-        ) * DERASH_PER_CARD
-
-    )
-
-
-    # =========================
-    # SAVE EVERYTHING
-    # =========================
-
-    save_data()
-
-
-    new_balance = get_balance(
-        user_id
-    )
-
-
-# =========================
-# RESPONSE
-# =========================
-
-return jsonify({
-
-    "success":
-        True,
-
-    "message":
-        "Card bitameera.",
-
-    "card_number":
-        card_number,
-
-    "card_type":
-        card_type,
-
-    "price":
-        price,
-
-    "card_data":
-        card_data,
-
-    "balance":
-        new_balance,
-
-    "game_id":
-        bingo_game["game_id"],
-
-    "player_count":
-        bingo_game["player_count"],
-
-    "derash":
-        bingo_game["derash"]
-
-}) 
                   
     
 # =========================================================
