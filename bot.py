@@ -2647,57 +2647,59 @@ def buy_card_api():
         ]
 
 
-    # =====================================================
-    # RESPONSE
-    # =====================================================
-
     return jsonify({
 
-        "success":
-            True,
+    "success":
+        True,
 
-        "message":
-            "Card bitameera.",
+    "message":
+        "Card bitameera.",
 
-        "user_id":
-            user_id,
+    "user_id":
+        user_id,
 
-        "card_number":
-            card_number,
+    "card_number":
+        card_number,
 
-        "card_type":
-            card_type,
+    "card_type":
+        card_type,
 
-        "price":
-            price,
+    "price":
+        price,
 
-        "game_id":
-            game_id,
+    "game_id":
+        game_id,
 
-        "card_data":
-            card_data,
+    # IMPORTANT:
+    # index.html kee "data.card" eega
+    "card":
+        card_data,
 
-        "balance":
-            new_balance,
+    # Kunis compatibility'f haa jiraatu
+    "card_data":
+        card_data,
 
-        "player_count":
-            player_count,
+    "balance":
+        new_balance,
 
-        "total_sales":
-            total_sales,
+    "player_count":
+        player_count,
 
-        "prize_pool":
-            round(
-                total_sales
-                * PRIZE_PERCENT
-                / 100,
-                2,
-            ),
+    "total_sales":
+        total_sales,
 
-        "derash":
-            derash,
+    "prize_pool":
+        round(
+            total_sales
+            * PRIZE_PERCENT
+            / 100,
+            2,
+        ),
 
-    })
+    "derash":
+        derash,
+
+})
 
 
 # =========================================================
