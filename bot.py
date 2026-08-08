@@ -1306,8 +1306,125 @@ def game_state():
     if user_id:
         balance = get_balance(user_id)
 
-
     with bingo_lock:
+
+        # =================================================
+        # MY CARDS
+        # =================================================
+
+        my_cards = []
+
+        if user_id:
+
+            # -------------------------
+            # 10 BIRR CARDS
+            # -------------------------
+
+            for card_number, card_data in cards_10.items():
+
+                if isinstance(card_data, dict):
+
+                    owner = card_data.get(
+                        "owner"
+                    )
+
+                else:
+
+                    owner = card_data
+
+                try:
+                    owner = int(owner)
+                except Exception:
+                    continue
+
+                if owner != user_id:
+                    continue
+
+                my_cards.append({
+
+                    "card_number":
+                        int(card_number),
+
+                    "card_type":
+                        "10",
+
+                    "price":
+                        CARD_10_PRICE,
+
+                    "card":
+                        generate_card(
+                            int(card_number)
+                        ),
+
+                    "paid_for_game":
+                        card_was_paid_for_game(
+                            "10",
+                            int(card_number),
+                            bingo_game.get(
+                                "game_id",
+                                0
+                            )
+                        )
+
+                })
+
+
+            # -------------------------
+            # 20 BIRR CARDS
+            # -------------------------
+
+            for card_number, card_data in cards_20.items():
+
+                if isinstance(card_data, dict):
+
+                    owner = card_data.get(
+                        "owner"
+                    )
+
+                else:
+
+                    owner = card_data
+
+                try:
+                    owner = int(owner)
+                except Exception:
+                    continue
+
+                if owner != user_id:
+                    continue
+
+                my_cards.append({
+
+                    "card_number":
+                        int(card_number),
+
+                    "card_type":
+                        "20",
+
+                    "price":
+                        CARD_20_PRICE,
+
+                    "card":
+                        generate_card(
+                            int(card_number)
+                        ),
+
+                    "paid_for_game":
+                        card_was_paid_for_game(
+                            "20",
+                            int(card_number),
+                            bingo_game.get(
+                                "game_id",
+                                0
+                            )
+                        )
+
+                })
+
+
+        # =================================================
+        # WINNERS
+        # =================================================
 
         visible_winners = []
 
@@ -1318,180 +1435,219 @@ def game_state():
 
             visible_winners.append({
 
-                "card_number": winner.get(
-                    "card_number",
-                    ""
-                ),
+                "card_number":
+                    winner.get(
+                        "card_number",
+                        ""
+                    ),
 
-                "owner_type": winner.get(
-                    "owner_type",
-                    "CUSTOMER"
-                ),
+                "card_type":
+                    winner.get(
+                        "card_type",
+                        ""
+                    ),
 
-                "user_id": winner.get(
-                    "user_id",
-                    None
-                ),
+                "owner_type":
+                    winner.get(
+                        "owner_type",
+                        "CUSTOMER"
+                    ),
 
-                "username": winner.get(
-                    "username",
-                    ""
-                ),
+                "user_id":
+                    winner.get(
+                        "user_id",
+                        None
+                    ),
 
-                "prize": winner.get(
-                    "prize",
-                    0
-                ),
+                "username":
+                    winner.get(
+                        "username",
+                        ""
+                    ),
 
-                "time": winner.get(
-                    "time",
-                    ""
-                )
+                "prize":
+                    winner.get(
+                        "prize",
+                        0
+                    ),
+
+                "time":
+                    winner.get(
+                        "time",
+                        ""
+                    )
+
             })
 
 
-        # ===============================
-        # DERASH UPDATE
-        # ===============================
+        # =================================================
+        # DERASH
+        # =================================================
+
+        player_count = bingo_game.get(
+            "player_count",
+            0
+        )
 
         derash = (
+
             DERASH_START
-            + (
-                bingo_game.get(
-                    "player_count",
-                    0
-                )
-                - STARTING_PLAYER_COUNT
+
+            +
+
+            (
+                player_count
+                -
+                STARTING_PLAYER_COUNT
             )
-            * DERASH_PER_CARD
+
+            *
+
+            DERASH_PER_CARD
+
         )
+
+        # Derash negative akka hin taane
+        if derash < 0:
+            derash = DERASH_START
 
         bingo_game["derash"] = derash
 
 
+        # =================================================
+        # PRIZE POOL
+        # =================================================
+
+        total_sales = bingo_game.get(
+            "total_sales",
+            0
+        )
+
+        prize_pool = round(
+            total_sales
+            * PRIZE_PERCENT
+            / 100,
+            2
+        )
+
+
+        # =================================================
+        # GAME STATE
+        # =================================================
+
         state = {
 
-            "success": True,
+            "success":
+                True,
 
-
-            "game_id": bingo_game.get(
-                "game_id",
-                ""
-            ),
-
-
-            "status": bingo_game.get(
-                "status",
-                "waiting"
-            ),
-
-
-            "started": bingo_game.get(
-                "started",
-                False
-            ),
-
-
-            "card_buying": bingo_game.get(
-                "card_buying",
-                False
-            ),
-
-
-            "card_buying_end_time": bingo_game.get(
-                "card_buying_end_time",
-                0
-            ),
-
-
-            "called_numbers": bingo_game.get(
-                "called_numbers",
-                []
-            ),
-
-
-            "current_number": bingo_game.get(
-                "current_number",
-                None
-            ),
-
-
-            "cards_sold": bingo_game.get(
-                "cards_sold",
-                []
-            ),
-
-
-            "player": bingo_game.get(
-                "player_count",
-                0
-            ),
-
-
-            "player_count": bingo_game.get(
-                "player_count",
-                0
-            ),
-
-
-            "total_sales": bingo_game.get(
-                "total_sales",
-                0
-            ),
-
-
-            "prize_pool": (
+            "game_id":
                 bingo_game.get(
-                    "total_sales",
+                    "game_id",
+                    0
+                ),
+
+            "started":
+                bingo_game.get(
+                    "started",
+                    False
+                ),
+
+            "card_buying":
+                bingo_game.get(
+                    "card_buying",
+                    False
+                ),
+
+            "card_buying_end_time":
+                bingo_game.get(
+                    "card_buying_end_time",
+                    0
+                ),
+
+            "called_numbers":
+                bingo_game.get(
+                    "called_numbers",
+                    []
+                ),
+
+            "current_number":
+                bingo_game.get(
+                    "current_number",
+                    None
+                ),
+
+            "cards_sold":
+                bingo_game.get(
+                    "cards_sold",
+                    []
+                ),
+
+            "player":
+                player_count,
+
+            "player_count":
+                player_count,
+
+            "total_sales":
+                total_sales,
+
+            "prize_pool":
+                prize_pool,
+
+            "derash":
+                derash,
+
+            "winner":
+                bingo_game.get(
+                    "winner",
+                    False
+                ),
+
+            "winner_window_open":
+                bingo_game.get(
+                    "winner_window_open",
+                    False
+                ),
+
+            "winner_window_end_time":
+                bingo_game.get(
+                    "winner_window_end_time",
+                    0
+                ),
+
+            "winners":
+                visible_winners,
+
+            "winner_count":
+                len(
+                    visible_winners
+                ),
+
+            "prize":
+                bingo_game.get(
+                    "prize",
+                    0
+                ),
+
+            "balance":
+                balance,
+
+            # =============================================
+            # IMPORTANT
+            # USER CARDS
+            # =============================================
+
+            "my_cards":
+                my_cards,
+
+            "my_card_count":
+                len(my_cards),
+
+            "game_time":
+                bingo_game.get(
+                    "game_time",
                     0
                 )
-                * PRIZE_PERCENT
-                / 100
-            ),
-
-
-            "derash": derash,
-
-
-            "winner": bingo_game.get(
-                "winner",
-                None
-            ),
-
-
-            "winner_window_open": bingo_game.get(
-                "winner_window_open",
-                False
-            ),
-
-
-            "winner_window_end_time": bingo_game.get(
-                "winner_window_end_time",
-                0
-            ),
-
-
-            "winners": visible_winners,
-
-
-            "winner_count": len(
-                visible_winners
-            ),
-
-
-            "prize": bingo_game.get(
-                "prize",
-                0
-            ),
-
-
-            "balance": balance,
-
-
-            "game_time": bingo_game.get(
-                "game_time",
-                0
-            )
         }
 
 
