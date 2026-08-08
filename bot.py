@@ -2105,11 +2105,11 @@ def finish_game_and_share_prize(
 
     ).start()
 
-=========================
+#=========================
 
-BUY CARD API
+#BUY CARD API
 
-=========================
+#=========================
 
 @web_app.route(
 "/api/buy-card",
